@@ -6,7 +6,7 @@ export const MainText: React.FC = () => {
     const {copyTextList} = useCopyText()
 
     return (
-        <div className="card m-1 w-100">
+        <div className="card m-1 w-100" style={{maxHeight: 600, overflow: "scroll"}}>
             <div className="card-header">
                 복사할 텍스트
             </div>

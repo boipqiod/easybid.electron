@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.5cd64d03.css",
-    "main.js": "/static/js/main.5a54670b.js",
+    "main.js": "/static/js/main.91c9afa3.js",
     "static/js/787.3e24559e.chunk.js": "/static/js/787.3e24559e.chunk.js",
     "static/media/easybid.logo.png": "/static/media/easybid.logo.d7f977169cc4c331e7fe.png",
     "index.html": "/index.html",
     "main.5cd64d03.css.map": "/static/css/main.5cd64d03.css.map",
-    "main.5a54670b.js.map": "/static/js/main.5a54670b.js.map",
+    "main.91c9afa3.js.map": "/static/js/main.91c9afa3.js.map",
     "787.3e24559e.chunk.js.map": "/static/js/787.3e24559e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5cd64d03.css",
-    "static/js/main.5a54670b.js"
+    "static/js/main.91c9afa3.js"
   ]
 }

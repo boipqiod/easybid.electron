@@ -10,7 +10,7 @@ export default class File {
         });
         if(!bool) return;
 
-        type ExcelData = {name: string, data: string[][]};
+        type ExcelData = {name: string, data: any[][]};
 
         const excelData: ExcelData[] = [];
 
@@ -19,11 +19,11 @@ export default class File {
                 const data = excelData.find((value) => value.name === client.name);
 
                 if (data) {
-                    data.data.push(["", item.name, client.amount.toString(), item.price.toString(), (client.amount * item.price).toString(), client.note ?? ""]);
+                    data.data.push(["", item.name, item.price, client.amount, (client.amount * item.price), client.note ?? ""]);
                 } else {
                     excelData.push({
                         name: client.name,
-                        data: [["고객명", "상품 이름", "수량", "개당 금액", "금액", "비고"], [client.name, item.name, client.amount.toString(), item.price.toString(), (client.amount * item.price).toString(), client.note ?? ""]],
+                        data: [["고객명", "상품 이름", "개당 금액", "수량", "금액", "비고"], [client.name, item.name, item.price, client.amount, (client.amount * item.price), client.note ?? ""]],
                     });
                 }
             }

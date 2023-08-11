@@ -16,6 +16,7 @@ class Observer {
         this.messageList = [];
         this.loadPage = (url) => __awaiter(this, void 0, void 0, function* () {
             yield this.window.loadURL(url);
+            yield this.getChat();
         });
         this.getChat = () => __awaiter(this, void 0, void 0, function* () {
             try {
@@ -29,7 +30,20 @@ class Observer {
             }
         });
         this.sendMessage = (message) => {
+            if (this.messageList.length === 0)
+                this.setTimer();
             this.messageList.push(message);
+        };
+        this.setTimer = () => {
+            this.timer = setInterval(() => __awaiter(this, void 0, void 0, function* () {
+                var _a;
+                if (this.messageList.length === 0) {
+                    clearInterval(this.timer);
+                    return;
+                }
+                else
+                    yield this.sendChat((_a = this.messageList.shift()) !== null && _a !== void 0 ? _a : "");
+            }), 1);
         };
         this.sendChat = (message) => __awaiter(this, void 0, void 0, function* () {
             try {
@@ -40,13 +54,15 @@ class Observer {
             }
         });
         this.window = window;
-        setInterval(() => __awaiter(this, void 0, void 0, function* () {
+        this.timer = setInterval(() => __awaiter(this, void 0, void 0, function* () {
             var _a;
-            if (this.messageList.length === 0)
+            if (this.messageList.length === 0) {
+                clearInterval(this.timer);
                 return;
+            }
             else
                 yield this.sendChat((_a = this.messageList.shift()) !== null && _a !== void 0 ? _a : "");
-        }), 100);
+        }), 1);
     }
 }
 exports.Observer = Observer;

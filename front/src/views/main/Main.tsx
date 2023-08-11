@@ -22,11 +22,8 @@ export const Main: React.FC = () => {
 
     useEffect(()=>{
         const _eventSource = new EventSource('http://localhost:3000/sse/events')
-        _eventSource.addEventListener('message', messageListenerMain)
-
         setEventSource(_eventSource)
         console.log("SSE INIT", _eventSource)
-
     },[])
 
     useEffect(() => {
@@ -53,8 +50,8 @@ export const Main: React.FC = () => {
                 return
             }
             //상품 판매
-            case SSEType.sale: {
-                const data = sseSender.data as { items: BidItem[], index: number }
+            case SSEType.setItems: {
+                const data = sseSender.data as { items: BidItem[] }
                 setBidItems(data.items)
                 return
             }

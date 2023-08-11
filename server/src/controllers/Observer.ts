@@ -13,18 +13,23 @@ export class Observer {
     lastChatId: string | undefined
     url = ""
     private messageList: string[] = []
+    private timer: NodeJS.Timer
 
     loadPage = async (url: string) =>{
         await this.window.loadURL(url)
+        await this.getChat()
     }
 
     constructor(window: BrowserWindow) {
         this.window = window
 
-        setInterval(async ()=>{
-            if(this.messageList.length === 0) return
+        this.timer = setInterval(async ()=>{
+            if(this.messageList.length === 0) {
+                clearInterval(this.timer)
+                return
+            }
             else await this.sendChat(this.messageList.shift() ?? "")
-        }, 100)
+        }, 1)
 
     }
 
@@ -48,7 +53,19 @@ export class Observer {
     }
 
     sendMessage = (message: string) =>{
+        if(this.messageList.length === 0) this.setTimer()
         this.messageList.push(message)
+
+    }
+
+    setTimer = () =>{
+        this.timer = setInterval(async ()=>{
+            if(this.messageList.length === 0) {
+                clearInterval(this.timer)
+                return
+            }
+            else await this.sendChat(this.messageList.shift() ?? "")
+        }, 1)
     }
 
     private sendChat = async (message: string) =>{

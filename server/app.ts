@@ -1,23 +1,20 @@
-import {app, BrowserWindow, contextBridge} from "electron"
+import {app, BrowserWindow} from "electron"
 import {ExpressServer} from "./ExpressServer";
 import {Observer} from "./src/controllers/Observer";
 import path from "path";
 
-let mainWindow: BrowserWindow | null;
-
 async function createWindow() {
     ExpressServer.shared.start()
 
-    mainWindow = new BrowserWindow({
+    const mainWindow = new BrowserWindow({
         width: 850,
         height: 1080,
         webPreferences: {
             nodeIntegration: true,
         }
     });
-
     // 아래의 코드는 localhost가 시작될 때까지 기다립니다.
-    while(true) {
+    while (true) {
         try {
             await new Promise((resolve, reject) => {
                 const http = require("http");
@@ -27,11 +24,12 @@ async function createWindow() {
             });
             break;
         } catch {
-            continue;
+
         }
     }
 
     await mainWindow.loadURL('http://localhost:3000');
+    // await mainWindow.loadURL('http://localhost:3002');
 
     try {
         const window = new BrowserWindow({
@@ -44,17 +42,17 @@ async function createWindow() {
         })
 
         Observer.init(window)
-    }catch (err) {
+    } catch (err) {
         const error: Error = err as Error
         await newWindow(`error ${JSON.stringify(error)}`)
     }
 }
 
-app.on('ready', async () =>{
+app.on('ready', async () => {
     await createWindow()
 })
 
-export const newWindow = async (text: string)=>{
+export const newWindow = async (text: string) => {
 
     console.log(text)
 

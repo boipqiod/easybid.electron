@@ -15,8 +15,8 @@ export default class API{
 
     constructor(){
         this.axios = axios.create({
-            baseURL: `http://localhost:3003`
-            // baseURL: `http://152.69.231.177`
+            // baseURL: `http://localhost:3003`
+            baseURL: `http://152.69.231.177`
         })
     }
 

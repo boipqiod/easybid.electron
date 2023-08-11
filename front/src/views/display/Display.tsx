@@ -101,7 +101,7 @@ export const Display:React.FC = () =>{
 
     const item = (index: number) =>{
         return (
-            <h1 style={{fontSize: setting?.client.size, color: setting?.client.color}} className="col-3" key={index}>
+            <h1 style={{fontSize: setting?.client.size, color: setting?.client.color, fontWeight: "bold"}} className="col-3" key={index}>
                 {`${bidItems[onSaleIndex].clients[index].name}님 ${bidItems[onSaleIndex].clients[index].amount}개`}
             </h1>
         )
@@ -109,13 +109,12 @@ export const Display:React.FC = () =>{
 
 
     return(
-        <div style={{backgroundColor: "green"}} className="vw-100 vh-100 d-flex justify-content-center align-items-center flex-column">
+        <div style={{backgroundColor: "green"}} className="vw-100 vh-100 d-flex align-items-center flex-column">
             {
                 onSaleIndex !== -1 &&
-
                 <>
-                    <div className="justify-content-center align-items-center flex-column mb-5">
-                        <h1 style={{fontSize: setting?.product.size, color: setting?.product.color}}>{bidItems[onSaleIndex].name}</h1>
+                    <div className="justify-content-center align-items-center flex-column my-5">
+                        <h1 style={{fontSize: setting?.product.size, color: setting?.product.color, fontWeight: "bold"}}>{bidItems[onSaleIndex].name}</h1>
                         <h1 style={{fontSize: setting?.product.size, color: setting?.product.color}}>{Utils.formatCurrency(bidItems[onSaleIndex].price)}</h1>
                     </div>
                     <div className="row w-100 text-center">

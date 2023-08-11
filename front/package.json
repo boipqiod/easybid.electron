@@ -77,7 +77,7 @@
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",
-    "build": "react-scripts build && rm -rf ../easybid.local/src/views/* && cp -r build/ ../easybid.local/src/views",
+    "build": "react-scripts build && rm -rf ../server/src/views/* && cp -r build/ ../server/src/views",
     "test": "react-scripts test"
   },
   "eslintConfig": {

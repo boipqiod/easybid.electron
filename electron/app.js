@@ -17,11 +17,10 @@ const electron_1 = require("electron");
 const ExpressServer_1 = require("./ExpressServer");
 const Observer_1 = require("./src/controllers/Observer");
 const path_1 = __importDefault(require("path"));
-let mainWindow;
 function createWindow() {
     return __awaiter(this, void 0, void 0, function* () {
         ExpressServer_1.ExpressServer.shared.start();
-        mainWindow = new electron_1.BrowserWindow({
+        const mainWindow = new electron_1.BrowserWindow({
             width: 850,
             height: 1080,
             webPreferences: {
@@ -40,10 +39,10 @@ function createWindow() {
                 break;
             }
             catch (_a) {
-                continue;
             }
         }
         yield mainWindow.loadURL('http://localhost:3000');
+        // await mainWindow.loadURL('http://localhost:3002');
         try {
             const window = new electron_1.BrowserWindow({
                 show: false,

@@ -53,8 +53,8 @@ class API {
             }
         });
         this.axios = axios_1.default.create({
-            baseURL: `http://localhost:3003`
-            // baseURL: `http://152.69.231.177`
+            // baseURL: `http://localhost:3003`
+            baseURL: `http://152.69.231.177`
         });
     }
 }

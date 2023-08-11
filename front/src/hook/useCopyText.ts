@@ -5,19 +5,15 @@ import {useAlert} from "./utils/useAlert";
 
 export const useCopyText = () =>{
     const context = useContext(CopyTextContext)
-    const {copyTextList, setCopyTextList} = context
+    const {copyTextList, addCopyTextList, removeTextList} = context
     const {showAlert} = useAlert()
 
     const appendText = (text: string) =>{
-        const _copyTextList = [...copyTextList, text]
-        setCopyTextList(_copyTextList)
+        addCopyTextList(text)
     }
 
     const removeText = (index: number) =>{
-        let _copyTextList = [...copyTextList]
-        _copyTextList.splice(index, 1)
-        setCopyTextList(_copyTextList)
-        console.log(_copyTextList)
+        removeTextList(index)
     }
 
     const copyText = async (index: number)=>{
@@ -32,7 +28,7 @@ export const useCopyText = () =>{
     }
 
     return {
-        copyTextList, setCopyTextList,
+        copyTextList, addCopyTextList,
         appendText,
         removeText,
         copyText

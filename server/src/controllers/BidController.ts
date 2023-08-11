@@ -4,8 +4,8 @@ import SSE, {SSEType} from "./SSE";
 import {Observer} from "./Observer";
 
 export default class BidController {
-    readonly id: string
-    private readonly service: BidService
+    id: string
+    private service: BidService
 
     bidItems: BidItem[] = []
     lastChatId: string | undefined = undefined
@@ -13,26 +13,32 @@ export default class BidController {
 
     isInit: boolean = false
 
+    private messageList: string[] = []
+
     static shared = new BidController("unknown", "unknown")
 
     private timer: NodeJS.Timer | undefined
 
     static init = async (id: string, fileName: string, url: string) => {
-        try{
-            BidController.shared = new BidController(id, fileName)
+        try {
+            BidController.shared.init(id, fileName)
 
-            if(Observer.shared.url !== url) await Observer.shared.loadPage(url)
+            if (Observer.shared.url !== url) await Observer.shared.loadPage(url)
 
             await BidController.shared.reloadBidItems()
-            if(BidController.shared.saleIndex !== -1) BidController.shared.startTimer(BidController.shared.saleIndex)
+            if (BidController.shared.saleIndex !== -1) BidController.shared.startTimer(BidController.shared.saleIndex)
 
             BidController.shared.isInit = true
 
-            return {success: true, error: null }
-        }catch (e) {
-            return {success: false, error: e ?? "error" }
+            return {success: true, error: null}
+        } catch (e) {
+            return {success: false, error: e ?? "error"}
         }
+    }
 
+    init = (id: string, fileName: string) =>{
+        this.id = id
+        this.service = new BidService(id, fileName)
     }
 
     constructor(id: string, fileName: string) {
@@ -57,6 +63,7 @@ export default class BidController {
     reloadBidItems = async (): Promise<BidItem[]> => {
         this.bidItems = await this.getBidItemsFromServer()
         this.saleIndex = this.bidItems.findIndex(value => value.status === BidStatus.sale)
+        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         return this.bidItems
     }
     //비드 아이템 추가
@@ -64,6 +71,7 @@ export default class BidController {
         this.bidItems.push(data)
         console.log("addBidItem", data.name, this.bidItems.length)
         await this.saveBidItemsToServer()
+        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         return this.bidItems
     }
 
@@ -71,6 +79,7 @@ export default class BidController {
         console.log("removeBidItem", index)
         this.bidItems.splice(index, 1)
         await this.saveBidItemsToServer()
+        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         return this.bidItems
     }
 
@@ -100,7 +109,10 @@ export default class BidController {
         }
 
         item.saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
-
+        SSE.shared.pushAll({type: SSEType.sale, data: {items: this.bidItems, index}})
+        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
+        const message = `${client.name}님 "${item.name} [${formatCurrency(item.price)}]" ${client.amount}개 구매 확인되었습니다.`
+        this.sendMessage(message)
         await this.saveBidItemsToServer()
         return this.bidItems
     }
@@ -121,6 +133,7 @@ export default class BidController {
         this.sendMessage(message)
         SSE.shared.pushAll({type: SSEType.startSale, data: {items: this.bidItems, index}})
 
+        await Observer.shared.getChat()
         this.startTimer(index)
 
         return this.bidItems
@@ -137,7 +150,15 @@ export default class BidController {
 
         //메세지 발송
         SSE.shared.pushAll({type: SSEType.endSale, data: {items: this.bidItems, index}})
-        const message = `"${this.bidItems[index].name}"  상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`
+        let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`
+
+        this.bidItems[index].clients.forEach(value => {
+            message += ` [${value.name}님 ${value.amount}개]`
+            if(message.length >= 200) {
+                this.sendMessage(message)
+                message = ""
+            }
+        })
         this.sendMessage(message)
 
         clearInterval(this.timer)
@@ -145,17 +166,17 @@ export default class BidController {
         return this.bidItems
     }
 
-    startTimer = (index: number) =>{
+    startTimer = (index: number) => {
         console.log("start Timer")
-        this.timer = setInterval(async ()=>{
+        this.timer = setInterval(async () => {
 
             const chatList = await Observer.shared.getChat()
-            if(chatList.length > 0) console.log(chatList)
-            chatList.forEach( chat =>{
+            if (chatList.length > 0) console.log(chatList)
+            chatList.forEach(chat => {
                 this.saleItemByIndex(index, chat.name, chat.message)
             })
 
-        },100)
+        }, 100)
     }
 
     /****경매 프로스세스****/
@@ -179,7 +200,7 @@ export default class BidController {
                 message = `${name}님 "${item.name} [${formatCurrency(item.price)}]" ${_amount}개* 구매 확인되었습니다.`
             }
 
-        }else{
+        } else {
 
             //판매 메시지 전송
             if (index === this.saleIndex) {
@@ -204,6 +225,7 @@ export default class BidController {
         }
 
         this.sendMessage(message)
+        this.bidItems[index] = item
 
         //판매 완료
         if (item.amount !== 0 && item.saleAmount >= item.amount) {
@@ -212,7 +234,8 @@ export default class BidController {
             SSE.shared.pushAll({type: SSEType.sale, data: {items: this.bidItems, index}})
         }
 
-        this.bidItems[index] = item
+        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
+
         this.saveBidItemsToServer().then()
     }
 
@@ -222,7 +245,7 @@ export default class BidController {
 
     private sendMessage = (message: string) => {
         SSE.shared.pushAll({type: SSEType.message, data: message})
-        Observer.shared.sendMessage(message)
+        // Observer.shared.sendMessage(message)
     }
 
     /**경매 상태**/

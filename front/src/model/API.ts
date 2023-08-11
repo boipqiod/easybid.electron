@@ -37,6 +37,7 @@ export default class API {
      * @param data
      */
     private request = async <T>(apiConfig: ApiConfig, data?: any) => {
+
         const config = this.setConfig(apiConfig, data)
 
         try {
@@ -184,4 +185,8 @@ export default class API {
 
         return await this.request<boolean>(config, body)
     }
+}
+
+const setIndicator = (set: boolean) =>{
+
 }
