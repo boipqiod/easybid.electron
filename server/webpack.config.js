@@ -1,8 +1,8 @@
-"use strict";
 const path = require('path');
+
 module.exports = {
     mode: 'development',
-    target: 'node',
+    target: 'node', // important in order not to bundle built-in modules like path, fs, etc.
     entry: './test.ts',
     output: {
         path: path.resolve(__dirname, '../dist'),
