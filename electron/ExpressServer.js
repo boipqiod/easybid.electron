@@ -22,8 +22,13 @@ class ExpressServer {
         this.app = (0, express_1.default)();
         this.port = 3000;
         this.start = () => __awaiter(this, void 0, void 0, function* () {
-            yield this.app.listen(this.port, () => {
+            this.server = this.app.listen(this.port, () => {
                 console.log(`Server is running at http://localhost:${this.port}`);
+            });
+        });
+        this.end = () => __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            (_a = this.server) === null || _a === void 0 ? void 0 : _a.close(() => {
             });
         });
         this.app.use((0, cors_1.default)());

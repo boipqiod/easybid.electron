@@ -1,53 +1,58 @@
 import React, {useEffect, useState} from "react";
 import {useBid} from "../../hook/useBid";
 import Utils from "../../Utils/Utils";
-import {BidItem, DisplaySetting, SSESender, SSEType} from "../../common/tpye";
+import {BidItem, DisplaySetting, interfaceType} from "../../common/tpye";
 import Storage from "../../Utils/Storage";
 
 export const Display:React.FC = () =>{
 
     const {bidItems, setBidItems, onSaleIndex, setOnSaleIndex} = useBid()
 
-    const [eventSource, setEventSource] = useState<EventSource>()
     const [setting, setSetting] = useState<DisplaySetting>()
 
     useEffect(()=>{
-        console.log(onSaleIndex)
-
-        const _eventSource = new EventSource('http://localhost:3000/sse/events')
-        _eventSource.addEventListener('message', messageListenerMain)
-        setEventSource(_eventSource)
-        console.log("SSE INIT", eventSource)
-
+        initObserver()
         initDisplaySetting()
-
-        const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === 'setting' && e.newValue) {
-                const _setting = JSON.parse(e.newValue) as DisplaySetting
-                setSetting(_setting)
-            }
-        };
 
         window.addEventListener('storage', handleStorageChange);
 
         // Clean up
         return () => {
             window.removeEventListener('storage', handleStorageChange);
-            _eventSource.removeEventListener('message', messageListenerMain)
-            _eventSource.close()
         };
 
     },[])
 
-    useEffect(() => {
-        // 이전 이벤트 리스너 제거
-        eventSource?.removeEventListener('message', messageListenerMain);
-        // 새 이벤트 리스너 추가
-        eventSource?.addEventListener('message', messageListenerMain)
-        return () => {
-            eventSource?.removeEventListener('message', messageListenerMain)
+    const initObserver = () =>{
+        // @ts-ignore
+        window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data)=>{
+            console.log("setItem", data)
+            setBidItems(data)
+        })
+
+        // @ts-ignore
+        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.startBid, (data)=>{
+            console.log("startBid", data)
+
+            setOnSaleIndex(data.index)
+            setBidItems(data.items)
+        })
+        // @ts-ignore
+        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.endBid, (data)=>{
+            console.log("endBid", data)
+
+            setOnSaleIndex(-1)
+            setBidItems(data.items)
+        })
+
+    }
+
+    const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'setting' && e.newValue) {
+            const _setting = JSON.parse(e.newValue) as DisplaySetting
+            setSetting(_setting)
         }
-    }, [bidItems])
+    }
 
     const initDisplaySetting = () =>{
         const _setting = Storage.getSetting()
@@ -68,37 +73,6 @@ export const Display:React.FC = () =>{
         }
     }
 
-    const messageListenerMain = (event: MessageEvent<string>) => {
-
-        const data = JSON.parse(event.data) as { data: SSESender }
-        const sseSender = data.data
-        console.log("sseSender", sseSender)
-
-        switch (sseSender.type) {
-            case SSEType.startSale:{
-                const data = sseSender.data as { items: BidItem[], index: number }
-                setOnSaleIndex(data.index)
-                setBidItems(data.items)
-                return
-            }
-            case SSEType.endSale:{
-                const data = sseSender.data as { items: BidItem[], index: number }
-                setOnSaleIndex(-1)
-                setBidItems(data.items)
-                return;
-            }
-            case SSEType.setItems: {
-                const data = sseSender.data as { items: BidItem[] }
-                setBidItems(data.items)
-                return;
-            }
-            case SSEType.session:
-            default:
-                return
-
-        }
-    }
-
     const item = (index: number) =>{
         return (
             <h1 style={{fontSize: setting?.client.size, color: setting?.client.color, fontWeight: "bold"}} className="col-3" key={index}>
@@ -106,7 +80,6 @@ export const Display:React.FC = () =>{
             </h1>
         )
     }
-
 
     return(
         <div style={{backgroundColor: "green"}} className="vw-100 vh-100 d-flex align-items-center flex-column">

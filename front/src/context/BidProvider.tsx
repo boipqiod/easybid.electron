@@ -23,23 +23,23 @@ interface props {
 }
 
 const init: props = {
-    addClientIndex: 0, setAddClientIndex(value: ((prevState: number) => number) | number): void {
+    addClientIndex: 0, setAddClientIndex(_value: ((prevState: number) => number) | number): void {
     },
-    auth: false, setAuth(value: ((prevState: boolean) => boolean) | boolean): void {
+    auth: false, setAuth(_value: ((prevState: boolean) => boolean) | boolean): void {
     },
-    init: false, setInit(value: ((prevState: boolean) => boolean) | boolean): void {
+    init: false, setInit(_value: ((prevState: boolean) => boolean) | boolean): void {
     },
     bidItems: [],
     ebId: "",
     modifyIndex: 0,
     onSaleIndex: 0,
-    setBidItems(value: ((prevState: BidItem[]) => BidItem[]) | BidItem[]): void {
+    setBidItems(_value: ((prevState: BidItem[]) => BidItem[]) | BidItem[]): void {
     },
-    setEbId(value: ((prevState: string) => string) | string): void {
+    setEbId(_value: ((prevState: string) => string) | string): void {
     },
-    setModifyIndex(value: ((prevState: number) => number) | number): void {
+    setModifyIndex(_value: ((prevState: number) => number) | number): void {
     },
-    setOnSaleIndex(value: ((prevState: number) => number) | number): void {
+    setOnSaleIndex(_value: ((prevState: number) => number) | number): void {
     }
 
 }

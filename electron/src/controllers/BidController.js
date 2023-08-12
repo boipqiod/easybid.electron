@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,7 +15,6 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const tpye_1 = require("../common/tpye");
 const BidService_1 = __importDefault(require("../service/BidService"));
-const SSE_1 = __importStar(require("./SSE"));
 const ChatController_1 = require("./ChatController");
 const BrowserController_1 = require("./BrowserController");
 class BidController {
@@ -47,7 +23,6 @@ class BidController {
         this.lastChatId = undefined;
         this.saleIndex = -1;
         this.isInit = false;
-        this.messageList = [];
         this.init = (id, fileName) => {
             this.id = id;
             this.service = new BidService_1.default(id, fileName);
@@ -67,7 +42,6 @@ class BidController {
         this.reloadBidItems = () => __awaiter(this, void 0, void 0, function* () {
             this.bidItems = yield this.getBidItemsFromServer();
             this.saleIndex = this.bidItems.findIndex(value => value.status === tpye_1.BidStatus.sale);
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
             yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             return this.bidItems;
         });
@@ -76,7 +50,6 @@ class BidController {
             this.bidItems.push(data);
             console.log("addBidItem", data.name, this.bidItems.length);
             yield this.saveBidItemsToServer();
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
             yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             return this.bidItems;
         });
@@ -84,7 +57,6 @@ class BidController {
             console.log("removeBidItem", index);
             this.bidItems.splice(index, 1);
             yield this.saveBidItemsToServer();
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
             yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             return this.bidItems;
         });
@@ -92,7 +64,6 @@ class BidController {
         this.modifyBidItem = (index, data) => __awaiter(this, void 0, void 0, function* () {
             data.saleAmount = data.clients.reduce((total, client) => total + client.amount, 0);
             this.bidItems[index] = data;
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
             yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             yield this.saveBidItemsToServer();
             return this.bidItems;
@@ -113,8 +84,6 @@ class BidController {
                 item.clients[findIndex].amount += client.amount;
             }
             item.saleAmount = item.clients.reduce((total, client) => total + client.amount, 0);
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.sale, data: { items: this.bidItems, index } });
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
             yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             const message = `${client.name}님 "${item.name} [${formatCurrency(item.price)}]" ${client.amount}개 구매 확인되었습니다.`;
             this.sendMessage(message);
@@ -132,8 +101,7 @@ class BidController {
             //메세지 발송
             const message = `"${this.bidItems[index].name}  (${formatCurrency(this.bidItems[index].price)})" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`;
             this.sendMessage(message);
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.startSale, data: { items: this.bidItems, index } });
-            yield BrowserController_1.BrowserController.shared.setSaleIndex(index, true);
+            yield BrowserController_1.BrowserController.shared.startBid(index, this.bidItems);
             yield ChatController_1.ChatController.shared.getChat();
             this.startTimer(index);
             return this.bidItems;
@@ -146,8 +114,7 @@ class BidController {
             this.bidItems[index].status = tpye_1.BidStatus.end;
             yield this.saveBidItemsToServer();
             //메세지 발송
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.endSale, data: { items: this.bidItems, index } });
-            yield BrowserController_1.BrowserController.shared.setSaleIndex(index, false);
+            yield BrowserController_1.BrowserController.shared.endBid(index, this.bidItems);
             let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`;
             this.bidItems[index].clients.forEach(value => {
                 message += ` (${value.name}님 ${value.amount}개)`;
@@ -169,7 +136,7 @@ class BidController {
                 chatList.forEach(chat => {
                     this.saleItemByIndex(index, chat.name, chat.message);
                 });
-            }), 100);
+            }), 50);
         };
         /****경매 프로스세스****/
         this.saleItemByIndex = (index, name, amount) => {
@@ -184,15 +151,13 @@ class BidController {
             if (item.amount !== 0 && item.amount - item.saleAmount < amount) {
                 _amount = item.amount - item.saleAmount;
                 //판매 메시지 작성
-                if (index === this.saleIndex) {
+                if (index === this.saleIndex)
                     message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개* 구매 확인되었습니다.`;
-                }
             }
             else {
                 //판매 메시지 전송
-                if (index === this.saleIndex) {
+                if (index === this.saleIndex)
                     message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개 구매 확인되었습니다.`;
-                }
             }
             //판매량 추가
             item.saleAmount += _amount;
@@ -214,10 +179,6 @@ class BidController {
             if (item.amount !== 0 && item.saleAmount >= item.amount) {
                 this.endBid(index).then();
             }
-            else {
-                SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.sale, data: { items: this.bidItems, index } });
-            }
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
             BrowserController_1.BrowserController.shared.setItems(this.bidItems).then();
             this.saveBidItemsToServer().then();
         };
@@ -225,9 +186,8 @@ class BidController {
             this.saleItemByIndex(this.saleIndex, name, amount);
         };
         this.sendMessage = (message) => {
-            SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.message, data: message });
             BrowserController_1.BrowserController.shared.setMessage(message).then();
-            // ChatController.shared.sendMessage(message)
+            // ChatController.shared.sendChat(message)
         };
         /**경매 상태**/
         this.bidNow = () => {

@@ -12,10 +12,10 @@ class SSE {
             this.sseList.splice(index, 1);
         };
         this.pushAll = (data) => {
-            console.log("push ALL sse", data);
-            this.sseList.forEach(v => {
-                this.push(v, data);
-            });
+            // console.log("push ALL sse", data)
+            // this.sseList.forEach(v => {
+            //     this.push(v, data)
+            // })
         };
         this.push = (res, data) => {
             res.write(`data: ${JSON.stringify({ data })}\n\n`);

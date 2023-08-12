@@ -29,13 +29,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setRoutes = void 0;
 const bid_1 = __importDefault(require("./router/bid"));
 const data_1 = __importDefault(require("./router/data"));
-const sse_1 = __importDefault(require("./router/sse"));
 const auth_1 = __importDefault(require("./router/auth"));
 const path = __importStar(require("path"));
 const setRoutes = (app) => {
     app.use('/bid', bid_1.default);
     app.use('/data', data_1.default);
-    app.use('/sse', sse_1.default);
     app.use('/auth', auth_1.default);
     //뷰 가져오기
     app.get('*', (req, res) => {

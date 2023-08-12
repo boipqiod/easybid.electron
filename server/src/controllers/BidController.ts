@@ -1,6 +1,5 @@
 import {BidItem, BidStatus, Client} from "../common/tpye";
 import BidService from "../service/BidService";
-import SSE, {SSEType} from "./SSE";
 import {ChatController} from "./ChatController";
 import {BrowserController} from "./BrowserController";
 
@@ -13,8 +12,6 @@ export default class BidController {
     saleIndex: number = -1
 
     isInit: boolean = false
-
-    private messageList: string[] = []
 
     static shared = new BidController("unknown", "unknown")
 
@@ -64,7 +61,6 @@ export default class BidController {
     reloadBidItems = async (): Promise<BidItem[]> => {
         this.bidItems = await this.getBidItemsFromServer()
         this.saleIndex = this.bidItems.findIndex(value => value.status === BidStatus.sale)
-        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         await BrowserController.shared.setItems(this.bidItems)
         return this.bidItems
     }
@@ -73,7 +69,6 @@ export default class BidController {
         this.bidItems.push(data)
         console.log("addBidItem", data.name, this.bidItems.length)
         await this.saveBidItemsToServer()
-        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         await BrowserController.shared.setItems(this.bidItems)
         return this.bidItems
     }
@@ -82,7 +77,6 @@ export default class BidController {
         console.log("removeBidItem", index)
         this.bidItems.splice(index, 1)
         await this.saveBidItemsToServer()
-        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         await BrowserController.shared.setItems(this.bidItems)
         return this.bidItems
     }
@@ -91,7 +85,6 @@ export default class BidController {
     modifyBidItem = async (index: number, data: BidItem) => {
         data.saleAmount = data.clients.reduce((total, client) => total + client.amount, 0)
         this.bidItems[index] = data
-        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         await BrowserController.shared.setItems(this.bidItems)
         await this.saveBidItemsToServer()
         return this.bidItems
@@ -114,8 +107,6 @@ export default class BidController {
         }
 
         item.saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
-        SSE.shared.pushAll({type: SSEType.sale, data: {items: this.bidItems, index}})
-        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         await BrowserController.shared.setItems(this.bidItems)
         const message = `${client.name}님 "${item.name} [${formatCurrency(item.price)}]" ${client.amount}개 구매 확인되었습니다.`
         this.sendMessage(message)
@@ -137,8 +128,7 @@ export default class BidController {
         //메세지 발송
         const message = `"${this.bidItems[index].name}  (${formatCurrency(this.bidItems[index].price)})" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`
         this.sendMessage(message)
-        SSE.shared.pushAll({type: SSEType.startSale, data: {items: this.bidItems, index}})
-        await BrowserController.shared.setSaleIndex(index, true)
+        await BrowserController.shared.startBid(index, this.bidItems)
 
         await ChatController.shared.getChat()
         this.startTimer(index)
@@ -156,8 +146,7 @@ export default class BidController {
         await this.saveBidItemsToServer()
 
         //메세지 발송
-        SSE.shared.pushAll({type: SSEType.endSale, data: {items: this.bidItems, index}})
-        await BrowserController.shared.setSaleIndex(index, false)
+        await BrowserController.shared.endBid(index, this.bidItems)
 
         let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`
 
@@ -185,7 +174,7 @@ export default class BidController {
                 this.saleItemByIndex(index, chat.name, chat.message)
             })
 
-        }, 100)
+        }, 50)
     }
 
     /****경매 프로스세스****/
@@ -203,18 +192,11 @@ export default class BidController {
         //최대 판매 개수를 넘어가면 최대치만큼만 판매
         if (item.amount !== 0 && item.amount - item.saleAmount < amount) {
             _amount = item.amount - item.saleAmount
-
             //판매 메시지 작성
-            if (index === this.saleIndex) {
-                message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개* 구매 확인되었습니다.`
-            }
-
+            if (index === this.saleIndex) message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개* 구매 확인되었습니다.`
         } else {
-
             //판매 메시지 전송
-            if (index === this.saleIndex) {
-                message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개 구매 확인되었습니다.`
-            }
+            if (index === this.saleIndex) message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개 구매 확인되었습니다.`
         }
 
         //판매량 추가
@@ -239,11 +221,8 @@ export default class BidController {
         //판매 완료
         if (item.amount !== 0 && item.saleAmount >= item.amount) {
             this.endBid(index).then()
-        } else {
-            SSE.shared.pushAll({type: SSEType.sale, data: {items: this.bidItems, index}})
         }
 
-        SSE.shared.pushAll({type: SSEType.setItems, data: {items: this.bidItems}})
         BrowserController.shared.setItems(this.bidItems).then()
         this.saveBidItemsToServer().then()
     }
@@ -253,9 +232,8 @@ export default class BidController {
     }
 
     private sendMessage = (message: string) => {
-        SSE.shared.pushAll({type: SSEType.message, data: message})
         BrowserController.shared.setMessage(message).then()
-        // ChatController.shared.sendMessage(message)
+        // ChatController.shared.sendChat(message)
     }
 
     /**경매 상태**/

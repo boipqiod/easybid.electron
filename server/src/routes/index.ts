@@ -1,14 +1,12 @@
 import {Express} from "express";
 import bidRouter from "./router/bid"
 import dataRouter from "./router/data"
-import sseRouter from "./router/sse"
 import authRouter from "./router/auth"
 import * as path from "path";
 
 export const setRoutes = (app: Express) =>{
     app.use('/bid', bidRouter)
     app.use('/data', dataRouter)
-    app.use('/sse', sseRouter)
     app.use('/auth', authRouter)
 
     //뷰 가져오기

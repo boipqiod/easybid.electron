@@ -1,5 +1,4 @@
 import React, {createContext, ReactNode, useEffect, useState} from "react";
-import {setState} from "../common/tpye";
 import Storage from "../Utils/Storage";
 
 interface props {
@@ -9,8 +8,8 @@ interface props {
 }
 
 const init: props = {
-    addCopyTextList(value: string): void {
-    }, copyTextList: [], removeTextList(index: number): void {
+    addCopyTextList(_value: string): void {
+    }, copyTextList: [], removeTextList(_index: number): void {
     }
 }
 
@@ -26,14 +25,21 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({children}) 
     },[])
 
     const addCopyTextList = (value: string) => {
-        setCopyTextList(prevList => [...prevList, value]);
+        setCopyTextList([...copyTextList, value]);
+        Storage.saveTextList([...copyTextList, value])
     };
 
     const removeTextList = (index: number) => {
-        const list = copyTextList.splice(index, 1)
+        if(copyTextList.length === 1) {
+            setCopyTextList([])
+            Storage.saveTextList([])
+            return
+        }
+        let list = [...copyTextList]
+        list.splice(index, 1)
         console.log(list)
-        Storage.saveTextList(copyTextList.splice(index, 1))
-        setCopyTextList(copyTextList.splice(index, 1));
+        Storage.saveTextList(list)
+        setCopyTextList(list)
     };
 
     return (

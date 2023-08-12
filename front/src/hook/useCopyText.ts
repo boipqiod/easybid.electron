@@ -1,6 +1,5 @@
 import {useContext} from "react";
 import {CopyTextContext} from "../context/CopyTextProvider";
-import {useNavigate} from "react-router-dom";
 import {useAlert} from "./utils/useAlert";
 
 export const useCopyText = () =>{

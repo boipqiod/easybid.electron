@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import 'bootstrap/dist/css/bootstrap.css';
 import {MainHeader} from './components/MainHeader';
 import {MainAdder} from './components/MainAdder';
@@ -8,91 +8,41 @@ import {useBid} from "../../hook/useBid";
 import Storage from "../../Utils/Storage";
 import {MainAddClientModal} from "./components/Modals/MainAddClientModal";
 import {MainFooter} from "./components/MainFooter";
-import {BidItem, interfaceType, SSESender, SSEType} from "../../common/tpye";
+import {BidItem, interfaceType} from "../../common/tpye";
 import {MainText} from "./components/Text/MainText";
 import {useCopyText} from "../../hook/useCopyText";
 
 export const Main: React.FC = () => {
-    const {modifyIndex, addClientIndex, bidItems, setBidItems, bidEnded} = useBid()
-    const {appendText} = useCopyText()
+    const {modifyIndex, addClientIndex, setBidItems, bidEnded} = useBid()
+    const {copyTextList, appendText} = useCopyText()
     const fileName = Storage.getFileName()
     const url = Storage.getYoutubeUrl()
 
     useEffect(()=>{
-        // window.addEventListener('storage', handleStorageChange);
-        // console.log("Event init")
-
-        // @ts-ignore
-        window.bid.setObserver(()=>{
-            console.log()
-            alert("test")
-        })
-
-    },[])
-
-    const handleStorageChange = (e: StorageEvent) =>{
-
-        console.log("handleStorageChange", e)
-
-        switch (e.key){
-            case "bidItems": {
-                if(!e.newValue) return
-                const items = JSON.parse(e.newValue) as BidItem[]
-                setBidItems(items)
-                return;
-            }
-            case "saleIndex": {
-                if(!e.newValue) return
-                const data = JSON.parse(e.newValue) as {index: number, isStart: boolean}
-                if(!data.isStart) bidEnded(data.index)
-                return;
-            }case "copy":{
-                if(!e.newValue) return
-                appendText(e.newValue)
-                return;
-            }
-        }
-
         // @ts-ignore
         window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data)=>{
-            console.log("setObserver callback",data)
             setBidItems(data)
-            alert("test")
         })
-    }
 
-    useEffect(() => {
-        window.addEventListener('storage', handleStorageChange);
+        // @ts-ignore
+        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.endBid, (data)=>{
+            setBidItems(data.items)
+            bidEnded(data.index)
+        })
 
-    }, [bidItems])
+        // @ts-ignore
+        window.bid.setObserver<string>(interfaceType.message, (data)=>{
+            appendText(data)
+        })
+    },[])
 
-    // const messageListenerMain = (event: MessageEvent<string>) => {
-    //
-    //     const data = JSON.parse(event.data) as { data: SSESender }
-    //     const sseSender = data.data
-    //     console.log("sseSender", sseSender)
-    //
-    //     switch (sseSender.type) {
-    //         case SSEType.endSale: {
-    //             const data = sseSender.data as { items: BidItem[], index: number }
-    //             setBidItems(data.items)
-    //             bidEnded(data.index)
-    //             return
-    //         }
-    //         //상품 판매
-    //         case SSEType.setItems: {
-    //             const data = sseSender.data as { items: BidItem[] }
-    //             setBidItems(data.items)
-    //             return
-    //         }
-    //         case SSEType.message:{
-    //             const data = sseSender.data as string
-    //             appendText(data)
-    //             return
-    //         }
-    //         case SSEType.session: default: return
-    //     }
-    // }
+    useEffect(()=>{
+        // @ts-ignore
+        window.bid.setObserver<string>(interfaceType.message, (data)=>{
+            appendText(data)
+        })
+    },[copyTextList])
+
 
     return (
         <div className="container d-flex flex-column align-items-center vw-100">

@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Observer = void 0;
-class Observer {
+exports.ChatController = void 0;
+class ChatController {
     constructor(window) {
         this.url = "";
         this.messageList = [];
@@ -29,7 +29,7 @@ class Observer {
                 return [];
             }
         });
-        this.sendMessage = (message) => {
+        this.sendChat = (message) => {
             if (this.messageList.length === 0)
                 this.setTimer();
             this.messageList.push(message);
@@ -42,10 +42,10 @@ class Observer {
                     return;
                 }
                 else
-                    yield this.sendChat((_a = this.messageList.shift()) !== null && _a !== void 0 ? _a : "");
-            }), 1);
+                    yield this._sendChat((_a = this.messageList.shift()) !== null && _a !== void 0 ? _a : "");
+            }), 0);
         };
-        this.sendChat = (message) => __awaiter(this, void 0, void 0, function* () {
+        this._sendChat = (message) => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.window.webContents.executeJavaScript(`window.myAPI.sendChat('${message}')`);
             }
@@ -61,14 +61,14 @@ class Observer {
                 return;
             }
             else
-                yield this.sendChat((_a = this.messageList.shift()) !== null && _a !== void 0 ? _a : "");
+                yield this._sendChat((_a = this.messageList.shift()) !== null && _a !== void 0 ? _a : "");
         }), 1);
     }
 }
-exports.Observer = Observer;
-Observer.init = (window) => {
+exports.ChatController = ChatController;
+ChatController.init = (window) => {
     try {
-        Observer.shared = new Observer(window);
+        ChatController.shared = new ChatController(window);
     }
     catch (e) {
         console.log(e);

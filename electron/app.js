@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.textModal = void 0;
 const electron_1 = require("electron");
 const ExpressServer_1 = require("./ExpressServer");
 const ChatController_1 = require("./src/controllers/ChatController");
@@ -36,22 +35,40 @@ const createWindow = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     yield ExpressServer_1.ExpressServer.shared.start();
-    setInterval(() => {
-        mainWindow.webContents.send('test');
-    }, 1000);
-    // await mainWindow.loadURL('http://localhost:3000');
-    yield mainWindow.loadURL('http://localhost:3002');
+    yield mainWindow.loadURL('http://localhost:3000');
+    // await mainWindow.loadURL('http://localhost:3002');
+    // 새 창을 열 때의 동작을 정의합니다.
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        // 새로운 BrowserWindow 인스턴스를 생성하고 preload 스크립트를 지정합니다.
+        const win = new electron_1.BrowserWindow({
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+                preload: path_1.default.join(__dirname, 'src', 'preload', 'front.preload.js')
+            },
+        });
+        win.loadURL(url);
+        BrowserController_1.BrowserController.shared.pushWindow(win);
+        const index = BrowserController_1.BrowserController.shared.windows.length - 1;
+        win.on('close', () => {
+            BrowserController_1.BrowserController.shared.removeWindow(index);
+        });
+        return { action: 'deny' };
+    });
     BrowserController_1.BrowserController.init(mainWindow);
     ChatController_1.ChatController.init(backWindow);
 });
 electron_1.app.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     yield createWindow();
 }));
-const textModal = (text) => __awaiter(void 0, void 0, void 0, function* () {
-    yield new electron_1.BrowserWindow({
-        webPreferences: {
-            nodeIntegration: true,
-        }
-    }).loadURL(`data:text/html,${text}`);
-});
-exports.textModal = textModal;
+electron_1.app.on('window-all-closed', () => __awaiter(void 0, void 0, void 0, function* () {
+    electron_1.app.quit();
+}));
+//
+// export const textModal = async (text: string) => {
+//     await new BrowserWindow({
+//         webPreferences: {
+//             nodeIntegration: true,
+//         }
+//     }).loadURL(`data:text/html,${text}`);
+// }

@@ -47,27 +47,6 @@ export enum httpMethod {
 /**type****************************/
 export type setState<T> = React.Dispatch<React.SetStateAction<T>>
 
-export interface SSESender {
-    type: SSEType
-    data?: any
-}
-
-export enum SSEType {
-    //세션 유지용
-    session = "session",
-    //경매 관련
-    startSale = "startSale",
-    endSale = "endSale",
-
-    message = "message",
-
-    //판매된 상품
-    sale = "sale",
-    //구매한 사람
-    saleClient = "saleClient",
-    setItems = "setItems"
-}
-
 export enum Font {
 
 }
