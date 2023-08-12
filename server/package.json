@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ../build/app.js",
     "dev": "node_modules/.bin/webpack --watch & nodemon ./dist/bundle.js",
-    "build": "node_modules/.bin/tsc && cp -R src/views ../build/src/ && cp -R ../build/ ../electron",
+    "build": "node_modules/.bin/tsc && cp -R src/views build/src/ && cp -R build/ ../electron",
     "export_mac": "electron-packager ../build EasyBid --platform=darwin --arch=x64 --out=../app/mac --overwrite"
   },
   "author": "",

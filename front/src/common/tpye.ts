@@ -85,3 +85,10 @@ export type DisplaySettingValues = {
     color: string
     font?: Font
 }
+
+export enum interfaceType{
+    startBid = "startBid",
+    endBid = "endBid",
+    setItem = "setItem",
+    message = "message"
+}

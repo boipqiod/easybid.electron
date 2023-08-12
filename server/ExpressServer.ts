@@ -19,8 +19,8 @@ export class ExpressServer {
         setRoutes(this.app)
     }
 
-    start=()=>{
-        this.app.listen(this.port, () => {
+    start = async ()=>{
+        await this.app.listen(this.port, () => {
             console.log(`Server is running at http://localhost:${this.port}`);
         });
     }

@@ -1,13 +1,12 @@
-import {BrowserWindow, contextBridge} from "electron";
-import path from "path";
+import {BrowserWindow} from "electron";
 
 type chatListResponse = {
     lastChatId: string
     chatList: { message: number; name: string; }[];
 }
 
-export class Observer {
-    static shared: Observer
+export class ChatController {
+    static shared: ChatController
     window: BrowserWindow
 
     lastChatId: string | undefined
@@ -28,14 +27,14 @@ export class Observer {
                 clearInterval(this.timer)
                 return
             }
-            else await this.sendChat(this.messageList.shift() ?? "")
+            else await this._sendChat(this.messageList.shift() ?? "")
         }, 1)
 
     }
 
     static init = (window: BrowserWindow) => {
         try {
-            Observer.shared = new Observer(window)
+            ChatController.shared = new ChatController(window)
         }catch (e){
             console.log(e)
         }
@@ -51,24 +50,20 @@ export class Observer {
             return [];
         }
     }
-
-    sendMessage = (message: string) =>{
+    sendChat = (message: string) =>{
         if(this.messageList.length === 0) this.setTimer()
         this.messageList.push(message)
-
     }
-
     setTimer = () =>{
         this.timer = setInterval(async ()=>{
             if(this.messageList.length === 0) {
                 clearInterval(this.timer)
                 return
             }
-            else await this.sendChat(this.messageList.shift() ?? "")
+            else await this._sendChat(this.messageList.shift() ?? "")
         }, 1)
     }
-
-    private sendChat = async (message: string) =>{
+    private _sendChat = async (message: string) =>{
         try {
             await this.window.webContents.executeJavaScript(`window.myAPI.sendChat('${message}')`)
         } catch (e) {

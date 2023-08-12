@@ -1,66 +1,49 @@
-import {app, BrowserWindow} from "electron"
+import {app, BrowserWindow, ipcMain} from "electron"
 import {ExpressServer} from "./ExpressServer";
-import {Observer} from "./src/controllers/Observer";
+import {ChatController} from "./src/controllers/ChatController";
 import path from "path";
+import {BrowserController} from "./src/controllers/BrowserController";
 
-async function createWindow() {
-    ExpressServer.shared.start()
 
+const createWindow = async () =>{
     const mainWindow = new BrowserWindow({
         width: 850,
         height: 1080,
         webPreferences: {
             nodeIntegration: true,
+            preload: path.join(__dirname, 'src', 'preload', 'front.preload.js')
         }
     });
-    // 아래의 코드는 localhost가 시작될 때까지 기다립니다.
-    while (true) {
-        try {
-            await new Promise((resolve, reject) => {
-                const http = require("http");
-                http.get('http://localhost:3000', (res: any) => {
-                    res.statusCode === 200 ? resolve(null) : reject(null);
-                });
-            });
-            break;
-        } catch {
-
+    const backWindow = new BrowserWindow({
+        show: false,
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'src', 'preload', 'youtube.preload.js')
         }
-    }
+    })
 
-    await mainWindow.loadURL('http://localhost:3000');
-    // await mainWindow.loadURL('http://localhost:3002');
+    await ExpressServer.shared.start()
 
-    try {
-        const window = new BrowserWindow({
-            show: false,
-            webPreferences: {
-                nodeIntegration: false,
-                contextIsolation: true,
-                preload: path.join(__dirname, 'preload.js')
-            }
-        })
+    setInterval(()=>{
+        mainWindow.webContents.send('test')
+    },1000)
+    // await mainWindow.loadURL('http://localhost:3000');
+    await mainWindow.loadURL('http://localhost:3002');
 
-        Observer.init(window)
-    } catch (err) {
-        const error: Error = err as Error
-        await newWindow(`error ${JSON.stringify(error)}`)
-    }
+    BrowserController.init(mainWindow)
+    ChatController.init(backWindow)
+
 }
 
 app.on('ready', async () => {
     await createWindow()
 })
 
-export const newWindow = async (text: string) => {
-
-    console.log(text)
-
-    // await new BrowserWindow({
-    //     width: 300,
-    //     height: 300,
-    //     webPreferences: {
-    //         nodeIntegration: true,
-    //     }
-    // }).loadURL(`data:text/html,${text}`);
+export const textModal = async (text: string) => {
+    await new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true,
+        }
+    }).loadURL(`data:text/html,${text}`);
 }

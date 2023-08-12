@@ -76,8 +76,8 @@
     "xlsx-populate": "^1.21.0"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
-    "build": "react-scripts build && rm -rf ../server/src/views/* && cp -r build/ ../server/src/views",
+    "react:start": "BROWSER=none react-scripts start",
+    "react:build": "react-scripts build && rm -rf ../server/src/views/* && cp -r build/ ../server/src/views",
     "test": "react-scripts test"
   },
   "eslintConfig": {

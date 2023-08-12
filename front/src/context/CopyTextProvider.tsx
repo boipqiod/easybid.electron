@@ -27,12 +27,13 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({children}) 
 
     const addCopyTextList = (value: string) => {
         setCopyTextList(prevList => [...prevList, value]);
-        Storage.saveTextList(copyTextList)
     };
 
     const removeTextList = (index: number) => {
-        setCopyTextList(prevList => prevList.filter((_, i) => i !== index));
-        Storage.saveTextList(copyTextList)
+        const list = copyTextList.splice(index, 1)
+        console.log(list)
+        Storage.saveTextList(copyTextList.splice(index, 1))
+        setCopyTextList(copyTextList.splice(index, 1));
     };
 
     return (

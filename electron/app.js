@@ -12,65 +12,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.newWindow = void 0;
+exports.textModal = void 0;
 const electron_1 = require("electron");
 const ExpressServer_1 = require("./ExpressServer");
-const Observer_1 = require("./src/controllers/Observer");
+const ChatController_1 = require("./src/controllers/ChatController");
 const path_1 = __importDefault(require("path"));
-function createWindow() {
-    return __awaiter(this, void 0, void 0, function* () {
-        ExpressServer_1.ExpressServer.shared.start();
-        const mainWindow = new electron_1.BrowserWindow({
-            width: 850,
-            height: 1080,
-            webPreferences: {
-                nodeIntegration: true,
-            }
-        });
-        // 아래의 코드는 localhost가 시작될 때까지 기다립니다.
-        while (true) {
-            try {
-                yield new Promise((resolve, reject) => {
-                    const http = require("http");
-                    http.get('http://localhost:3000', (res) => {
-                        res.statusCode === 200 ? resolve(null) : reject(null);
-                    });
-                });
-                break;
-            }
-            catch (_a) {
-            }
-        }
-        yield mainWindow.loadURL('http://localhost:3000');
-        // await mainWindow.loadURL('http://localhost:3002');
-        try {
-            const window = new electron_1.BrowserWindow({
-                show: false,
-                webPreferences: {
-                    nodeIntegration: false,
-                    contextIsolation: true,
-                    preload: path_1.default.join(__dirname, 'preload.js')
-                }
-            });
-            Observer_1.Observer.init(window);
-        }
-        catch (err) {
-            const error = err;
-            yield (0, exports.newWindow)(`error ${JSON.stringify(error)}`);
+const BrowserController_1 = require("./src/controllers/BrowserController");
+const createWindow = () => __awaiter(void 0, void 0, void 0, function* () {
+    const mainWindow = new electron_1.BrowserWindow({
+        width: 850,
+        height: 1080,
+        webPreferences: {
+            nodeIntegration: true,
+            preload: path_1.default.join(__dirname, 'src', 'preload', 'front.preload.js')
         }
     });
-}
+    const backWindow = new electron_1.BrowserWindow({
+        show: false,
+        webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path_1.default.join(__dirname, 'src', 'preload', 'youtube.preload.js')
+        }
+    });
+    yield ExpressServer_1.ExpressServer.shared.start();
+    setInterval(() => {
+        mainWindow.webContents.send('test');
+    }, 1000);
+    // await mainWindow.loadURL('http://localhost:3000');
+    yield mainWindow.loadURL('http://localhost:3002');
+    BrowserController_1.BrowserController.init(mainWindow);
+    ChatController_1.ChatController.init(backWindow);
+});
 electron_1.app.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
     yield createWindow();
 }));
-const newWindow = (text) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(text);
-    // await new BrowserWindow({
-    //     width: 300,
-    //     height: 300,
-    //     webPreferences: {
-    //         nodeIntegration: true,
-    //     }
-    // }).loadURL(`data:text/html,${text}`);
+const textModal = (text) => __awaiter(void 0, void 0, void 0, function* () {
+    yield new electron_1.BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true,
+        }
+    }).loadURL(`data:text/html,${text}`);
 });
-exports.newWindow = newWindow;
+exports.textModal = textModal;

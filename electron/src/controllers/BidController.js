@@ -39,7 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tpye_1 = require("../common/tpye");
 const BidService_1 = __importDefault(require("../service/BidService"));
 const SSE_1 = __importStar(require("./SSE"));
-const Observer_1 = require("./Observer");
+const ChatController_1 = require("./ChatController");
+const BrowserController_1 = require("./BrowserController");
 class BidController {
     constructor(id, fileName) {
         this.bidItems = [];
@@ -67,6 +68,7 @@ class BidController {
             this.bidItems = yield this.getBidItemsFromServer();
             this.saleIndex = this.bidItems.findIndex(value => value.status === tpye_1.BidStatus.sale);
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
+            yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             return this.bidItems;
         });
         //비드 아이템 추가
@@ -75,6 +77,7 @@ class BidController {
             console.log("addBidItem", data.name, this.bidItems.length);
             yield this.saveBidItemsToServer();
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
+            yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             return this.bidItems;
         });
         this.removeBidItem = (index) => __awaiter(this, void 0, void 0, function* () {
@@ -82,6 +85,7 @@ class BidController {
             this.bidItems.splice(index, 1);
             yield this.saveBidItemsToServer();
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
+            yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             return this.bidItems;
         });
         //아이템 수정
@@ -89,6 +93,7 @@ class BidController {
             data.saleAmount = data.clients.reduce((total, client) => total + client.amount, 0);
             this.bidItems[index] = data;
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
+            yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             yield this.saveBidItemsToServer();
             return this.bidItems;
         });
@@ -110,6 +115,7 @@ class BidController {
             item.saleAmount = item.clients.reduce((total, client) => total + client.amount, 0);
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.sale, data: { items: this.bidItems, index } });
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
+            yield BrowserController_1.BrowserController.shared.setItems(this.bidItems);
             const message = `${client.name}님 "${item.name} [${formatCurrency(item.price)}]" ${client.amount}개 구매 확인되었습니다.`;
             this.sendMessage(message);
             yield this.saveBidItemsToServer();
@@ -124,10 +130,11 @@ class BidController {
             yield this.saveBidItemsToServer();
             this.saleIndex = index;
             //메세지 발송
-            const message = `"${this.bidItems[index].name}  [${formatCurrency(this.bidItems[index].price)}]" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`;
+            const message = `"${this.bidItems[index].name}  (${formatCurrency(this.bidItems[index].price)})" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`;
             this.sendMessage(message);
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.startSale, data: { items: this.bidItems, index } });
-            yield Observer_1.Observer.shared.getChat();
+            yield BrowserController_1.BrowserController.shared.setSaleIndex(index, true);
+            yield ChatController_1.ChatController.shared.getChat();
             this.startTimer(index);
             return this.bidItems;
         });
@@ -140,9 +147,10 @@ class BidController {
             yield this.saveBidItemsToServer();
             //메세지 발송
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.endSale, data: { items: this.bidItems, index } });
+            yield BrowserController_1.BrowserController.shared.setSaleIndex(index, false);
             let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`;
             this.bidItems[index].clients.forEach(value => {
-                message += ` [${value.name}님 ${value.amount}개]`;
+                message += ` (${value.name}님 ${value.amount}개)`;
                 if (message.length >= 200) {
                     this.sendMessage(message);
                     message = "";
@@ -155,7 +163,7 @@ class BidController {
         this.startTimer = (index) => {
             console.log("start Timer");
             this.timer = setInterval(() => __awaiter(this, void 0, void 0, function* () {
-                const chatList = yield Observer_1.Observer.shared.getChat();
+                const chatList = yield ChatController_1.ChatController.shared.getChat();
                 if (chatList.length > 0)
                     console.log(chatList);
                 chatList.forEach(chat => {
@@ -177,13 +185,13 @@ class BidController {
                 _amount = item.amount - item.saleAmount;
                 //판매 메시지 작성
                 if (index === this.saleIndex) {
-                    message = `${name}님 "${item.name} [${formatCurrency(item.price)}]" ${_amount}개* 구매 확인되었습니다.`;
+                    message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개* 구매 확인되었습니다.`;
                 }
             }
             else {
                 //판매 메시지 전송
                 if (index === this.saleIndex) {
-                    message = `${name}님 "${item.name} [${formatCurrency(item.price)}]" ${_amount}개 구매 확인되었습니다.`;
+                    message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개 구매 확인되었습니다.`;
                 }
             }
             //판매량 추가
@@ -210,6 +218,7 @@ class BidController {
                 SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.sale, data: { items: this.bidItems, index } });
             }
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.setItems, data: { items: this.bidItems } });
+            BrowserController_1.BrowserController.shared.setItems(this.bidItems).then();
             this.saveBidItemsToServer().then();
         };
         this.saleItemByNow = (name, amount) => {
@@ -217,7 +226,8 @@ class BidController {
         };
         this.sendMessage = (message) => {
             SSE_1.default.shared.pushAll({ type: SSE_1.SSEType.message, data: message });
-            // Observer.shared.sendMessage(message)
+            BrowserController_1.BrowserController.shared.setMessage(message).then();
+            // ChatController.shared.sendMessage(message)
         };
         /**경매 상태**/
         this.bidNow = () => {
@@ -238,8 +248,8 @@ BidController.shared = new BidController("unknown", "unknown");
 BidController.init = (id, fileName, url) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         BidController.shared.init(id, fileName);
-        if (Observer_1.Observer.shared.url !== url)
-            yield Observer_1.Observer.shared.loadPage(url);
+        if (ChatController_1.ChatController.shared.url !== url)
+            yield ChatController_1.ChatController.shared.loadPage(url);
         yield BidController.shared.reloadBidItems();
         if (BidController.shared.saleIndex !== -1)
             BidController.shared.startTimer(BidController.shared.saleIndex);

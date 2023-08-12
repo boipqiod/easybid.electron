@@ -50,3 +50,10 @@ export enum httpMethod{
     post = "post"
 }
 
+
+export enum interfaceType{
+    startBid = "startBid",
+    endBid = "endBid",
+    setItem = "setItem",
+    message = "message"
+}
