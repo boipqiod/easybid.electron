@@ -86,8 +86,8 @@ export const MainDisplaySetting: React.FC<props> = (props) =>{
                             type={"range"}
                             className="form-range mb-4"
                             value={setting?.product.size ?? 100}
-                            min="30"
-                            max="400"
+                            min="20"
+                            max="200"
                         />
                         <ColorPicker
                             color={setting?.product.color ?? "#000000"}
@@ -99,8 +99,8 @@ export const MainDisplaySetting: React.FC<props> = (props) =>{
                             type={"range"}
                             className="form-range mb-4"
                             value={setting?.client.size ?? 100}
-                            min="30"
-                            max="400"/>
+                            min="1"
+                            max="100"/>
                         <ColorPicker
                             color={setting?.client.color ?? "#000000"}
                             setColor={onChangeColorClient}

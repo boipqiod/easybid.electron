@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "build:export_mac": "cd ../server && npm run build && cd ../electron && npm run export_mac",
+    "build:export_window": "cd ../server && npm run build && cd ../electron && npm run export_window",
     "export_mac": "electron-packager . EasyBid --platform=darwin --arch=x64 --icon=./easybid.icon.icns --out=../../app/mac --overwrite",
     "export_window": "electron-packager . EasyBid --platform=win32 --arch=x64 --icon=./easybid.icon.png --out=../../app/window --overwrite",
     "electron_test": "npx electron app.js",

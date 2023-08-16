@@ -152,12 +152,14 @@ export default class BidController {
         let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`
 
         for (const value of this.bidItems[index].clients) {
-            message += ` (${value.name}님 ${value.amount}개)`
-            if(message.length >= 200) {
+            const _message = message + ` (${value.name}님 ${value.amount}개)`
+            if(_message.length >= 200) {
                 this.sendMessage(message)
                 message = ""
             }
-            await Utils.delay(500)
+            message += ` (${value.name}님 ${value.amount}개)`
+
+            await Utils.delay(300)
         }
         this.sendMessage(message)
 
