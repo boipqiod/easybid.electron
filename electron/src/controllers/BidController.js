@@ -17,6 +17,7 @@ const tpye_1 = require("../common/tpye");
 const BidService_1 = __importDefault(require("../service/BidService"));
 const ChatController_1 = require("./ChatController");
 const BrowserController_1 = require("./BrowserController");
+const Utils_1 = require("../common/Utils");
 class BidController {
     constructor(id, fileName) {
         this.bidItems = [];
@@ -116,13 +117,14 @@ class BidController {
             //메세지 발송
             yield BrowserController_1.BrowserController.shared.endBid(index, this.bidItems);
             let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`;
-            this.bidItems[index].clients.forEach(value => {
+            for (const value of this.bidItems[index].clients) {
                 message += ` (${value.name}님 ${value.amount}개)`;
                 if (message.length >= 200) {
                     this.sendMessage(message);
                     message = "";
                 }
-            });
+                yield Utils_1.Utils.delay(500);
+            }
             this.sendMessage(message);
             clearInterval(this.timer);
             return this.bidItems;

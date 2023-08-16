@@ -2,6 +2,7 @@ import {BidItem, BidStatus, Client} from "../common/tpye";
 import BidService from "../service/BidService";
 import {ChatController} from "./ChatController";
 import {BrowserController} from "./BrowserController";
+import {Utils} from "../common/Utils";
 
 export default class BidController {
     id: string
@@ -150,13 +151,14 @@ export default class BidController {
 
         let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`
 
-        this.bidItems[index].clients.forEach(value => {
+        for (const value of this.bidItems[index].clients) {
             message += ` (${value.name}님 ${value.amount}개)`
             if(message.length >= 200) {
                 this.sendMessage(message)
                 message = ""
             }
-        })
+            await Utils.delay(500)
+        }
         this.sendMessage(message)
 
         clearInterval(this.timer)

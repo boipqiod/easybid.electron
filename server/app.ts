@@ -13,7 +13,7 @@ const createWindow = async () => {
             nodeIntegration: true,
             preload: path.join(__dirname, 'src', 'preload', 'front.preload.js')
         }
-    });
+    })
     const backWindow = new BrowserWindow({
         show: false,
         webPreferences: {
@@ -49,7 +49,6 @@ const createWindow = async () => {
 
     BrowserController.init(mainWindow)
     ChatController.init(backWindow)
-
 }
 
 app.on('ready', async () => {
