@@ -19,9 +19,15 @@ electron_1.contextBridge.exposeInMainWorld('myAPI', {
             const chatList = nodeList.filter((_, i) => chatIds[i].substring(0, 5) === 'ChwKG');
             let chatStartIndex = 0;
             if (lastChatId) {
-                const lastChatIndex = chatIds.findIndex(id => id === lastChatId);
-                if (lastChatIndex !== -1)
-                    chatStartIndex = lastChatIndex + 1;
+                let lastChatIndex = -1;
+                while (lastChatIndex === -1) {
+                    lastChatIndex = chatIds.findIndex(id => id === lastChatId);
+                    if (lastChatIndex === -1)
+                        lastChatId = chatIds[chatList.length - 1];
+                    else
+                        break;
+                }
+                chatStartIndex = lastChatIndex + 1;
             }
             const relevantChatList = chatList.slice(chatStartIndex);
             if (relevantChatList.length === 0) {

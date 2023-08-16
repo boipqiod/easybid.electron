@@ -18,7 +18,13 @@ class BrowserController {
             this.windows.push(window);
         };
         this.removeWindow = (index) => {
+            this.windows[index].close();
             this.windows.splice(index, 1);
+        };
+        this.removeAll = () => {
+            this.windows.forEach(value => {
+                value.close();
+            });
         };
         this.setItems = (items) => __awaiter(this, void 0, void 0, function* () {
             try {

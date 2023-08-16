@@ -17,7 +17,7 @@ const ExpressServer_1 = require("./ExpressServer");
 const ChatController_1 = require("./src/controllers/ChatController");
 const path_1 = __importDefault(require("path"));
 const BrowserController_1 = require("./src/controllers/BrowserController");
-const createWindow = () => __awaiter(void 0, void 0, void 0, function* () {
+const startEasyBid = () => __awaiter(void 0, void 0, void 0, function* () {
     const mainWindow = new electron_1.BrowserWindow({
         width: 850,
         height: 1080,
@@ -27,7 +27,7 @@ const createWindow = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     const backWindow = new electron_1.BrowserWindow({
-        show: false,
+        // show: false,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -55,11 +55,30 @@ const createWindow = () => __awaiter(void 0, void 0, void 0, function* () {
         });
         return { action: 'deny' };
     });
+    mainWindow.on('close', () => {
+        BrowserController_1.BrowserController.shared.removeAll();
+        backWindow.close();
+        ExpressServer_1.ExpressServer.shared.end();
+    });
     BrowserController_1.BrowserController.init(mainWindow);
     ChatController_1.ChatController.init(backWindow);
 });
+const checkGoogleLogin = () => {
+    return new Promise((resolve) => __awaiter(void 0, void 0, void 0, function* () {
+        const loginWindow = new electron_1.BrowserWindow({
+            // show: false,
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+                preload: path_1.default.join(__dirname, 'src', 'preload', 'youtube.preload.js')
+            }
+        });
+        yield loginWindow.loadURL("https://accounts.google.com");
+    }));
+};
 electron_1.app.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
-    yield createWindow();
+    // await checkGoogleLogin()
+    yield startEasyBid();
 }));
 electron_1.app.on('window-all-closed', () => __awaiter(void 0, void 0, void 0, function* () {
     electron_1.app.quit();

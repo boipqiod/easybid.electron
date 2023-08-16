@@ -23,7 +23,13 @@ export class BrowserController {
     }
 
     removeWindow = (index: number) =>{
+        this.windows[index].close()
         this.windows.splice(index, 1)
+    }
+    removeAll = () =>{
+        this.windows.forEach(value => {
+            value.close()
+        })
     }
 
     setItems = async (items: BidItem[]) => {

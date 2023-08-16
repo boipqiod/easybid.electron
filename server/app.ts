@@ -5,7 +5,7 @@ import path from "path";
 import {BrowserController} from "./src/controllers/BrowserController";
 
 
-const createWindow = async () => {
+const startEasyBid = async () => {
     const mainWindow = new BrowserWindow({
         width: 850,
         height: 1080,
@@ -15,7 +15,7 @@ const createWindow = async () => {
         }
     })
     const backWindow = new BrowserWindow({
-        show: false,
+        // show: false,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -47,12 +47,34 @@ const createWindow = async () => {
         return { action: 'deny' };
     });
 
+    mainWindow.on('close', ()=>{
+        BrowserController.shared.removeAll()
+        backWindow.close()
+        ExpressServer.shared.end()
+    })
+
     BrowserController.init(mainWindow)
     ChatController.init(backWindow)
 }
 
+
+const checkGoogleLogin = ():Promise<void> =>{
+    return new Promise<void>( async resolve => {
+        const loginWindow = new BrowserWindow({
+            // show: false,
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+                preload: path.join(__dirname, 'src', 'preload', 'youtube.preload.js')
+            }
+        })
+        await loginWindow.loadURL("https://accounts.google.com")
+    })
+}
+
 app.on('ready', async () => {
-    await createWindow()
+    // await checkGoogleLogin()
+    await startEasyBid()
 })
 
 app.on('window-all-closed', async ()=>{

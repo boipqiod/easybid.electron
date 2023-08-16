@@ -43,7 +43,7 @@ export class ChatController {
     getChat = async () => {
         try {
             const res = await this.window.webContents.executeJavaScript(`window.myAPI.getChat("${this.lastChatId}")`) as chatListResponse;
-            this.lastChatId = res.lastChatId;
+            if(res.lastChatId) this.lastChatId = res.lastChatId;
             return res.chatList;
         } catch (e) {
             console.error('Error while getting chat:', e);

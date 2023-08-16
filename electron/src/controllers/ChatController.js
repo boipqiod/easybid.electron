@@ -21,7 +21,8 @@ class ChatController {
         this.getChat = () => __awaiter(this, void 0, void 0, function* () {
             try {
                 const res = yield this.window.webContents.executeJavaScript(`window.myAPI.getChat("${this.lastChatId}")`);
-                this.lastChatId = res.lastChatId;
+                if (res.lastChatId)
+                    this.lastChatId = res.lastChatId;
                 return res.chatList;
             }
             catch (e) {
