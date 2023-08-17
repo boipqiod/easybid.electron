@@ -10,7 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserController = void 0;
+const electron_1 = require("electron");
 const tpye_1 = require("../common/tpye");
+const ChatController_1 = require("./ChatController");
 class BrowserController {
     constructor(window) {
         this.windows = [];
@@ -19,11 +21,15 @@ class BrowserController {
         };
         this.removeWindow = (index) => {
             this.windows[index].close();
+            this.closedWindow(index);
+        };
+        this.closedWindow = (index) => {
             this.windows.splice(index, 1);
         };
         this.removeAll = () => {
-            this.windows.forEach(value => {
-                value.close();
+            this.windows.forEach((value, index) => {
+                if (index !== 0)
+                    value.close();
             });
         };
         this.setItems = (items) => __awaiter(this, void 0, void 0, function* () {
@@ -73,6 +79,10 @@ exports.BrowserController = BrowserController;
 BrowserController.init = (window) => {
     try {
         BrowserController.shared = new BrowserController(window);
+        electron_1.ipcMain.on('sendData', (event, args) => {
+            const data = args;
+            ChatController_1.ChatController.shared.sendChat(data.data);
+        });
     }
     catch (e) {
         console.log(e);

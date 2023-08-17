@@ -1,6 +1,7 @@
 import {useContext} from "react";
 import {CopyTextContext} from "../context/CopyTextProvider";
 import {useAlert} from "./utils/useAlert";
+import {ElectronAPI} from "../model/ElectronAPI";
 
 export const useCopyText = () =>{
     const context = useContext(CopyTextContext)
@@ -26,10 +27,17 @@ export const useCopyText = () =>{
 
     }
 
+    const sendMessage = (index: number) =>{
+        const text = copyTextList[index]
+        ElectronAPI.instance.request<string>("/message", text)
+    }
+
+
     return {
         copyTextList, addCopyTextList,
         appendText,
         removeText,
-        copyText
+        copyText,
+        sendMessage
     }
 }

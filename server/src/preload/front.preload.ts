@@ -28,5 +28,12 @@ contextBridge.exposeInMainWorld('bid', {
     },
     setObserver: <T>(event: string, callback: (data: T)=>void) =>{
         ipcRenderer.on(event, (event, args)=>{callback(args as T)})
+    },
+
+})
+
+contextBridge.exposeInMainWorld('data', {
+    sendDataToMainProcess: (event: string, data: any) => {
+        ipcRenderer.send(event, data);
     }
 })

@@ -30,5 +30,10 @@ electron_1.contextBridge.exposeInMainWorld('bid', {
     },
     setObserver: (event, callback) => {
         electron_1.ipcRenderer.on(event, (event, args) => { callback(args); });
+    },
+});
+electron_1.contextBridge.exposeInMainWorld('data', {
+    sendDataToMainProcess: (event, data) => {
+        electron_1.ipcRenderer.send(event, data);
     }
 });

@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from "electron"
+import {app, BrowserWindow, ipcMain} from "electron"
 import {ExpressServer} from "./ExpressServer";
 import {ChatController} from "./src/controllers/ChatController";
 import path from "path";
@@ -15,7 +15,7 @@ const startEasyBid = async () => {
         }
     })
     const backWindow = new BrowserWindow({
-        // show: false,
+        show: false,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -24,8 +24,8 @@ const startEasyBid = async () => {
     })
 
     await ExpressServer.shared.start()
-    await mainWindow.loadURL('http://localhost:3000');
-    // await mainWindow.loadURL('http://localhost:3002');
+    // await mainWindow.loadURL('http://localhost:3000');
+    await mainWindow.loadURL('http://localhost:3002');
 
     // 새 창을 열 때의 동작을 정의합니다.
     mainWindow.webContents.setWindowOpenHandler(({url}) => {
@@ -42,15 +42,16 @@ const startEasyBid = async () => {
         BrowserController.shared.pushWindow(win)
         const index = BrowserController.shared.windows.length -1
         win.on('close', ()=>{
-            BrowserController.shared.removeWindow(index)
+            BrowserController.shared.closedWindow(index)
         })
         return { action: 'deny' };
     });
 
     mainWindow.on('close', ()=>{
-        BrowserController.shared.removeAll()
         backWindow.close()
         ExpressServer.shared.end()
+        BrowserController.shared.removeAll()
+        app.quit()
     })
 
     BrowserController.init(mainWindow)
@@ -61,26 +62,34 @@ const startEasyBid = async () => {
 const checkGoogleLogin = ():Promise<void> =>{
     return new Promise<void>( async resolve => {
         const loginWindow = new BrowserWindow({
-            // show: false,
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
-                preload: path.join(__dirname, 'src', 'preload', 'youtube.preload.js')
             }
         })
         await loginWindow.loadURL("https://accounts.google.com")
+
+        const timer = setInterval(() =>{
+            const url = loginWindow.webContents.getURL()
+            if(url.includes("myaccount.google.com")) {
+                loginWindow.close()
+                clearInterval(timer)
+                resolve()
+            }
+        },1000)
+
     })
 }
 
 app.on('ready', async () => {
-    // await checkGoogleLogin()
+    await checkGoogleLogin()
     await startEasyBid()
 })
 
-app.on('window-all-closed', async ()=>{
-    app.quit()
-})
-//
+// ipcMain.on('sendChat', (event, args)=>{
+//     console.log("send-chat args", args)
+// })
+
 // export const textModal = async (text: string) => {
 //     await new BrowserWindow({
 //         webPreferences: {

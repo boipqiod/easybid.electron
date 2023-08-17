@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import swal from 'sweetalert';
 import {BidItem} from "../common/tpye";
+import Storage from "./Storage";
 
 export default class File {
     exportExcel = async (items: BidItem[]) => {
@@ -38,12 +39,20 @@ export default class File {
             XLSX.utils.book_append_sheet(workbook, worksheet, `${i++}번 손님`);
         }
 
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const filename = `${year}-${month}-${day}.xlsx`;
+        const productData: any[] = ["이름", "총 판매량", "총 판매 "]
 
-        XLSX.writeFile(workbook, filename);
+        for(const item of items){
+            const saleAmount = item.clients.reduce((total, client) => total + client.amount, 0);
+
+            productData.push(item.name, saleAmount, item.price * saleAmount)
+
+        }
+
+        const productWorksheet = XLSX.utils.aoa_to_sheet(productData);
+        XLSX.utils.book_append_sheet(workbook, productWorksheet, '판매 상품 통계')
+
+        const name = Storage.getFileName() ?? "unknown_name"
+
+        XLSX.writeFile(workbook, name);
     }
 }

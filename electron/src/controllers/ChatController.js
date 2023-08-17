@@ -44,7 +44,7 @@ class ChatController {
                 }
                 else
                     yield this._sendChat((_a = this.messageList.shift()) !== null && _a !== void 0 ? _a : "");
-            }), 0);
+            }), 50);
         };
         this._sendChat = (message) => __awaiter(this, void 0, void 0, function* () {
             try {

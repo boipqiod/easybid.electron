@@ -61,8 +61,9 @@ export class ChatController {
                 return
             }
             else await this._sendChat(this.messageList.shift() ?? "")
-        }, 0)
+        }, 50)
     }
+
     private _sendChat = async (message: string) =>{
         try {
             await this.window.webContents.executeJavaScript(`window.myAPI.sendChat('${message}')`)

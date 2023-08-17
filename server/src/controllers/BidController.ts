@@ -159,7 +159,7 @@ export default class BidController {
             }
             message += ` (${value.name}님 ${value.amount}개)`
 
-            await Utils.delay(300)
+            await Utils.delay(100)
         }
         this.sendMessage(message)
 
@@ -237,7 +237,7 @@ export default class BidController {
 
     private sendMessage = (message: string) => {
         BrowserController.shared.setMessage(message).then()
-        // ChatController.shared.sendChat(message)
+        ChatController.shared.sendChat(message)
     }
 
     /**경매 상태**/

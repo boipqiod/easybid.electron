@@ -27,7 +27,7 @@ const startEasyBid = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     const backWindow = new electron_1.BrowserWindow({
-        // show: false,
+        show: false,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
@@ -35,8 +35,8 @@ const startEasyBid = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     yield ExpressServer_1.ExpressServer.shared.start();
-    yield mainWindow.loadURL('http://localhost:3000');
-    // await mainWindow.loadURL('http://localhost:3002');
+    // await mainWindow.loadURL('http://localhost:3000');
+    yield mainWindow.loadURL('http://localhost:3002');
     // 새 창을 열 때의 동작을 정의합니다.
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
         // 새로운 BrowserWindow 인스턴스를 생성하고 preload 스크립트를 지정합니다.
@@ -51,14 +51,15 @@ const startEasyBid = () => __awaiter(void 0, void 0, void 0, function* () {
         BrowserController_1.BrowserController.shared.pushWindow(win);
         const index = BrowserController_1.BrowserController.shared.windows.length - 1;
         win.on('close', () => {
-            BrowserController_1.BrowserController.shared.removeWindow(index);
+            BrowserController_1.BrowserController.shared.closedWindow(index);
         });
         return { action: 'deny' };
     });
     mainWindow.on('close', () => {
-        BrowserController_1.BrowserController.shared.removeAll();
         backWindow.close();
         ExpressServer_1.ExpressServer.shared.end();
+        BrowserController_1.BrowserController.shared.removeAll();
+        electron_1.app.quit();
     });
     BrowserController_1.BrowserController.init(mainWindow);
     ChatController_1.ChatController.init(backWindow);
@@ -66,24 +67,29 @@ const startEasyBid = () => __awaiter(void 0, void 0, void 0, function* () {
 const checkGoogleLogin = () => {
     return new Promise((resolve) => __awaiter(void 0, void 0, void 0, function* () {
         const loginWindow = new electron_1.BrowserWindow({
-            // show: false,
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
-                preload: path_1.default.join(__dirname, 'src', 'preload', 'youtube.preload.js')
             }
         });
         yield loginWindow.loadURL("https://accounts.google.com");
+        const timer = setInterval(() => {
+            const url = loginWindow.webContents.getURL();
+            if (url.includes("myaccount.google.com")) {
+                loginWindow.close();
+                clearInterval(timer);
+                resolve();
+            }
+        }, 1000);
     }));
 };
 electron_1.app.on('ready', () => __awaiter(void 0, void 0, void 0, function* () {
-    // await checkGoogleLogin()
+    yield checkGoogleLogin();
     yield startEasyBid();
 }));
-electron_1.app.on('window-all-closed', () => __awaiter(void 0, void 0, void 0, function* () {
-    electron_1.app.quit();
-}));
-//
+// ipcMain.on('sendChat', (event, args)=>{
+//     console.log("send-chat args", args)
+// })
 // export const textModal = async (text: string) => {
 //     await new BrowserWindow({
 //         webPreferences: {

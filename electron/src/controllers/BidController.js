@@ -124,7 +124,7 @@ class BidController {
                     message = "";
                 }
                 message += ` (${value.name}님 ${value.amount}개)`;
-                yield Utils_1.Utils.delay(300);
+                yield Utils_1.Utils.delay(100);
             }
             this.sendMessage(message);
             clearInterval(this.timer);
@@ -190,7 +190,7 @@ class BidController {
         };
         this.sendMessage = (message) => {
             BrowserController_1.BrowserController.shared.setMessage(message).then();
-            // ChatController.shared.sendChat(message)
+            ChatController_1.ChatController.shared.sendChat(message);
         };
         /**경매 상태**/
         this.bidNow = () => {

@@ -2,12 +2,12 @@ import {ApiConfig, BidItem, Client, httpMethod, iBidItem} from "../common/tpye";
 import axios, {AxiosRequestConfig} from "axios"
 import Storage from "../Utils/Storage";
 import {APIResponse} from "./APIResponse";
+import {Indicator} from "../common/Indicator";
 
 
 export default class API {
 
     static shared: API = new API()
-
     private axios
 
     constructor() {
@@ -15,7 +15,6 @@ export default class API {
             baseURL: `http://localhost:3000`
         })
     }
-
     private setConfig = <T>(apiConfig: ApiConfig, data: T): AxiosRequestConfig => {
         const config: AxiosRequestConfig = {
             method: apiConfig.method,
@@ -38,6 +37,7 @@ export default class API {
      */
     private request = async <T>(apiConfig: ApiConfig, data?: any) => {
 
+        Indicator.instance.setIndicator(true)
         const config = this.setConfig(apiConfig, data)
 
         try {
@@ -49,6 +49,7 @@ export default class API {
                 res.data as T
             )
 
+            Indicator.instance.setIndicator(false)
             return res.data as APIResponse<T>
         } catch (e) {
             console.warn(
@@ -57,6 +58,7 @@ export default class API {
                 "\nError \n",
                 e
             )
+            Indicator.instance.setIndicator(false)
             return {success: false} as APIResponse<undefined>
         }
     }

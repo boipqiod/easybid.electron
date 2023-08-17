@@ -1,5 +1,6 @@
-import {BrowserWindow} from "electron";
+import {BrowserWindow, ipcMain} from "electron";
 import {BidItem, interfaceType} from "../common/tpye";
+import {ChatController} from "./ChatController";
 
 
 export class BrowserController {
@@ -13,23 +14,33 @@ export class BrowserController {
     static init = (window: BrowserWindow) => {
         try {
             BrowserController.shared = new BrowserController(window)
+            ipcMain.on('sendData', (event, args)=>{
+                const data = args as { url: string, data: string }
+                ChatController.shared.sendChat(data.data)
+            })
+
         } catch (e) {
             console.log(e)
         }
     }
 
-    pushWindow = (window: BrowserWindow) =>{
+    pushWindow = (window: BrowserWindow) => {
         this.windows.push(window)
     }
 
-    removeWindow = (index: number) =>{
+    removeWindow = (index: number) => {
         this.windows[index].close()
+        this.closedWindow(index)
+    }
+
+    closedWindow = (index: number) => {
         this.windows.splice(index, 1)
     }
-    removeAll = () =>{
-        this.windows.forEach(value => {
-            value.close()
-        })
+
+    removeAll = () => {
+        this.windows.forEach((value, index) => {
+            if (index !== 0) value.close();
+        });
     }
 
     setItems = async (items: BidItem[]) => {
