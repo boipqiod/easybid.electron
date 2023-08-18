@@ -20,6 +20,8 @@ interface props {
     setAuth: setState<boolean>
     init: boolean,
     setInit: setState<boolean>
+    setting: boolean,
+    setSetting: setState<boolean>
 }
 
 const init: props = {
@@ -41,7 +43,7 @@ const init: props = {
     },
     setOnSaleIndex(_value: ((prevState: number) => number) | number): void {
     }
-
+    , setting: false, setSetting(_value: ((prevState: boolean) => boolean) | boolean): void {}
 }
 
 export const BidContext = createContext<props>(init)
@@ -55,6 +57,8 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [modifyIndex, setModifyIndex] = useState<number>(-1)
     //현재 구매자를 추가하려는 상품의 인덱스
     const [addClientIndex, setAddClientIndex] = useState<number>(-1)
+    //세팅 모달
+    const [setting, setSetting] = useState<boolean>(false)
 
     //아이디
     const [ebId, setEbId] = useState<string>("")
@@ -124,9 +128,13 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
             modifyIndex, setModifyIndex,
             addClientIndex, setAddClientIndex,
 
+            setting, setSetting,
+
             auth, setAuth,
             init, setInit,
-            ebId, setEbId
+            ebId, setEbId,
+
+
         }}>
             {
                 auth ? children : <Auth />

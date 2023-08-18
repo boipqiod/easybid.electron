@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useBid} from "../../../../hook/useBid";
 import {MainTableItem} from "./MainTableItem";
+import Utils from "../../../../Utils/Utils";
 
 export const MainTable: React.FC = () => {
     const {bidItems} = useBid()
@@ -39,7 +40,9 @@ export const MainTable: React.FC = () => {
                                     />
                                 )
                             })
-                        }</> : <tr><td colSpan={8} ><p className='text-center mt-2'>등록된 상품이 없습니다!</p></td></tr>}
+                        }</> : <tr>
+                            <td colSpan={8}><p className='text-center mt-2'>등록된 상품이 없습니다!</p></td>
+                        </tr>}
                         </tbody>
                     </table>
                 </div>

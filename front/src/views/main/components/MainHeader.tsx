@@ -4,16 +4,17 @@ import {useBid} from "../../../hook/useBid";
 import {ChangeEventHandler, useState} from "react";
 import Storage from "../../../Utils/Storage";
 import { IoSettingsOutline } from "react-icons/io5";
-import {MainDisplaySetting} from "./Modals/MainDisplaySetting";
+import {useSetting} from "../../../hook/useSetting";
 
 export const MainHeader: React.FC = () => {
+    const {initBid} = useBid()
 
-    const {onSaleIndex, bidItems, initBid} = useBid()
+    const {openSetting} = useSetting()
+
     const fileName = Storage.getFileName() ?? ""
     const url = Storage.getYoutubeUrl() ?? ""
 
     const [isEdit, setIsEdit] = useState<boolean>(fileName === "")
-    const [isSetting, setIsSetting] = useState<boolean>(false)
     const [bidName, setBidName] = useState<string>(fileName)
     const [youtubeUrl, setYoutubeUrl] = useState<string>(url)
 
@@ -28,14 +29,6 @@ export const MainHeader: React.FC = () => {
         setIsEdit(false)
         const success = await initBid(bidName, youtubeUrl)
         setIsEdit(!success)
-    }
-
-    const openSetting = () =>{
-        if(isSetting){
-            setIsSetting(false)
-        }else{
-            setIsSetting(true)
-        }
     }
 
     return (
@@ -94,43 +87,6 @@ export const MainHeader: React.FC = () => {
                 </div>
             </div>
 
-            {
-                fileName && fileName !== "" && url && url !== "" &&
-                <>
-                    <a
-                        className="btn btn-secondary w-100 m-1"
-                        href="/display"
-                        target="_blank"
-                    >판매 정보 열기</a>
 
-                    <div className="card w-100 m-1">
-                        <div className="card-header">
-                            판매중인 상품
-                        </div>
-                        {
-                            onSaleIndex === -1 ?
-                                <div className="d-flex card-body flex-column">
-                                    <p>판매 중인 상품이 없습니다.</p>
-                                </div> :
-                                <div id="div-sale-on" className="d-flex card-body flex-column">
-                                    <p>상품명 : {bidItems[onSaleIndex].name}</p>
-                                    <p>구매 갯수 : {bidItems[onSaleIndex].saleAmount}</p>
-                                    {
-                                        bidItems[onSaleIndex].amount !== 0 &&
-                                        <p>남은 갯수 : {bidItems[onSaleIndex].amount - bidItems[onSaleIndex].saleAmount}</p>
-                                    }
-                                </div>
-                        }
-                    </div>
-                </>
-            }
-            <hr/>
-
-            {
-              isSetting &&
-                <MainDisplaySetting
-                    close={openSetting}
-                />
-            }
         </>)
 }

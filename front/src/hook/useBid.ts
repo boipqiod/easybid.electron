@@ -12,7 +12,9 @@ export const useBid = () =>{
         onSaleIndex, setOnSaleIndex,
         addClientIndex, setAddClientIndex,
         modifyIndex, setModifyIndex,
-        init, setInit
+        init, setInit,
+        setting, setSetting,
+
     } = context
     const {showAlert, showConfirm} = useAlert()
 
@@ -178,6 +180,8 @@ export const useBid = () =>{
         modifyIndex, setModifyIndex,
         addClientIndex, setAddClientIndex,
         onSaleIndex, setOnSaleIndex,
+
+        setting, setSetting,
 
         init, setInit,
         addItem,

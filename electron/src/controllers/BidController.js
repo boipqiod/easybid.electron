@@ -101,7 +101,7 @@ class BidController {
             this.saleIndex = index;
             //메세지 발송
             const message = `"${this.bidItems[index].name}  (${formatCurrency(this.bidItems[index].price)})" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`;
-            this.sendMessage(message);
+            this.sendMessage(message, true);
             yield BrowserController_1.BrowserController.shared.startBid(index, this.bidItems);
             yield ChatController_1.ChatController.shared.getChat();
             this.startTimer(index);
@@ -120,13 +120,13 @@ class BidController {
             for (const value of this.bidItems[index].clients) {
                 const _message = message + ` (${value.name}님 ${value.amount}개)`;
                 if (_message.length >= 200) {
-                    this.sendMessage(message);
+                    this.sendMessage(message, true);
                     message = "";
                 }
                 message += ` (${value.name}님 ${value.amount}개)`;
                 yield Utils_1.Utils.delay(100);
             }
-            this.sendMessage(message);
+            this.sendMessage(message, true);
             clearInterval(this.timer);
             return this.bidItems;
         });
@@ -188,9 +188,10 @@ class BidController {
         this.saleItemByNow = (name, amount) => {
             this.saleItemByIndex(this.saleIndex, name, amount);
         };
-        this.sendMessage = (message) => {
+        this.sendMessage = (message, isSendChat = false) => {
             BrowserController_1.BrowserController.shared.setMessage(message).then();
-            ChatController_1.ChatController.shared.sendChat(message);
+            if (isSendChat)
+                ChatController_1.ChatController.shared.sendChat(message);
         };
         /**경매 상태**/
         this.bidNow = () => {

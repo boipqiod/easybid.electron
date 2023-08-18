@@ -128,7 +128,7 @@ export default class BidController {
 
         //메세지 발송
         const message = `"${this.bidItems[index].name}  (${formatCurrency(this.bidItems[index].price)})" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`
-        this.sendMessage(message)
+        this.sendMessage(message, true)
         await BrowserController.shared.startBid(index, this.bidItems)
 
         await ChatController.shared.getChat()
@@ -154,14 +154,14 @@ export default class BidController {
         for (const value of this.bidItems[index].clients) {
             const _message = message + ` (${value.name}님 ${value.amount}개)`
             if(_message.length >= 200) {
-                this.sendMessage(message)
+                this.sendMessage(message, true)
                 message = ""
             }
             message += ` (${value.name}님 ${value.amount}개)`
 
             await Utils.delay(100)
         }
-        this.sendMessage(message)
+        this.sendMessage(message, true)
 
         clearInterval(this.timer)
 
@@ -235,9 +235,9 @@ export default class BidController {
         this.saleItemByIndex(this.saleIndex, name, amount)
     }
 
-    private sendMessage = (message: string) => {
+    private sendMessage = (message: string, isSendChat: boolean = false) => {
         BrowserController.shared.setMessage(message).then()
-        ChatController.shared.sendChat(message)
+        if(isSendChat) ChatController.shared.sendChat(message)
     }
 
     /**경매 상태**/

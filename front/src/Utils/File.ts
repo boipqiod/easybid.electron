@@ -29,7 +29,17 @@ export default class File {
                 }
             }
         }
+        const productData: any[][] = [["상품 이름", "총 판매량", "총 판매 금액"]]
+
+        for(const item of items){
+            const saleAmount = item.clients.reduce((total, client) => total + client.amount, 0);
+
+            productData.push([item.name, saleAmount, item.price * saleAmount])
+
+        }
+
         console.log(excelData);
+        console.log(productData);
 
         const workbook = XLSX.utils.book_new();
 
@@ -39,19 +49,10 @@ export default class File {
             XLSX.utils.book_append_sheet(workbook, worksheet, `${i++}번 손님`);
         }
 
-        const productData: any[] = ["이름", "총 판매량", "총 판매 "]
-
-        for(const item of items){
-            const saleAmount = item.clients.reduce((total, client) => total + client.amount, 0);
-
-            productData.push(item.name, saleAmount, item.price * saleAmount)
-
-        }
-
         const productWorksheet = XLSX.utils.aoa_to_sheet(productData);
         XLSX.utils.book_append_sheet(workbook, productWorksheet, '판매 상품 통계')
 
-        const name = Storage.getFileName() ?? "unknown_name"
+        const name = `${Storage.getFileName()}.xlsx` ?? "unknown_name.xlsx"
 
         XLSX.writeFile(workbook, name);
     }

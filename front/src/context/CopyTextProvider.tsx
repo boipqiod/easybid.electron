@@ -1,28 +1,30 @@
-import React, {createContext, ReactNode, useEffect, useState} from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import Storage from "../Utils/Storage";
 
 interface props {
     copyTextList: string[],
     addCopyTextList: (value: string) => void
     removeTextList: (index: number) => void
+    removeTextListAll: () => void
 }
 
 const init: props = {
     addCopyTextList(_value: string): void {
     }, copyTextList: [], removeTextList(_index: number): void {
     }
+    , removeTextListAll(): void {}
 }
 
 export const CopyTextContext = createContext<props>(init)
 
-export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({children}) => {
+export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [copyTextList, setCopyTextList] = useState<string[]>([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         const textList = Storage.getTextList()
         console.log(textList)
         setCopyTextList(textList)
-    },[])
+    }, [])
 
     const addCopyTextList = (value: string) => {
         setCopyTextList([...copyTextList, value]);
@@ -30,7 +32,7 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({children}) 
     };
 
     const removeTextList = (index: number) => {
-        if(copyTextList.length === 1) {
+        if (copyTextList.length === 1) {
             setCopyTextList([])
             Storage.saveTextList([])
             return
@@ -42,9 +44,17 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({children}) 
         setCopyTextList(list)
     };
 
+    const removeTextListAll = () => {
+        setCopyTextList([])
+        Storage.saveTextList([])
+    }
+
     return (
         <CopyTextContext.Provider value={{
-            copyTextList, addCopyTextList, removeTextList
+            copyTextList,
+            addCopyTextList,
+            removeTextList,
+            removeTextListAll
         }}>
             {children}
         </CopyTextContext.Provider>

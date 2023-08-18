@@ -1,6 +1,7 @@
 import React, {ReactNode, useEffect} from "react";
 import {BidStatus} from "../../../../common/tpye";
 import {useBid} from "../../../../hook/useBid";
+import Utils from "../../../../Utils/Utils";
 
 interface MainTableItemProps {
     index: number
@@ -38,7 +39,7 @@ export const MainTableItem: React.FC<MainTableItemProps> = ({index, name, price,
         <tr>
             <td className="col-1">{index}</td>
             <td className="col-3">{name}</td>
-            <td className="col-2">{price}</td>
+            <td className="col-2">{Utils.formatCurrency(price)}</td>
             <td className="col-2">{amount}</td>
             <td>
                 {getStatusButton()}

@@ -88,7 +88,7 @@ export const Display:React.FC = () =>{
                 <>
                     <div className="justify-content-center align-items-center flex-column my-5">
                         <h1 style={{fontSize: setting?.product.size, color: setting?.product.color, fontWeight: "bold"}}>{bidItems[onSaleIndex].name}</h1>
-                        <h1 style={{fontSize: setting?.product.size, color: setting?.product.color}}>{Utils.formatCurrency(bidItems[onSaleIndex].price)}</h1>
+                        <h1 style={{fontSize: setting?.product.size, color: setting?.product.color, fontWeight: "bold"}}>{Utils.formatCurrency(bidItems[onSaleIndex].price)}</h1>
                     </div>
                     <div className="row w-100 text-center">
                         {

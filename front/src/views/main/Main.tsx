@@ -8,41 +8,16 @@ import {useBid} from "../../hook/useBid";
 import Storage from "../../Utils/Storage";
 import {MainAddClientModal} from "./components/Modals/MainAddClientModal";
 import {MainFooter} from "./components/MainFooter";
-import {BidItem, interfaceType} from "../../common/tpye";
 import {MainText} from "./components/Text/MainText";
-import {useCopyText} from "../../hook/useCopyText";
+import {MainDisplay} from "./components/MainDisplay";
+import {useMain} from "../../hook/useMain";
 
 export const Main: React.FC = () => {
-    const {modifyIndex, addClientIndex, setBidItems, bidEnded} = useBid()
-    const {copyTextList, appendText} = useCopyText()
+    const {modifyIndex, addClientIndex} = useBid()
     const fileName = Storage.getFileName()
     const url = Storage.getYoutubeUrl()
 
-    useEffect(()=>{
-        // @ts-ignore
-        window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data)=>{
-            setBidItems(data)
-        })
-
-        // @ts-ignore
-        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.endBid, (data)=>{
-            setBidItems(data.items)
-            bidEnded(data.index)
-        })
-
-        // @ts-ignore
-        window.bid.setObserver<string>(interfaceType.message, (data)=>{
-            appendText(data)
-        })
-    },[])
-
-    useEffect(()=>{
-        // @ts-ignore
-        window.bid.setObserver<string>(interfaceType.message, (data)=>{
-            appendText(data)
-        })
-    },[copyTextList])
-
+    const main = useMain()
 
     return (
         <div className="container d-flex flex-column align-items-center vw-100">
@@ -52,6 +27,7 @@ export const Main: React.FC = () => {
                 {
                     fileName && fileName !== "" && url && url !== "" &&
                     <>
+                        <MainDisplay />
                         <MainAdder/>
                         <MainTable/>
                         <MainText />
