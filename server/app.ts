@@ -24,8 +24,8 @@ const startEasyBid = async () => {
     })
 
     await ExpressServer.shared.start()
-    // await mainWindow.loadURL('http://localhost:3000');
-    await mainWindow.loadURL('http://localhost:3002');
+    await mainWindow.loadURL('http://localhost:3000');
+    // await mainWindow.loadURL('http://localhost:3002');
 
     // 새 창을 열 때의 동작을 정의합니다.
     mainWindow.webContents.setWindowOpenHandler(({url}) => {

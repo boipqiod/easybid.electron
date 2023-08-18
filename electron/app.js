@@ -35,8 +35,8 @@ const startEasyBid = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     yield ExpressServer_1.ExpressServer.shared.start();
-    // await mainWindow.loadURL('http://localhost:3000');
-    yield mainWindow.loadURL('http://localhost:3002');
+    yield mainWindow.loadURL('http://localhost:3000');
+    // await mainWindow.loadURL('http://localhost:3002');
     // 새 창을 열 때의 동작을 정의합니다.
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
         // 새로운 BrowserWindow 인스턴스를 생성하고 preload 스크립트를 지정합니다.
