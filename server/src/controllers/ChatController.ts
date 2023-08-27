@@ -42,7 +42,7 @@ export class ChatController {
 
     getChat = async () => {
         try {
-            const res = await this.window.webContents.executeJavaScript(`window.myAPI.getChat("${this.lastChatId}")`) as chatListResponse;
+            const res = await this.window.webContents.executeJavaScript(`window.youtube.getChat("${this.lastChatId}")`) as chatListResponse;
             if(res.lastChatId) this.lastChatId = res.lastChatId;
             return res.chatList;
         } catch (e) {
@@ -66,7 +66,7 @@ export class ChatController {
 
     private _sendChat = async (message: string) =>{
         try {
-            await this.window.webContents.executeJavaScript(`window.myAPI.sendChat('${message}')`)
+            await this.window.webContents.executeJavaScript(`window.youtube.sendChat('${message}')`)
         } catch (e) {
             console.error('Error while sending chat:', e);
         }

@@ -10,11 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
-electron_1.contextBridge.exposeInMainWorld('myAPI', {
+electron_1.contextBridge.exposeInMainWorld('youtube', {
     getChat: (lastChatId) => __awaiter(void 0, void 0, void 0, function* () {
         console.log("lastChatId", lastChatId);
         try {
             const nodeList = Array.from(document.querySelectorAll('yt-live-chat-text-message-renderer'));
+            if (nodeList.length === 0)
+                return { chatList: [], undefined };
             const chatIds = nodeList.map(node => node.id);
             const chatList = nodeList.filter((_, i) => chatIds[i].substring(0, 5) === 'ChwKG');
             let chatStartIndex = 0;
@@ -44,6 +46,8 @@ electron_1.contextBridge.exposeInMainWorld('myAPI', {
             return res;
         }
         catch (e) {
+            console.error('Error while getting chat:', e);
+            return { chatList: [], lastChatId };
         }
         function getNameAndMessage(chat) {
             const name = chat.childNodes[3].childNodes[1].childNodes[3].textContent;

@@ -6,12 +6,16 @@ type chatListResponse = {
     chatList: { message: number; name: string }[]
 }
 
-contextBridge.exposeInMainWorld('myAPI', {
+contextBridge.exposeInMainWorld('youtube', {
     getChat: async (lastChatId: string) => {
         console.log("lastChatId", lastChatId)
 
         try {
             const nodeList = Array.from(document.querySelectorAll('yt-live-chat-text-message-renderer'))
+
+            if(nodeList.length === 0) return {chatList: [], undefined}
+
+
             const chatIds = nodeList.map(node => (node as HTMLElement).id)
             const chatList = nodeList.filter((_, i) => chatIds[i].substring(0, 5) === 'ChwKG')
 
@@ -19,7 +23,7 @@ contextBridge.exposeInMainWorld('myAPI', {
 
             if (lastChatId) {
                 let lastChatIndex = -1
-                while(lastChatIndex === -1){
+                while (lastChatIndex === -1) {
                     lastChatIndex = chatIds.findIndex(id => id === lastChatId)
 
                     if (lastChatIndex === -1) lastChatId = chatIds[chatList.length - 1]
@@ -44,6 +48,8 @@ contextBridge.exposeInMainWorld('myAPI', {
             const res: chatListResponse = {chatList: resList, lastChatId}
             return res
         } catch (e) {
+            console.error('Error while getting chat:', e)
+            return {chatList: [], lastChatId}
         }
 
         function getNameAndMessage(chat: HTMLElement) {

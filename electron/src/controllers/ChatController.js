@@ -20,7 +20,7 @@ class ChatController {
         });
         this.getChat = () => __awaiter(this, void 0, void 0, function* () {
             try {
-                const res = yield this.window.webContents.executeJavaScript(`window.myAPI.getChat("${this.lastChatId}")`);
+                const res = yield this.window.webContents.executeJavaScript(`window.youtube.getChat("${this.lastChatId}")`);
                 if (res.lastChatId)
                     this.lastChatId = res.lastChatId;
                 return res.chatList;
@@ -48,7 +48,7 @@ class ChatController {
         };
         this._sendChat = (message) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.window.webContents.executeJavaScript(`window.myAPI.sendChat('${message}')`);
+                yield this.window.webContents.executeJavaScript(`window.youtube.sendChat('${message}')`);
             }
             catch (e) {
                 console.error('Error while sending chat:', e);
