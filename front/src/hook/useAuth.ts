@@ -4,6 +4,7 @@ import API from "../model/API";
 import {useAlert} from "./utils/useAlert";
 import Storage from "../Utils/Storage";
 import {useNavigate} from "react-router-dom";
+import {ElectronAPI} from "../model/ElectronAPI";
 
 export const useAuth = () =>{
     const context = useContext(BidContext)
@@ -11,7 +12,7 @@ export const useAuth = () =>{
     const {showAlert} = useAlert()
 
     const login = async (id: string) =>{
-        const res = await API.shared.login(id)
+        const res = await ElectronAPI.instance.login(id)
         if(res.success) {
             if(res.data) {
                 Storage.saveEbId(id)

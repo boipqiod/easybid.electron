@@ -1,18 +1,10 @@
 import {ApiConfig, httpMethod} from "../common/tpye";
 import axios, {AxiosRequestConfig} from "axios"
 
-interface request{
-    ebId: string
-    fileName: string
-    data?: any
-}
-
 export default class API{
 
     static shared: API = new API()
-
     private axios
-
     constructor(){
         this.axios = axios.create({
             // baseURL: `http://localhost:3003`

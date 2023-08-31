@@ -16,7 +16,6 @@ export const Main: React.FC = () => {
     const {modifyIndex, addClientIndex} = useBid()
     const fileName = Storage.getFileName()
     const url = Storage.getYoutubeUrl()
-
     const main = useMain()
 
     return (

@@ -9,6 +9,18 @@ declare namespace NodeJS {
   }
 }
 
+declare global {
+  interface Window {
+    bid: BidObserver
+    data: {
+        request: <T>(url, data: any) => Promise<T>
+    }
+  }
+  interface BidObserver {
+    setObserver: <T>(event: string, callback: (data: T)=>void) => void
+  }
+}
+
 declare module '*.avif' {
   const src: string;
   export default src;
@@ -69,3 +81,5 @@ declare module '*.module.sass' {
   const classes: { readonly [key: string]: string };
   export default classes;
 }
+
+export {};

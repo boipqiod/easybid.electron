@@ -4,6 +4,7 @@ import {BidItem, BidStatus, Client} from "../common/tpye";
 import API from "../model/API"
 import {useAlert} from "./utils/useAlert";
 import Storage from "../Utils/Storage";
+import {ElectronAPI} from "../model/ElectronAPI";
 
 export const useBid = () =>{
     const context = useContext(BidContext)
@@ -24,7 +25,7 @@ export const useBid = () =>{
             return
         }
 
-        const res = await API.shared.addBidItem(item)
+        const res = await ElectronAPI.instance.addBidItem(item)
 
         if(res.success && res.data){
             setBidItems(res.data)
@@ -43,7 +44,7 @@ export const useBid = () =>{
             const bool = await showConfirm(`[${bidItems[index].name}] 상품이 삭제됩니다.`)
             if(!bool) return
         }
-        const res = await API.shared.removeBidItem(index)
+        const res = await ElectronAPI.instance.removeBidItem(index)
         if(res.success && res.data){
             setBidItems(res.data)
             await showAlert("삭제되었습니다.")
@@ -61,7 +62,7 @@ export const useBid = () =>{
             await showAlert("사용자 이름을 확인해주세요")
             return
         }
-        const res = await API.shared.modifyBidItem(modifyIndex, item)
+        const res = await ElectronAPI.instance.modifyBidItem(modifyIndex, item)
         if(res.success && res.data){
             setBidItems(res.data)
             await showAlert("수정되었습니다.")
@@ -71,7 +72,7 @@ export const useBid = () =>{
         }
     }
     const addClient = async (client: Client) =>{
-        const res = await API.shared.addClient(addClientIndex, client)
+        const res = await ElectronAPI.instance.addClient(addClientIndex, client)
         if(res.success && res.data){
             setBidItems(res.data)
             await showAlert("추가되었습니다.")
@@ -82,7 +83,7 @@ export const useBid = () =>{
     }
 
     const getBidItems = async () =>{
-        const res = await API.shared.getBidItems()
+        const res = await ElectronAPI.instance.getBidItems()
         if(!res.success || !res.data) return
 
         setBidItems(res.data)
@@ -97,7 +98,7 @@ export const useBid = () =>{
         const bool = await showConfirm(`[${item.name}] 상품 판매를 시작합니다.`)
         if(!bool) return
 
-        const res = await API.shared.startBid(index)
+        const res = await ElectronAPI.instance.startBid(index)
 
         if(res.success && res.data){
             setBidItems(res.data)
@@ -111,7 +112,7 @@ export const useBid = () =>{
         const item = bidItems[index]
         const bool = await showConfirm(`[${item.name}] 상품 판매를 종료합니다.`)
         if(!bool) return
-        const res = await API.shared.endBid(index)
+        const res = await ElectronAPI.instance.endBid(index)
 
         if(res.success && res.data){
             setBidItems(res.data)
@@ -141,7 +142,7 @@ export const useBid = () =>{
 
         const bool = await showConfirm(`[${item.name}] 상품 판매를 재시작합니다.`)
         if(!bool) return
-        const res = await API.shared.startBid(index)
+        const res = await ElectronAPI.instance.startBid(index)
 
         if(res.success && res.data){
             setBidItems(res.data)
@@ -164,7 +165,7 @@ export const useBid = () =>{
         }
 
         const id = Storage.getEbId()
-        const res = await API.shared.init(id, fileName, youtubeUrl)
+        const res = await ElectronAPI.instance.init(id, fileName, youtubeUrl)
         if(res.success && res.data){
             Storage.saveFileName(fileName)
             Storage.saveYoutubeUrl(youtubeUrl)

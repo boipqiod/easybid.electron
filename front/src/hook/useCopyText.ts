@@ -36,7 +36,7 @@ export const useCopyText = () =>{
         const isSend = await showConfirm("메세지를 보내시겠습니까?")
         if (!isSend) return
         const text = copyTextList[index]
-        ElectronAPI.instance.request<string>("/message", text)
+        await ElectronAPI.instance.sendMessage(text)
     }
 
 

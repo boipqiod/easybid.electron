@@ -79,9 +79,10 @@ exports.BrowserController = BrowserController;
 BrowserController.init = (window) => {
     try {
         BrowserController.shared = new BrowserController(window);
-        electron_1.ipcMain.on('sendData', (event, args) => {
+        electron_1.ipcMain.handle('sendData', (event, args) => {
             const data = args;
             ChatController_1.ChatController.shared.sendChat(data.data);
+            return;
         });
     }
     catch (e) {

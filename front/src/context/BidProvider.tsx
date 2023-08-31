@@ -1,9 +1,9 @@
 import React, {createContext, ReactNode, useEffect, useState} from "react";
 import {BidItem, BidStatus, setState} from "../common/tpye";
-import API from "../model/API";
 import Storage from "../Utils/Storage";
 import {Auth} from "../views/auth/Auth";
 import {Loading} from "../views/common/Loading";
+import {ElectronAPI} from "../model/ElectronAPI";
 
 interface props {
     bidItems: BidItem[],
@@ -90,8 +90,9 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
             return
         }
 
+
         //이닛이 되어있는지 확인
-        API.shared
+        ElectronAPI.instance
         .isInit()
         .then(res =>{
             //이미 이닛이 되어있는 경우
@@ -102,7 +103,7 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
                 setLoading(true)
             }else{
                 //아니면 초기화
-                API.shared
+                ElectronAPI.instance
                 .init(ebId, fileName, youtubeUrl)
                 .then(res =>{
                     if(res.success && res.data){

@@ -14,9 +14,10 @@ export class BrowserController {
     static init = (window: BrowserWindow) => {
         try {
             BrowserController.shared = new BrowserController(window)
-            ipcMain.on('sendData', (event, args)=>{
+            ipcMain.handle('sendData', (event, args)=>{
                 const data = args as { url: string, data: string }
                 ChatController.shared.sendChat(data.data)
+                return
             })
 
         } catch (e) {

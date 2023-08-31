@@ -33,7 +33,7 @@ contextBridge.exposeInMainWorld('bid', {
 })
 
 contextBridge.exposeInMainWorld('data', {
-    sendDataToMainProcess: (event: string, data: any) => {
-        ipcRenderer.send(event, data);
+    request: async <T, U>(event: string, data: T) => {
+        return await ipcRenderer.invoke(event, data) as U
     }
 })

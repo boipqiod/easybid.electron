@@ -1,10 +1,11 @@
 import * as React from 'react';
-import logo from '../../../assets/easybid.logo.png'
 import {useBid} from "../../../hook/useBid";
 import {ChangeEventHandler, useState} from "react";
 import Storage from "../../../Utils/Storage";
 import { IoSettingsOutline } from "react-icons/io5";
 import {useSetting} from "../../../hook/useSetting";
+// @ts-ignore
+import logo from "../../../assets/easybid.logo.png"
 
 export const MainHeader: React.FC = () => {
     const {initBid} = useBid()

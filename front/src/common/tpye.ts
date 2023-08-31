@@ -65,7 +65,10 @@ export type DisplaySettingValues = {
     font?: Font
 }
 
+/**** ipcRenderer 인터페이스 이넘 ****/
 export enum interfaceType{
+    isInit = "isInit",
+
     startBid = "startBid",
     endBid = "endBid",
     setItem = "setItem",
