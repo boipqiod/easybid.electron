@@ -61,7 +61,7 @@ export class ChatController {
                 return
             }
             else await this._sendChat(this.messageList.shift() ?? "")
-        }, 50)
+        }, 1000)
     }
 
     private _sendChat = async (message: string) =>{

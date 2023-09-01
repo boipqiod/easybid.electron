@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "lib": [
+      "ES2015",
+      "dom"
+    ],
     "module": "commonjs",
     "outDir": "build",
     "strict": true,

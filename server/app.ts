@@ -1,6 +1,6 @@
-import {app} from "electron"
-import ElectronRouter from "./src/controllers/AppController";
+import {app, session} from "electron"
+import AppController from "./src/controllers/AppController";
 
 app.on('ready', async () => {
-    await ElectronRouter.init()
+    await AppController.init()
 })

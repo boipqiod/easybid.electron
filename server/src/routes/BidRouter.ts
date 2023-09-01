@@ -33,8 +33,9 @@ export default class BidRouter{
         });
 
         ipcMain.handle('/bid/message', async (event, args) => {
-            const data = args as string;
-            ChatController.shared.sendChat(data);
+            const data = args as { message: string }
+            console.log('message', data)
+            ChatController.shared.sendChat(data.message);
             return APIResponse.getRes(true, null);
         })
 
