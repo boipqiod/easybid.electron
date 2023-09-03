@@ -1,6 +1,6 @@
 {
-  "name": "easybid.server.local",
-  "version": "0.1.0",
+  "name": "easybid",
+  "version": "0.4.0",
   "description": "",
   "main": "./dist/app.js",
   "scripts": {

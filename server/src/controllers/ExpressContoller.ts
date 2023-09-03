@@ -12,10 +12,10 @@ export default class ExpressController {
         return new Promise<void>(resolve => {
             const port = 3000;
 
-            ExpressController.app.use(express.static(path.join(__dirname, '../dist/views')));
+            ExpressController.app.use(express.static(path.join(__dirname, 'views')));
 
-            ExpressController.app.get('*', (req: Request, res: Response) => {
-                res.sendFile(path.join(__dirname, '../dist/views/index.html'));
+            ExpressController.app.get('/*', (req: Request, res: Response) => {
+                res.sendFile(path.join(__dirname, 'views/index.html'));
             });
 
             ExpressController.server = ExpressController.app.listen(port, () => {

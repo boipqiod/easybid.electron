@@ -17,8 +17,7 @@ export class ElectronAPI {
 
     //요청 보내기
     async request<T>(url: string, data?: any): Promise<APIResponse<T | undefined>> {
-        Indicator.instance.setIndicator(false)
-
+        Indicator.instance.setIndicator(true)
 
         try {
             const res = await window.data.request(url, data);
