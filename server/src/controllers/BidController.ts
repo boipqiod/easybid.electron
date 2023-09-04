@@ -61,6 +61,7 @@ export default class BidController {
 
     reloadBidItems = async (): Promise<BidItem[]> => {
         this.bidItems = await this.getBidItemsFromServer()
+        console.log("reloadBidItems", this.bidItems)
         this.saleIndex = this.bidItems.findIndex(value => value.status === BidStatus.sale)
         await BrowserController.shared.setItems(this.bidItems)
         return this.bidItems

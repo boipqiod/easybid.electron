@@ -5,9 +5,7 @@ import {Server} from "http";
 export default class ExpressController {
 
     private static app: express.Express = express();
-
     private static server: Server;
-
     static init = async () => {
         return new Promise<void>(resolve => {
             const port = 3000;

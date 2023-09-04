@@ -1,12 +1,19 @@
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {CopyTextContext} from "../context/CopyTextProvider";
 import {useAlert} from "./utils/useAlert";
 import {ElectronAPI} from "../model/ElectronAPI";
+import {interfaceType} from "../common/tpye";
 
 export const useCopyText = () =>{
     const context = useContext(CopyTextContext)
     const {copyTextList, addCopyTextList, removeTextList, removeTextListAll} = context
     const {showAlert, showConfirm} = useAlert()
+
+    useEffect(()=>{
+        window.bid.setObserver<string>(interfaceType.message, (data)=>{
+            appendText(data)
+        })
+    },[copyTextList])
 
     const appendText = (text: string) =>{
         addCopyTextList(text)

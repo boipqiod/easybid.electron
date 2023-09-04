@@ -1,7 +1,6 @@
 import {useContext} from "react"
 import {BidContext} from "../context/BidProvider"
 import {BidItem, BidStatus, Client} from "../common/tpye";
-import API from "../model/API"
 import {useAlert} from "./utils/useAlert";
 import Storage from "../Utils/Storage";
 import {ElectronAPI} from "../model/ElectronAPI";
@@ -16,6 +15,7 @@ export const useBid = () =>{
         init, setInit,
         setting, setSetting,
 
+        ebId
     } = context
     const {showAlert, showConfirm} = useAlert()
 
@@ -164,8 +164,7 @@ export const useBid = () =>{
             return false
         }
 
-        const id = Storage.getEbId()
-        const res = await ElectronAPI.instance.init(id, fileName, youtubeUrl)
+        const res = await ElectronAPI.instance.init(ebId, fileName, youtubeUrl)
         if(res.success && res.data){
             Storage.saveFileName(fileName)
             Storage.saveYoutubeUrl(youtubeUrl)

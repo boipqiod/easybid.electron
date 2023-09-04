@@ -68,23 +68,17 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [auth, setAuth] = useState<boolean>(false)
 
     useEffect(() => {
-        const ebId = Storage.getEbId()
+        initAuth().then()
+    }, []);
+
+    //로딩 중
+
+    const initAuth = async () => {
         const fileName = Storage.getFileName()
         const youtubeUrl = Storage.getYoutubeUrl()
 
-        console.log(ebId)
+        console.log(fileName, youtubeUrl)
 
-        //아이디가 저장되어있지 않는 경우
-        //아이디 저장으로 이동
-        if(!ebId || ebId === ""){
-            setLoading(true)
-            return
-        }else{
-            setEbId(ebId)
-            setAuth(true)
-        }
-
-        //파일 이름이나 유튜브 url 이 없는 경우
         //이닛을 확인할 필요 없음
         if(!fileName || fileName === "" ||
             !youtubeUrl || youtubeUrl === ""){
@@ -92,34 +86,29 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
             return
         }
 
+        const isInitRes = await ElectronAPI.instance.isInit()
+        if(isInitRes.success && isInitRes.data) {
+            setBidItems(isInitRes.data)
+            const index = isInitRes.data.findIndex(v => v.status === BidStatus.sale)
+            setOnSaleIndex(index)
+            setAuth(true)
+            setLoading(true)
+            return
+        }else{
+            setLoading(true)
+            return
+        }
 
-        //이닛이 되어있는지 확인
-        ElectronAPI.instance
-        .isInit()
-        .then(res =>{
-            //이미 이닛이 되어있는 경우
-            if(res.success && res.data){
-                setBidItems(res.data)
-                const index = res.data.findIndex(v=>v.status === BidStatus.sale)
-                setOnSaleIndex(index)
-                setLoading(true)
-            }else{
-                //아니면 초기화
-                ElectronAPI.instance
-                .init(ebId, fileName, youtubeUrl)
-                .then(res =>{
-                    if(res.success && res.data){
-                        setBidItems(res.data)
-                        const index = res.data.findIndex(v=>v.status === BidStatus.sale)
-                        setOnSaleIndex(index)
-                        setLoading(true)
-                    }
-                })
-            }
-        })
-    }, []);
+        // const initRes = await ElectronAPI.instance.init(fileName, youtubeUrl)
+        // if(initRes.success && initRes.data){
+        //     setBidItems(initRes.data)
+        //     const index = initRes.data.findIndex(v=>v.status === BidStatus.sale)
+        //     setOnSaleIndex(index)
+        //     setLoading(true)
+        // }
+    }
 
-    //로딩 중
+
     if (!loading) {
         return <Loading />
     }

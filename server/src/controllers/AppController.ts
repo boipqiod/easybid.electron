@@ -4,12 +4,10 @@ import {BrowserController} from "./BrowserController";
 import {ChatController} from "./ChatController";
 import Routes from "../routes/Routes";
 import ExpressController from "./ExpressContoller";
-import {FirebaseService} from "../service/FirebaseService";
 
 export default class AppController {
     static init = async () => {
         await ExpressController.init()
-        await FirebaseService.instance.test()
         await AppController.checkGoogleLogin()
         await AppController.startEasyBid()
     }

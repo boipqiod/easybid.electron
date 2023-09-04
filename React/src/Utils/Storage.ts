@@ -5,6 +5,7 @@ export default class Storage {
     private static FILENAME = "fileName"
     private static YOUTUBE_URL = "youtubeUrl"
     private static ID = "ebId"
+    private static TOKEN = "token"
     private static SETTING = "setting"
     private static COPY = "copy"
 
@@ -14,7 +15,6 @@ export default class Storage {
     static saveFileName = (name: string) => {
         localStorage.setItem(Storage.FILENAME, name)
     }
-
     static getYoutubeUrl = () => {
         return localStorage.getItem(Storage.YOUTUBE_URL)
     }
@@ -22,10 +22,17 @@ export default class Storage {
         localStorage.setItem(Storage.YOUTUBE_URL, url)
     }
     static getEbId = (): string => {
-        return sessionStorage.getItem(Storage.ID) ?? ""
+        return localStorage.getItem(Storage.ID) ?? ""
     }
     static saveEbId = (id: string) => {
-        sessionStorage.setItem(Storage.ID, id)
+        localStorage.setItem(Storage.ID, id)
+    }
+
+    static saveToken = (token: string) => {
+        localStorage.setItem(Storage.TOKEN, token)
+    }
+    static getToken = (): string => {
+        return localStorage.getItem(Storage.TOKEN) ?? ""
     }
 
     static getSetting = () => {
@@ -40,7 +47,6 @@ export default class Storage {
     static saveTextList = (copyText: string[]) => {
         localStorage.setItem(Storage.COPY, JSON.stringify(copyText))
     }
-
     static getTextList = () => {
         const copyText = localStorage.getItem(Storage.COPY)
         if (copyText) return JSON.parse(copyText) as string[]

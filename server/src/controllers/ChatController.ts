@@ -43,6 +43,7 @@ export class ChatController {
     getChat = async () => {
         try {
             const res = await this.window.webContents.executeJavaScript(`window.youtube.getChat("${this.lastChatId}")`) as chatListResponse;
+            console.log(res)
             if(res.lastChatId) this.lastChatId = res.lastChatId;
             return res.chatList;
         } catch (e) {

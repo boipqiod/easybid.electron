@@ -8,21 +8,31 @@ import {ElectronAPI} from "../model/ElectronAPI";
 
 export const useAuth = () =>{
     const context = useContext(BidContext)
-    const {auth, setAuth} = context
+    const {auth, setAuth, setEbId} = context
     const {showAlert} = useAlert()
 
-    const login = async (id: string) =>{
-        const res = await ElectronAPI.instance.login(id)
-        if(res.success) {
-            if(res.data) {
-                Storage.saveEbId(id)
-                console.log(setAuth)
-                console.log(BidContext)
-                setAuth(true)
+    const login = async (id: string, passkey: string) =>{
+        const res = await ElectronAPI.instance.login(id, passkey)
+        if(res.success && res.data){
+            Storage.saveToken(res.data?.token)
+            setEbId(id)
+            setAuth(true)
+
+            const fileName = Storage.getFileName()
+            const youtubeUrl = Storage.getYoutubeUrl()
+
+            console.log(fileName, youtubeUrl)
+
+
+            if(fileName && fileName !== "" &&
+                youtubeUrl && youtubeUrl !== ""){
+                await ElectronAPI.instance.init(id, fileName, youtubeUrl)
+                return
             }
-            else {
-                await showAlert("잘못된 아이디입니다.")
-            }
+
+
+        }else {
+            await showAlert("잘못된 아이디입니다.")
         }
     }
 

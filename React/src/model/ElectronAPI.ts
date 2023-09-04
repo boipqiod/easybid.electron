@@ -122,11 +122,12 @@ export class ElectronAPI {
     }
 
     /**로그인 */
-    login = async (id: string) => {
+    login = async (id: string, passkey: string) => {
         const body = {
-            id
+            id,
+            passkey
         }
 
-        return await this.request<boolean>("/auth/login", body)
+        return await this.request<{token: string}>("/auth/login", body)
     }
 }

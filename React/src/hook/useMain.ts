@@ -9,28 +9,15 @@ export const useMain = () => {
     const {copyTextList, appendText} = useCopyText()
 
     useEffect(()=>{
-        // @ts-ignore
         window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data)=>{
             setBidItems(data)
         })
 
-        // @ts-ignore
         window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.endBid, (data)=>{
             setBidItems(data.items)
             bidEnded(data.index)
         })
 
-        // @ts-ignore
-        window.bid.setObserver<string>(interfaceType.message, (data)=>{
-            appendText(data)
-        })
     },[])
-
-    useEffect(()=>{
-        // @ts-ignore
-        window.bid.setObserver<string>(interfaceType.message, (data)=>{
-            appendText(data)
-        })
-    },[copyTextList])
 
 }
