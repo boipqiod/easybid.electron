@@ -6,7 +6,7 @@ export const MainText: React.FC = () => {
     const { copyTextList, removeAllText } = useCopyText()
 
     return (
-        <div className="card m-1 w-100" style={{ maxHeight: 600, overflow: "scroll" }}>
+        <div className="card m-1 w-100">
             <div className="card-header">
 
                 <div className="d-flex justify-content-between">
@@ -16,7 +16,7 @@ export const MainText: React.FC = () => {
                     </div>
                     <button
                         onClick={removeAllText}
-                        className="btn btn-danger">전체 삭제</button>
+                        className="btn btn-danger">전체 삭제1</button>
                 </div>
             </div>
             <div className="card-body">
