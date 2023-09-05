@@ -5,6 +5,8 @@ module.exports = {
     mode: 'production',
     entry: {
         index: './app.ts',
+        // index: './index.js',
+        appController: './src/controllers/appController.ts',
         frontPreload: './src/preload/front.preload.ts',
         youtubePreload: './src/preload/youtube.preload.ts',
     },
@@ -18,7 +20,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
-        extensions: ['.ts', '.js'], // .ts 확장자를 인식하도록 설정
+        extensions: ['.ts', '.js'],
         fallback: {
             "path": false
         }

@@ -1,8 +1,8 @@
 {
   "name": "easybid",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "build": {
-    "appId": "com.yourcompany.your-app",
+    "appId": "com.kuzim.easybid",
     "productName": "EasyBid",
     "mac": {
       "icon": "public/easybid.icon.icns"
@@ -19,11 +19,11 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "https://your-server.com/update/"
+        "url": "https://s3.ap-northeast-2.amazonaws.com/easybid.update/"
       }
     ]
   },
-  "description": "",
+  "description": "EasyBid is a tool for bidding on YouTube auctions",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node ../build/app.js",
@@ -31,7 +31,8 @@
     "build": "webpack",
     "electron_test": "electron dist/index.js",
     "build:electron_test": "npm run build && npm run electron_test",
-    "dist": "electron-builder -w",
+    "dist": "electron-builder --publish=never",
+    "build:dist": " cd ../React && npm run react:build && cd ../server && npm run build && npm run dist",
     "export_mac": "electron-packager dist EasyBid --platform=darwin --arch=x64 --icon=./public/easybid.icon.icns --out=../../app/mac --overwrite",
     "export_window": "electron-packager dist EasyBid --platform=win32 --arch=x64 --icon=./public/easybid.icon.png --out=../../app/window --overwrite"
   },
@@ -43,12 +44,13 @@
     "@types/node": "^20.3.2",
     "@types/retry": "^0.12.2",
     "assert": "^2.0.0",
-    "axios": "^1.4.0",
+    "axios": "^1.5.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "constants-browserify": "^1.0.0",
     "cors": "^2.8.5",
     "crypto-browserify": "^3.12.0",
+    "dotenv": "^16.3.1",
     "electron-updater": "^6.1.1",
     "express": "^4.18.2",
     "firebase": "^10.3.1",
