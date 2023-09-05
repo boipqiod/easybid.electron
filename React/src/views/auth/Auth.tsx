@@ -25,7 +25,7 @@ export const Auth: React.FC = () => {
         <div className="container vw-100 vh-100 d-flex align-items-center justify-content-center">
             <div className="card">
                 <div className="card-header mb-2">
-                    <div className="card-title">로그인 0.4.0</div>
+                    <div className="card-title">로그인 0.0.0</div>
                 </div>
                 <div className="card-body d-flex flex-column px-5 py-4">
                     <label>아이디

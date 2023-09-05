@@ -1,4 +1,4 @@
-import {app, BrowserWindow, HandlerDetails} from "electron";
+import {app, Menu, BrowserWindow, HandlerDetails} from "electron";
 import path from "path";
 import {BrowserController} from "./BrowserController";
 import {ChatController} from "./ChatController";
@@ -7,13 +7,15 @@ import ExpressController from "./ExpressContoller";
 
 export default class AppController {
     static init = async () => {
+        // Menu.setApplicationMenu(null);
+
         await ExpressController.init()
         await AppController.checkGoogleLogin()
         await AppController.startEasyBid()
     }
 
     private static startEasyBid = async () => {
-        await Routes.init()
+        Routes.init()
         await AppController.initMain()
         await AppController.initBack()
     }

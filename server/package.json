@@ -1,6 +1,6 @@
 {
   "name": "easybid",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "build": {
     "appId": "com.kuzim.easybid",
     "productName": "EasyBid",
@@ -32,7 +32,7 @@
     "electron_test": "electron dist/index.js",
     "build:electron_test": "npm run build && npm run electron_test",
     "dist": "electron-builder --publish=never",
-    "build:dist": " cd ../React && npm run react:build && cd ../server && npm run build && npm run dist",
+    "build:dist": "cd ../server && npm run build && npm run dist",
     "export_mac": "electron-packager dist EasyBid --platform=darwin --arch=x64 --icon=./public/easybid.icon.icns --out=../../app/mac --overwrite",
     "export_window": "electron-packager dist EasyBid --platform=win32 --arch=x64 --icon=./public/easybid.icon.png --out=../../app/window --overwrite"
   },

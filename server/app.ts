@@ -17,26 +17,17 @@ app.on('ready', async () => {
 // 업데이트 가능 이벤트 처리
 autoUpdater.on('update-available', async () => {
     isAvailableUpdate = true;
-    // 업데이트 다운로드 알림 표시
-    await dialog.showOpenDialog({
-        title: '업데이트 확인',
-        message: '새로운 업데이트가 있습니다. 다운로드를 시작합니다. \n다운로드 완료 후 자동 재시작됩니다.',
-    });
-    await autoUpdater.downloadUpdate();
 });
 
 // 업데이트 다운로드 완료 이벤트 처리
 autoUpdater.on('update-downloaded', async () => {
+    // 앱 종료 및 업데이트 설치
 
-    // 업데이트 완료 알림 표시
     await dialog.showMessageBox({
-        type: 'info',
         title: '업데이트 확인',
-        message: '새로운 업데이트가 다운로드되었습니다. 앱이 재시작됩니다.',
-        buttons: ['확인']
+        message: '새로운 업데이트 되었습니다. \n앱을 다시 실행해주세요.',
     });
 
-    // 앱 종료 및 업데이트 설치
     autoUpdater.quitAndInstall(false, true)
 });
 autoUpdater.on('error', async (error) => {
