@@ -1,7 +1,7 @@
 import * as XLSX from 'xlsx';
 import swal from 'sweetalert';
-import {BidItem} from "../common/tpye";
-import Storage from "./Storage";
+import {BidItem} from "./tpye";
+import StorageUtil from "./StorageUtil";
 
 export default class File {
     exportExcel = async (items: BidItem[]) => {
@@ -52,7 +52,7 @@ export default class File {
         const productWorksheet = XLSX.utils.aoa_to_sheet(productData);
         XLSX.utils.book_append_sheet(workbook, productWorksheet, '판매 상품 통계')
 
-        const name = `${Storage.getFileName()}.xlsx` ?? "unknown_name.xlsx"
+        const name = `${StorageUtil.getFileName()}.xlsx` ?? "unknown_name.xlsx"
 
         XLSX.writeFile(workbook, name);
     }

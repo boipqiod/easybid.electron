@@ -1,6 +1,6 @@
-import {BidItem, Client, httpMethod, iBidItem} from "../common/tpye";
 import {APIResponse} from "./APIResponse";
-import {Indicator} from "../common/Indicator";
+import {Indicator} from "../utils/Indicator";
+import {BidItem, Client, iBidItem} from "../utils/tpye";
 
 export class ElectronAPI {
     static get instance(): ElectronAPI {

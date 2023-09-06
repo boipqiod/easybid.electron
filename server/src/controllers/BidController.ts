@@ -165,12 +165,14 @@ export default class BidController {
         this.sendMessage(message, true)
 
         clearInterval(this.timer)
+        this.timer = undefined
 
         return this.bidItems
     }
 
     startTimer = (index: number) => {
         console.log("start Timer")
+        if(this.timer) clearInterval(this.timer)
         this.timer = setInterval(async () => {
 
             const chatList = await ChatController.shared.getChat()
@@ -179,7 +181,7 @@ export default class BidController {
                 this.saleItemByIndex(index, chat.name, chat.message)
             })
 
-        }, 50)
+        }, 1000)
     }
 
     /****경매 프로스세스****/

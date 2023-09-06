@@ -1,9 +1,9 @@
 import {useContext} from "react"
 import {BidContext} from "../context/BidProvider"
-import {BidItem, BidStatus, Client} from "../common/tpye";
 import {useAlert} from "./utils/useAlert";
-import Storage from "../Utils/Storage";
+import StorageUtil from "../utils/StorageUtil";
 import {ElectronAPI} from "../model/ElectronAPI";
+import {BidItem, BidStatus, Client} from "../utils/tpye";
 
 export const useBid = () =>{
     const context = useContext(BidContext)
@@ -14,6 +14,7 @@ export const useBid = () =>{
         modifyIndex, setModifyIndex,
         init, setInit,
         setting, setSetting,
+        isAddProduct, setIsAddProduct,
 
         ebId
     } = context
@@ -26,9 +27,11 @@ export const useBid = () =>{
         }
 
         const res = await ElectronAPI.instance.addBidItem(item)
-
+        setIsAddProduct(false)
         if(res.success && res.data){
             setBidItems(res.data)
+        }else{
+            await showAlert(`상품 추가 실패 실패`)
         }
     }
 
@@ -166,8 +169,8 @@ export const useBid = () =>{
 
         const res = await ElectronAPI.instance.init(ebId, fileName, youtubeUrl)
         if(res.success && res.data){
-            Storage.saveFileName(fileName)
-            Storage.saveYoutubeUrl(youtubeUrl)
+            StorageUtil.saveFileName(fileName)
+            StorageUtil.saveYoutubeUrl(youtubeUrl)
             setBidItems(res.data)
             setInit(true)
             return true
@@ -182,6 +185,7 @@ export const useBid = () =>{
         onSaleIndex, setOnSaleIndex,
 
         setting, setSetting,
+        isAddProduct, setIsAddProduct,
 
         init, setInit,
         addItem,

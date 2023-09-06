@@ -12,7 +12,7 @@ export class ChatController {
     lastChatId: string | undefined
     url = ""
     private messageList: string[] = []
-    private timer: NodeJS.Timer
+    private timer: NodeJS.Timer | undefined
 
     loadPage = async (url: string) =>{
         await this.window.loadURL(url)
@@ -21,15 +21,7 @@ export class ChatController {
 
     constructor(window: BrowserWindow) {
         this.window = window
-
-        this.timer = setInterval(async ()=>{
-            if(this.messageList.length === 0) {
-                clearInterval(this.timer)
-                return
-            }
-            else await this._sendChat(this.messageList.shift() ?? "")
-        }, 1)
-
+        this.setTimer()
     }
 
     static init = (window: BrowserWindow) => {
@@ -52,17 +44,13 @@ export class ChatController {
         }
     }
     sendChat = (message: string) =>{
-        if(this.messageList.length === 0) this.setTimer()
         this.messageList.push(message)
     }
     setTimer = () =>{
         this.timer = setInterval(async ()=>{
-            if(this.messageList.length === 0) {
-                clearInterval(this.timer)
-                return
-            }
-            else await this._sendChat(this.messageList.shift() ?? "")
-        }, 1000)
+            const msg = this.messageList.shift()
+            if(msg) await this._sendChat(msg)
+        }, 500)
     }
 
     private _sendChat = async (message: string) =>{

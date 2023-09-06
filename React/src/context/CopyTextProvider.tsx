@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
-import Storage from "../Utils/Storage";
+import StorageUtil from "../utils/StorageUtil";
 
 interface props {
     copyTextList: string[],
@@ -21,32 +21,32 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [copyTextList, setCopyTextList] = useState<string[]>([]);
 
     useEffect(() => {
-        const textList = Storage.getTextList()
+        const textList = StorageUtil.getTextList()
         console.log(textList)
         setCopyTextList(textList)
     }, [])
 
     const addCopyTextList = (value: string) => {
         setCopyTextList([...copyTextList, value]);
-        Storage.saveTextList([...copyTextList, value])
+        StorageUtil.saveTextList([...copyTextList, value])
     };
 
     const removeTextList = (index: number) => {
         if (copyTextList.length === 1) {
             setCopyTextList([])
-            Storage.saveTextList([])
+            StorageUtil.saveTextList([])
             return
         }
         let list = [...copyTextList]
         list.splice(index, 1)
         console.log(list)
-        Storage.saveTextList(list)
+        StorageUtil.saveTextList(list)
         setCopyTextList(list)
     };
 
     const removeTextListAll = () => {
         setCopyTextList([])
-        Storage.saveTextList([])
+        StorageUtil.saveTextList([])
     }
 
     return (

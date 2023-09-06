@@ -1,8 +1,7 @@
-import {ApiConfig, BidItem, Client, httpMethod, iBidItem} from "../common/tpye";
 import axios, {AxiosRequestConfig} from "axios"
-import Storage from "../Utils/Storage";
 import {APIResponse} from "./APIResponse";
-import {Indicator} from "../common/Indicator";
+import {ApiConfig, BidItem, Client, httpMethod, iBidItem} from "../utils/tpye";
+import {Indicator} from "../utils/Indicator";
 
 
 export default class API {

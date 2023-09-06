@@ -1,6 +1,6 @@
 import React from "react";
 import {useBid} from "../../../hook/useBid";
-import File from "../../../Utils/File";
+import File from "../../../utils/File";
 
 export const MainFooter: React.FC = () =>{
     const {bidItems} = useBid()

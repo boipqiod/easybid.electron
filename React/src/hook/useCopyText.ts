@@ -2,7 +2,7 @@ import {useContext, useEffect} from "react";
 import {CopyTextContext} from "../context/CopyTextProvider";
 import {useAlert} from "./utils/useAlert";
 import {ElectronAPI} from "../model/ElectronAPI";
-import {interfaceType} from "../common/tpye";
+import {interfaceType} from "../utils/tpye";
 
 export const useCopyText = () =>{
     const context = useContext(CopyTextContext)
@@ -13,6 +13,8 @@ export const useCopyText = () =>{
         window.bid.setObserver<string>(interfaceType.message, (data)=>{
             appendText(data)
         })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[copyTextList])
 
     const appendText = (text: string) =>{

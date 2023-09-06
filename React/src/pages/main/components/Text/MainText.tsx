@@ -16,7 +16,7 @@ export const MainText: React.FC = () => {
                     </div>
                     <button
                         onClick={removeAllText}
-                        className="btn btn-danger">전체 삭제1</button>
+                        className="btn btn-danger">전체 삭제</button>
                 </div>
             </div>
             <div className="card-body">

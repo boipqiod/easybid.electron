@@ -1,6 +1,6 @@
 import React, {ChangeEventHandler, useState} from "react";
-import {BidItem, BidStatus} from "../../../common/tpye";
 import {useBid} from "../../../hook/useBid";
+import {BidItem, BidStatus} from "../../../utils/tpye";
 
 export const MainAdder: React.FC = () => {
 
@@ -89,6 +89,5 @@ export const MainAdder: React.FC = () => {
                     >+</button>
                 </div>
             </div>
-            <hr />
         </>)
 }

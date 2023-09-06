@@ -14,7 +14,6 @@ export default class BidService {
         this.fileName = fileName
     }
 
-
     saveBidData = async (data: BidItem[]) => {
         try {
             await FireStoreUtil.instance.setDoc(this.id, this.fileName, JSON.stringify(data))
@@ -26,9 +25,12 @@ export default class BidService {
     getBidData = async (): Promise<BidItem[]> => {
         const res = await FireStoreUtil.instance.ensureDocWithDefaults(this.id, this.fileName)
 
+        console.log("getBidData", this.id, this.fileName)
+
         try {
             return JSON.parse(res) as BidItem[]
         }catch (e) {
+            console.log("getBidData", e)
             return []
         }
     }

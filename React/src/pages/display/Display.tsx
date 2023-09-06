@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useBid} from "../../hook/useBid";
-import Utils from "../../Utils/Utils";
-import {BidItem, DisplaySetting, interfaceType} from "../../common/tpye";
-import Storage from "../../Utils/Storage";
+import Utils from "../../utils/Utils";
+import StorageUtil from "../../utils/StorageUtil";
+import {BidItem, DisplaySetting, interfaceType} from "../../utils/tpye";
 
 export const Display:React.FC = () =>{
 
@@ -20,7 +20,7 @@ export const Display:React.FC = () =>{
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     const initObserver = () =>{
@@ -55,7 +55,7 @@ export const Display:React.FC = () =>{
     }
 
     const initDisplaySetting = () =>{
-        const _setting = Storage.getSetting()
+        const _setting = StorageUtil.getSetting()
         if(_setting) {
             setSetting(_setting)
         }else{
@@ -92,9 +92,9 @@ export const Display:React.FC = () =>{
                     </div>
                     <div className="row w-100 text-center">
                         {
-                            bidItems[onSaleIndex].clients.map((value, index)=>{
+                            bidItems[onSaleIndex].clients.map((client, index)=>{
                                 return item(index)
-                            })
+                            } )
                         }
                     </div>
 

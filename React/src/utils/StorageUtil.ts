@@ -1,6 +1,6 @@
-import {DisplaySetting} from "../common/tpye";
+import {DisplaySetting} from "./tpye";
 
-export default class Storage {
+export default class StorageUtil {
 
     private static FILENAME = "fileName"
     private static YOUTUBE_URL = "youtubeUrl"
@@ -10,45 +10,45 @@ export default class Storage {
     private static COPY = "copy"
 
     static getFileName = () => {
-        return localStorage.getItem(Storage.FILENAME)
+        return localStorage.getItem(StorageUtil.FILENAME)
     }
     static saveFileName = (name: string) => {
-        localStorage.setItem(Storage.FILENAME, name)
+        localStorage.setItem(StorageUtil.FILENAME, name)
     }
     static getYoutubeUrl = () => {
-        return localStorage.getItem(Storage.YOUTUBE_URL)
+        return localStorage.getItem(StorageUtil.YOUTUBE_URL)
     }
     static saveYoutubeUrl = (url: string) => {
-        localStorage.setItem(Storage.YOUTUBE_URL, url)
+        localStorage.setItem(StorageUtil.YOUTUBE_URL, url)
     }
     static getEbId = (): string => {
-        return localStorage.getItem(Storage.ID) ?? ""
+        return localStorage.getItem(StorageUtil.ID) ?? ""
     }
     static saveEbId = (id: string) => {
-        localStorage.setItem(Storage.ID, id)
+        localStorage.setItem(StorageUtil.ID, id)
     }
 
     static saveToken = (token: string) => {
-        localStorage.setItem(Storage.TOKEN, token)
+        localStorage.setItem(StorageUtil.TOKEN, token)
     }
     static getToken = (): string => {
-        return localStorage.getItem(Storage.TOKEN) ?? ""
+        return localStorage.getItem(StorageUtil.TOKEN) ?? ""
     }
 
     static getSetting = () => {
-        const setting = localStorage.getItem(Storage.SETTING)
+        const setting = localStorage.getItem(StorageUtil.SETTING)
         if (setting) return JSON.parse(setting) as DisplaySetting
         else return null
     }
     static saveSetting = (setting: DisplaySetting) => {
-        localStorage.setItem(Storage.SETTING, JSON.stringify(setting))
+        localStorage.setItem(StorageUtil.SETTING, JSON.stringify(setting))
     }
 
     static saveTextList = (copyText: string[]) => {
-        localStorage.setItem(Storage.COPY, JSON.stringify(copyText))
+        localStorage.setItem(StorageUtil.COPY, JSON.stringify(copyText))
     }
     static getTextList = () => {
-        const copyText = localStorage.getItem(Storage.COPY)
+        const copyText = localStorage.getItem(StorageUtil.COPY)
         if (copyText) return JSON.parse(copyText) as string[]
         else return []
     }

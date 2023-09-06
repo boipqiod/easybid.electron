@@ -1,6 +1,5 @@
 import React from "react";
 import {Color, ColorChangeHandler, SketchPicker} from "react-color";
-import {setState} from "../../common/tpye";
 
 type props = {
     color: Color

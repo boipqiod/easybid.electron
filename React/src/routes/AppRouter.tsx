@@ -1,8 +1,8 @@
 import React from "react";
 import {Routes, Route, BrowserRouter} from "react-router-dom"
-import { Main } from "../views/main/Main";
-import {Display} from "../views/display/Display";
-import {Chat} from "../views/chat/Chat";
+import { Main } from "../pages/main/Main";
+import {Display} from "../pages/display/Display";
+import {Chat} from "../pages/chat/Chat";
 
 export const AppRouter: React.FC = () => {
     return (

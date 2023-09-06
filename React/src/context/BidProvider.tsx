@@ -1,9 +1,9 @@
 import React, {createContext, ReactNode, useEffect, useState} from "react";
-import {BidItem, BidStatus, setState} from "../common/tpye";
-import Storage from "../Utils/Storage";
-import {Auth} from "../views/auth/Auth";
-import {Loading} from "../views/common/Loading";
+import StorageUtil from "../utils/StorageUtil";
+import {Auth} from "../pages/auth/Auth";
+import {Loading} from "../pages/common/Loading";
 import {ElectronAPI} from "../model/ElectronAPI";
+import {BidItem, BidStatus, setState} from "../utils/tpye";
 
 interface props {
     bidItems: BidItem[],
@@ -22,6 +22,8 @@ interface props {
     setInit: setState<boolean>
     setting: boolean,
     setSetting: setState<boolean>
+    isAddProduct: boolean,
+    setIsAddProduct: setState<boolean>
 }
 
 const init: props = {
@@ -43,7 +45,8 @@ const init: props = {
     },
     setOnSaleIndex(_value: ((prevState: number) => number) | number): void {
     }
-    , setting: false, setSetting(_value: ((prevState: boolean) => boolean) | boolean): void {}
+    , setting: false, setSetting(_value: ((prevState: boolean) => boolean) | boolean): void {},
+    isAddProduct: false, setIsAddProduct(_value: ((prevState: boolean) => boolean) | boolean): void {}
 }
 
 export const BidContext = createContext<props>(init)
@@ -59,6 +62,8 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     const [addClientIndex, setAddClientIndex] = useState<number>(-1)
     //세팅 모달
     const [setting, setSetting] = useState<boolean>(false)
+    //상품 추가 모달
+    const [isAddProduct, setIsAddProduct] = useState<boolean>(false)
 
     //아이디
     const [ebId, setEbId] = useState<string>("")
@@ -74,8 +79,8 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     //로딩 중
 
     const initAuth = async () => {
-        const fileName = Storage.getFileName()
-        const youtubeUrl = Storage.getYoutubeUrl()
+        const fileName = StorageUtil.getFileName()
+        const youtubeUrl = StorageUtil.getYoutubeUrl()
 
         console.log(fileName, youtubeUrl)
 
@@ -121,6 +126,7 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
             addClientIndex, setAddClientIndex,
 
             setting, setSetting,
+            isAddProduct, setIsAddProduct,
 
             auth, setAuth,
             init, setInit,
