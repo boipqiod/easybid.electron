@@ -1,10 +1,23 @@
 import {useCopyText} from "../../hook/useCopyText";
 import {MainTextItem} from "../main/components/Text/MainTextItem";
-import React from "react";
+import React, {useEffect} from "react";
 import {Button, Container, Table} from "react-bootstrap";
 
 export const Chat = () => {
-    const { copyTextList, removeAllText } = useCopyText()
+    const { copyTextList, removeAllText, setCopyTextList } = useCopyText()
+
+    useEffect(() => {
+        window.addEventListener('storage', (e:StorageEvent) => {
+            if(e.key === "copy"){
+                const list = JSON.parse(e.newValue || "[]")
+                setCopyTextList(list)
+            }
+        })
+
+        return () => {
+            document.removeEventListener('storage', ()=>{})
+        }
+    }, []);
 
     return (
         <Container

@@ -12,12 +12,14 @@ import {MainDisplay} from "./components/MainDisplay";
 import {Stack} from "react-bootstrap";
 import {MainAddProductModal} from "./components/Modals/MainAddProductModal";
 import {BidItem, interfaceType} from "../../utils/tpye";
+import {useCopyText} from "../../hook/useCopyText";
 
 export const Main: React.FC = () => {
     const fileName = StorageUtil.getFileName()
     const url = StorageUtil.getYoutubeUrl()
+    const {appendText, copyTextList} = useCopyText()
 
-    const {bidItems, setBidItems,bidEnded} = useBid()
+    const {bidItems, setBidItems,bidEnded, modifyIndex} = useBid()
     useEffect(()=>{
         window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data)=>{
             setBidItems(data)
@@ -29,12 +31,26 @@ export const Main: React.FC = () => {
 
         //eslint-disable-next-line
     },[bidItems])
+
+
+    useEffect(()=>{
+        window.bid.setObserver<string>(interfaceType.message, (data)=>{
+            appendText(data)
+        })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[copyTextList])
+
+
     return (
 
         <>
+            {
+                modifyIndex !== -1 &&
+                <MainModifyModal/>
+            }
             <MainAddProductModal />
             <MainAddClientModal />
-            <MainModifyModal />
             <div className="container d-flex flex-column align-items-center vw-100">
                 <div style={{width: "800px"}} className="d-flex flex-column justify-content-center text-center mb-5">
                     <MainHeader/>
@@ -42,7 +58,7 @@ export const Main: React.FC = () => {
                         fileName && fileName !== "" && url && url !== "" &&
                         <Stack gap={4}>
                             <MainDisplay />
-                            <MainAdder/>
+                            {/*<MainAdder/>*/}
                             <MainTable/>
                             {/*<MainText />*/}
                             <MainFooter/>

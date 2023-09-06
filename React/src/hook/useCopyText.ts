@@ -6,16 +6,8 @@ import {interfaceType} from "../utils/tpye";
 
 export const useCopyText = () =>{
     const context = useContext(CopyTextContext)
-    const {copyTextList, addCopyTextList, removeTextList, removeTextListAll} = context
+    const {copyTextList, addCopyTextList, removeTextList, removeTextListAll, setCopyTextList} = context
     const {showAlert, showConfirm} = useAlert()
-
-    useEffect(()=>{
-        window.bid.setObserver<string>(interfaceType.message, (data)=>{
-            appendText(data)
-        })
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[copyTextList])
 
     const appendText = (text: string) =>{
         addCopyTextList(text)
@@ -50,7 +42,8 @@ export const useCopyText = () =>{
 
 
     return {
-        copyTextList, addCopyTextList,
+        copyTextList, setCopyTextList,
+        addCopyTextList,
         appendText,
         removeText,
         removeAllText,

@@ -3,6 +3,7 @@ import StorageUtil from "../utils/StorageUtil";
 
 interface props {
     copyTextList: string[],
+    setCopyTextList: (value: string[]) => void
     addCopyTextList: (value: string) => void
     removeTextList: (index: number) => void
     removeTextListAll: () => void
@@ -11,6 +12,8 @@ interface props {
 const init: props = {
     addCopyTextList(_value: string): void {
     }, copyTextList: [], removeTextList(_index: number): void {
+    },
+    setCopyTextList(_value: string[]): void {
     }
     , removeTextListAll(): void {}
 }
@@ -51,7 +54,7 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     return (
         <CopyTextContext.Provider value={{
-            copyTextList,
+            copyTextList, setCopyTextList,
             addCopyTextList,
             removeTextList,
             removeTextListAll

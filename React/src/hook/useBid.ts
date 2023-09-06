@@ -27,7 +27,6 @@ export const useBid = () =>{
         }
 
         const res = await ElectronAPI.instance.addBidItem(item)
-        setIsAddProduct(false)
         if(res.success && res.data){
             setBidItems(res.data)
         }else{
