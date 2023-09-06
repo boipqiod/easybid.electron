@@ -199,7 +199,7 @@ export const MainModifyModal: React.FC = () => {
                                 </thead>
                                 <tbody>
                                 {
-                                    item.clients.map((value, index) => {
+                                    modifyIndex !== -1 && item.clients.map((value, index) => {
                                         return clientTable(index, value)
                                     })
                                 }

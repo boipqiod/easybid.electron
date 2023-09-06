@@ -14,7 +14,6 @@ export const MainAddClientModal: React.FC = () => {
     const close = () => {
         setAddClientIndex(-1)
     }
-
     const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
         const _client = {...client}
         _client.name = event.target.value

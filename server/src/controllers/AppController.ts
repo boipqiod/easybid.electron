@@ -7,7 +7,7 @@ import ExpressController from "./ExpressContoller";
 
 export default class AppController {
     static init = async () => {
-        // Menu.setApplicationMenu(null);
+        Menu.setApplicationMenu(null);
 
         await ExpressController.init()
         await AppController.checkGoogleLogin()

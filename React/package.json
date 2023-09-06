@@ -81,8 +81,9 @@
   },
   "scripts": {
     "bulidprod": "webpack --env=production",
-    "react:start": "BROWSER=none react-scripts start",
+    "react:start": "react-scripts start",
     "react:build": "react-scripts build && rm -rf ../server/dist/views/* && cp -r build/ ../server/dist/views",
+    "react:build:win": "react-scripts build && rmdir /s /q ..\\server\\dist\\views && xcopy /e /i /h build\\ ..\\server\\dist\\views\\",
     "test": "react-scripts test"
   },
   "eslintConfig": {
