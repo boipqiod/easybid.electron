@@ -30,8 +30,8 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({ children }
     }, [])
 
     const addCopyTextList = (value: string) => {
-        setCopyTextList([...copyTextList, value]);
-        StorageUtil.saveTextList([...copyTextList, value])
+        setCopyTextList([value, ...copyTextList]);
+        StorageUtil.saveTextList([value, ...copyTextList])
     };
 
     const removeTextList = (index: number) => {

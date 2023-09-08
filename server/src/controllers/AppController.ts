@@ -1,4 +1,4 @@
-import {app, Menu, BrowserWindow, HandlerDetails} from "electron";
+import {app, Menu, BrowserWindow, HandlerDetails, MenuItemConstructorOptions} from "electron";
 import path from "path";
 import {BrowserController} from "./BrowserController";
 import {ChatController} from "./ChatController";
@@ -7,8 +7,6 @@ import ExpressController from "./ExpressContoller";
 
 export default class AppController {
     static init = async () => {
-        Menu.setApplicationMenu(null);
-
         await ExpressController.init()
         await AppController.checkGoogleLogin()
         await AppController.startEasyBid()
@@ -16,6 +14,7 @@ export default class AppController {
 
     private static startEasyBid = async () => {
         Routes.init()
+        AppController.initMenu()
         await AppController.initMain()
         await AppController.initBack()
     }
@@ -53,6 +52,25 @@ export default class AppController {
         })
 
         ChatController.init(backWindow)
+    }
+
+    private static initMenu = () => {
+        const template: MenuItemConstructorOptions[] = [
+            {
+                label: app.name,
+                submenu: [
+                    { role: 'about' }
+                ]
+            },
+            {
+                label: 'View',
+                submenu: [
+                    { role: 'reload' }
+                ]
+            }
+        ];
+        const menu = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menu);
     }
 
     private static newWindow = ({url}: HandlerDetails): { action: 'deny' | 'allow' } => {

@@ -128,7 +128,7 @@ export default class BidController {
         this.saleIndex = index
 
         //메세지 발송
-        const message = `"${this.bidItems[index].name}  (${formatCurrency(this.bidItems[index].price)})" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`
+        const message = `"${this.bidItems[index].name}${this.bidItems[index].price === 0 ? "" : ` (${formatCurrency(this.bidItems[index].price)})`}" 상품의 판매를 시작합니다. 상품을 구매하고 싶은 만큼 숫자로 입력해주세요.`
         this.sendMessage(message, true)
         await BrowserController.shared.startBid(index, this.bidItems)
 
@@ -181,7 +181,7 @@ export default class BidController {
                 this.saleItemByIndex(index, chat.name, chat.message)
             })
 
-        }, 1000)
+        }, 100)
     }
 
     /****경매 프로스세스****/

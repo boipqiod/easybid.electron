@@ -27,6 +27,7 @@ contextBridge.exposeInMainWorld('bid', {
         }
     },
     setObserver: <T>(event: string, callback: (data: T)=>void) =>{
+        ipcRenderer.removeAllListeners(event);
         ipcRenderer.on(event, (event, args)=>{callback(args as T)})
     },
 

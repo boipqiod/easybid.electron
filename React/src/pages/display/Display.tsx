@@ -3,15 +3,15 @@ import {useBid} from "../../hook/useBid";
 import Utils from "../../utils/Utils";
 import StorageUtil from "../../utils/StorageUtil";
 import {BidItem, DisplaySetting, interfaceType} from "../../utils/tpye";
+import { Helmet } from 'react-helmet';
 
-export const Display:React.FC = () =>{
+export const Display: React.FC = () => {
 
     const {bidItems, setBidItems, onSaleIndex, setOnSaleIndex} = useBid()
 
     const [setting, setSetting] = useState<DisplaySetting>()
 
-    useEffect(()=>{
-        initObserver()
+    useEffect(() => {
         initDisplaySetting()
 
         window.addEventListener('storage', handleStorageChange);
@@ -21,31 +21,29 @@ export const Display:React.FC = () =>{
             window.removeEventListener('storage', handleStorageChange);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
+    }, [])
 
-    const initObserver = () =>{
-        // @ts-ignore
-        window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data)=>{
+    useEffect(() => {
+        window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data) => {
             console.log("setItem", data)
             setBidItems(data)
         })
 
-        // @ts-ignore
-        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.startBid, (data)=>{
+        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.startBid, (data) => {
             console.log("startBid", data)
 
             setOnSaleIndex(data.index)
             setBidItems(data.items)
         })
-        // @ts-ignore
-        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.endBid, (data)=>{
+        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.endBid, (data) => {
             console.log("endBid", data)
 
             setOnSaleIndex(-1)
             setBidItems(data.items)
         })
 
-    }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bidItems])
 
     const handleStorageChange = (e: StorageEvent) => {
         if (e.key === 'setting' && e.newValue) {
@@ -54,11 +52,11 @@ export const Display:React.FC = () =>{
         }
     }
 
-    const initDisplaySetting = () =>{
+    const initDisplaySetting = () => {
         const _setting = StorageUtil.getSetting()
-        if(_setting) {
+        if (_setting) {
             setSetting(_setting)
-        }else{
+        } else {
             const settingInit: DisplaySetting = {
                 product: {
                     size: 30,
@@ -73,33 +71,47 @@ export const Display:React.FC = () =>{
         }
     }
 
-    const item = (index: number) =>{
+    const item = (index: number) => {
         return (
-            <h1 style={{fontSize: setting?.client.size, color: setting?.client.color, fontWeight: "bold"}} className="col-3" key={index}>
+            <h1 style={{fontSize: setting?.client.size, color: setting?.client.color, fontWeight: "bold"}}
+                className="col-3" key={index}>
                 {`${bidItems[onSaleIndex].clients[index].name}님 ${bidItems[onSaleIndex].clients[index].amount}개`}
             </h1>
         )
     }
 
-    return(
-        <div style={{backgroundColor: "green"}} className="vw-100 vh-100 d-flex align-items-center flex-column">
-            {
-                onSaleIndex !== -1 &&
-                <>
-                    <div className="justify-content-center align-items-center flex-column my-5">
-                        <h1 style={{fontSize: setting?.product.size, color: setting?.product.color, fontWeight: "bold"}}>{bidItems[onSaleIndex].name}</h1>
-                        <h1 style={{fontSize: setting?.product.size, color: setting?.product.color, fontWeight: "bold"}}>{bidItems[onSaleIndex].price !== 0 && Utils.formatCurrency(bidItems[onSaleIndex].price)}</h1>
-                    </div>
-                    <div className="row w-100 text-center">
-                        {
-                            bidItems[onSaleIndex].clients.map((client, index)=>{
-                                return item(index)
-                            } )
-                        }
-                    </div>
+    return (
+        <>
+            <Helmet>
+                <title>EasyBid: 판매자 정보</title>
+            </Helmet>
+            <div style={{backgroundColor: "green"}} className="vw-100 vh-100 d-flex align-items-center flex-column">
+                {
+                    onSaleIndex !== -1 &&
+                    <>
+                        <div className="justify-content-center align-items-center flex-column my-5">
+                            <h1 style={{
+                                fontSize: setting?.product.size,
+                                color: setting?.product.color,
+                                fontWeight: "bold"
+                            }}>{bidItems[onSaleIndex].name}</h1>
+                            <h1 style={{
+                                fontSize: setting?.product.size,
+                                color: setting?.product.color,
+                                fontWeight: "bold"
+                            }}>{bidItems[onSaleIndex].price !== 0 && Utils.formatCurrency(bidItems[onSaleIndex].price)}</h1>
+                        </div>
+                        <div className="row w-100 text-center">
+                            {
+                                bidItems[onSaleIndex].clients.map((client, index) => {
+                                    return item(index)
+                                })
+                            }
+                        </div>
 
-                </>
-            }
-        </div>
+                    </>
+                }
+            </div>
+        </>
     )
 }

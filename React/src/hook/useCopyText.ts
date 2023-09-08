@@ -2,7 +2,6 @@ import {useContext, useEffect} from "react";
 import {CopyTextContext} from "../context/CopyTextProvider";
 import {useAlert} from "./utils/useAlert";
 import {ElectronAPI} from "../model/ElectronAPI";
-import {interfaceType} from "../utils/tpye";
 
 export const useCopyText = () =>{
     const context = useContext(CopyTextContext)

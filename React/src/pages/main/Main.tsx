@@ -17,7 +17,7 @@ import {useCopyText} from "../../hook/useCopyText";
 export const Main: React.FC = () => {
     const fileName = StorageUtil.getFileName()
     const url = StorageUtil.getYoutubeUrl()
-    const {appendText, copyTextList} = useCopyText()
+    const {appendText, copyTextList, setCopyTextList} = useCopyText()
 
     const {bidItems, setBidItems,bidEnded, modifyIndex} = useBid()
     useEffect(()=>{
@@ -37,6 +37,17 @@ export const Main: React.FC = () => {
         window.bid.setObserver<string>(interfaceType.message, (data)=>{
             appendText(data)
         })
+
+        window.addEventListener('storage', (e:StorageEvent) => {
+            if(e.key === "copy"){
+                const list = JSON.parse(e.newValue || "[]")
+                setCopyTextList(list)
+            }
+        })
+        return () => {
+            document.removeEventListener('storage', ()=>{})
+        }
+
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[copyTextList])
