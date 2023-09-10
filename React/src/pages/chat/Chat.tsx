@@ -47,8 +47,9 @@ export const Chat = () => {
                     {
                         copyTextList.map((value, index) =>
                             <MainTextItem
+                                displayIndex={copyTextList.length - index}
                                 text={value}
-                                index={copyTextList.length - index - 1}
+                                index={index}
                                 key={index}
                             />
                         )

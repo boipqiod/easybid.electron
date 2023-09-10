@@ -30,8 +30,9 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({ children }
     }, [])
 
     const addCopyTextList = (value: string) => {
-        setCopyTextList([value, ...copyTextList]);
-        StorageUtil.saveTextList([value, ...copyTextList])
+        const list = [...copyTextList.reverse(), value].reverse()
+        setCopyTextList(list);
+        StorageUtil.saveTextList(list)
     };
 
     const removeTextList = (index: number) => {
@@ -42,7 +43,7 @@ export const CopyTextProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
         let list = [...copyTextList]
         list.splice(index, 1)
-        console.log(list)
+        console.log(list, index)
         StorageUtil.saveTextList(list)
         setCopyTextList(list)
     };

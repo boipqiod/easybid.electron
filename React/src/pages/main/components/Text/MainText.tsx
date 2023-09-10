@@ -34,6 +34,7 @@ export const MainText: React.FC = () => {
                         {
                             copyTextList.map((value, index) =>
                                 <MainTextItem
+                                    displayIndex={copyTextList.length - index}
                                     text={value}
                                     index={index}
                                     key={index}

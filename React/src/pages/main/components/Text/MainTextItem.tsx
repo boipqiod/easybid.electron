@@ -3,6 +3,7 @@ import {useCopyText} from "../../../../hook/useCopyText";
 import {Button, ButtonGroup} from "react-bootstrap";
 
 type props = {
+    displayIndex: number,
     index: number,
     text: string
 }
@@ -12,7 +13,7 @@ export const MainTextItem: React.FC<props> = (props) => {
 
     return (
         <tr>
-            <td>{props.index}</td>
+            <td>{props.displayIndex}</td>
             <td>{props.text}</td>
             <td>
                 <ButtonGroup
