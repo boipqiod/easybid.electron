@@ -4,7 +4,7 @@ import {useBid} from "../../../../hook/useBid";
 import {Client} from "../../../../utils/tpye";
 import Form from "react-bootstrap/Form";
 
-export const MainAddClientModal: React.FC = () => {
+export const BidAddClientModal = () => {
     const {bidItems, addClientIndex, setAddClientIndex, addClient} = useBid()
     const [client, setClient] = useState<Client>({name: "", amount: 1})
 

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {useBid} from "../../hook/useBid";
-import Utils from "../../utils/Utils";
-import StorageUtil from "../../utils/StorageUtil";
-import {BidItem, DisplaySetting, interfaceType} from "../../utils/tpye";
+import {useBid} from "../../../hook/useBid";
+import Utils from "../../../utils/Utils";
+import StorageUtil from "../../../utils/StorageUtil";
+import {BidItem, DisplaySetting, interfaceType} from "../../../utils/tpye";
 import { Helmet } from 'react-helmet';
 
-export const Display: React.FC = () => {
+export const Display = () => {
 
     const {bidItems, setBidItems, onSaleIndex, setOnSaleIndex} = useBid()
 

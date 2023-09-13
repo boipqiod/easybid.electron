@@ -3,14 +3,16 @@ import StorageUtil from "../../../../utils/StorageUtil";
 import {DisplaySetting} from "../../../../utils/tpye";
 import {Button, Card, Modal, Stack} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import {usePage} from "../../../../hook/utils/usePage";
 
 type props = {
     isShow: boolean
     close: () => void
 }
 
-export const MainDisplaySetting: React.FC<props> = (props) => {
+export const BidDisplaySetting: React.FC<props> = (props) => {
 
+    const {toBack} = usePage()
     const [setting, setSetting] = useState<DisplaySetting>()
 
     useEffect(() => {
@@ -70,16 +72,14 @@ export const MainDisplaySetting: React.FC<props> = (props) => {
                 break
         }
         setSetting(_setting)
-
     }
-
 
     return (
         <Modal
             centered
             show={props.isShow}
             onHide={props.close}
-            style={{ overflow: "scroll"}}
+            style={{overflow: "scroll"}}
         >
             <Modal.Header>
                 <Card.Title>
@@ -149,6 +149,9 @@ export const MainDisplaySetting: React.FC<props> = (props) => {
                             />
                         </Stack>
                     </Stack>
+                    <Button
+                        onClick={toBack}
+                    >메인으로 이동</Button>
                 </Stack>
             </Modal.Body>
             <Modal.Footer>

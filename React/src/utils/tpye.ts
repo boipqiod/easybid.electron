@@ -74,3 +74,11 @@ export enum interfaceType{
     setItem = "setItem",
     message = "message"
 }
+
+
+/**** 상품 관련 ****/
+
+export type ProductItem = {
+    name: string
+    amount: number
+}

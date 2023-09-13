@@ -1,9 +1,9 @@
 import React from "react";
 import {useBid} from "../../../../hook/useBid";
-import {MainTableItem} from "./MainTableItem";
+import {BidTableItem} from "./BidTableItem";
 import {Button, Card, Table} from "react-bootstrap";
 
-export const MainTable: React.FC = () => {
+export const BidTable = () => {
     const {bidItems, setIsAddProduct} = useBid()
 
     return (
@@ -28,15 +28,15 @@ export const MainTable: React.FC = () => {
                         <td className={"col-1"}>No.</td>
                         <td className={"col-4"}>상품 이름</td>
                         <td className={"col-2"}>금액</td>
-                        <td className={"col-1"}>수량</td>
-                        <td className={"col-5"}>동작</td>
+                        <td className={"col"}>수량</td>
+                        <td className={"col-4"}>동작</td>
                     </tr>
                     </thead>
                     <tbody id="tbody">
                     {bidItems.length > 0 ? <>{
                         bidItems.map((value, index) => {
                             return (
-                                <MainTableItem
+                                <BidTableItem
                                     key={index}
                                     index={index}
                                     name={value.name}

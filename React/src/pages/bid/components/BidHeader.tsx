@@ -8,10 +8,10 @@ import {useSetting} from "../../../hook/useSetting";
 import logo from "../../../assets/easybid.logo.png"
 import {Button, Stack} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
-import {MainDisplaySetting} from "./Modals/MainDisplaySetting";
+import {BidDisplaySetting} from "./Modals/BidDisplaySetting";
 
 
-export const MainHeader: React.FC = () => {
+export const BidHeader = () => {
     const {initBid} = useBid()
 
     const {setting, openSetting } = useSetting()
@@ -93,7 +93,7 @@ export const MainHeader: React.FC = () => {
                     >{ isEdit ? "저장" : "변경" }</Button>
                 </Stack>
             </Stack>
-            <MainDisplaySetting
+            <BidDisplaySetting
                 isShow={setting}
                 close={openSetting}
             />

@@ -1,5 +1,5 @@
-import {useCopyText} from "../../hook/useCopyText";
-import {MainTextItem} from "../main/components/Text/MainTextItem";
+import {useCopyText} from "../../../hook/useCopyText";
+import {BidTextItem} from "../components/Text/BidTextItem";
 import React, {useEffect} from "react";
 import {Button, Container, Table} from "react-bootstrap";
 import {Helmet} from "react-helmet";
@@ -46,7 +46,7 @@ export const Chat = () => {
                     <tbody>
                     {
                         copyTextList.map((value, index) =>
-                            <MainTextItem
+                            <BidTextItem
                                 displayIndex={copyTextList.length - index}
                                 text={value}
                                 index={index}

@@ -2,7 +2,7 @@ import React from "react";
 import {useBid} from "../../../hook/useBid";
 import File from "../../../utils/File";
 
-export const MainFooter: React.FC = () =>{
+export const BidFooter = () => {
     const {bidItems} = useBid()
 
     const onClick = () =>{

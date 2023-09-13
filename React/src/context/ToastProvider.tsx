@@ -10,8 +10,7 @@ const init: props = {
 
 export const ToastContext = createContext<props>(init)
 
-export const ToastProvider: React.FC = () =>{
-
+export const ToastProvider = () => {
 
     return (
         <></>

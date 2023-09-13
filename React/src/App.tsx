@@ -1,14 +1,11 @@
-import {BidProvider} from './context/BidProvider';
 import {AppRouter} from './routes/AppRouter';
-import {CopyTextProvider} from "./context/CopyTextProvider";
+import {AuthProvider} from "./context/AuthProvider";
 
 function App() {
     return (
-        <BidProvider>
-            <CopyTextProvider>
-                    <AppRouter/>
-            </CopyTextProvider>
-        </BidProvider>
+        <AuthProvider>
+            <AppRouter/>
+        </AuthProvider>
     );
 }
 

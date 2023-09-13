@@ -8,7 +8,7 @@ type props = {
     text: string
 }
 
-export const MainTextItem: React.FC<props> = (props) => {
+export const BidTextItem: React.FC<props> = (props) => {
     const {removeText, copyText, sendMessage} = useCopyText()
 
     return (

@@ -2,7 +2,7 @@ import React from "react";
 import {useBid} from "../../../hook/useBid";
 import {Button, Card, Stack} from "react-bootstrap";
 
-export const MainDisplay: React.FC = () => {
+export const BidDisplay = () => {
     const {onSaleIndex, bidItems} = useBid()
 
     return (
@@ -16,14 +16,14 @@ export const MainDisplay: React.FC = () => {
                 <Button
                     variant={"secondary"}
                     className="w-100 mx-2"
-                    href="/display"
+                    href="/bid/display"
                     target="_blank"
                 >판매 정보 열기</Button>
 
                 <Button
                     variant={"secondary"}
                     className="w-100 mx-2"
-                    href="/chat"
+                    href="/bid/chat"
                     target="_blank"
                 >채팅 정보 열기</Button>
             </Stack>

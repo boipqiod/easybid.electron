@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import {useAuth} from "../../hook/useAuth";
 
-export const Auth: React.FC = () => {
+export const Auth = () => {
     const [id, setId] = useState<string>("")
     const [passkey, setPasskey] = useState<string>("")
     const {login} = useAuth()

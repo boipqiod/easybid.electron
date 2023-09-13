@@ -1,8 +1,8 @@
 import React from "react";
-import { MainTextItem } from "./MainTextItem";
+import { BidTextItem } from "./BidTextItem";
 import { useCopyText } from "../../../../hook/useCopyText";
 
-export const MainText: React.FC = () => {
+export const BidText = () => {
     const { copyTextList, removeAllText } = useCopyText()
 
     return (
@@ -33,7 +33,7 @@ export const MainText: React.FC = () => {
                     <tbody>
                         {
                             copyTextList.map((value, index) =>
-                                <MainTextItem
+                                <BidTextItem
                                     displayIndex={copyTextList.length - index}
                                     text={value}
                                     index={index}

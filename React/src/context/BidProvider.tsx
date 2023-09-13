@@ -1,9 +1,8 @@
 import React, {createContext, ReactNode, useEffect, useState} from "react";
 import StorageUtil from "../utils/StorageUtil";
-import {Auth} from "../pages/auth/Auth";
 import {Loading} from "../pages/common/Loading";
-import {ElectronAPI} from "../model/ElectronAPI";
 import {BidItem, BidStatus, setState} from "../utils/tpye";
+import BidService from "../service/BidService";
 
 interface props {
     bidItems: BidItem[],
@@ -14,10 +13,6 @@ interface props {
     setModifyIndex: setState<number>
     addClientIndex: number
     setAddClientIndex: setState<number>
-    ebId: string
-    setEbId: setState<string>
-    auth: boolean,
-    setAuth: setState<boolean>
     init: boolean,
     setInit: setState<boolean>
     setting: boolean,
@@ -27,26 +22,27 @@ interface props {
 }
 
 const init: props = {
-    addClientIndex: 0, setAddClientIndex(_value: ((prevState: number) => number) | number): void {
-    },
-    auth: false, setAuth(_value: ((prevState: boolean) => boolean) | boolean): void {
-    },
-    init: false, setInit(_value: ((prevState: boolean) => boolean) | boolean): void {
-    },
+    addClientIndex: 0,
     bidItems: [],
-    ebId: "",
+    init: false,
+    isAddProduct: false,
     modifyIndex: 0,
     onSaleIndex: 0,
-    setBidItems(_value: ((prevState: BidItem[]) => BidItem[]) | BidItem[]): void {
+    setAddClientIndex(value: ((prevState: number) => number) | number): void {
     },
-    setEbId(_value: ((prevState: string) => string) | string): void {
+    setBidItems(value: ((prevState: BidItem[]) => BidItem[]) | BidItem[]): void {
     },
-    setModifyIndex(_value: ((prevState: number) => number) | number): void {
+    setInit(value: ((prevState: boolean) => boolean) | boolean): void {
     },
-    setOnSaleIndex(_value: ((prevState: number) => number) | number): void {
-    }
-    , setting: false, setSetting(_value: ((prevState: boolean) => boolean) | boolean): void {},
-    isAddProduct: false, setIsAddProduct(_value: ((prevState: boolean) => boolean) | boolean): void {}
+    setIsAddProduct(value: ((prevState: boolean) => boolean) | boolean): void {
+    },
+    setModifyIndex(value: ((prevState: number) => number) | number): void {
+    },
+    setOnSaleIndex(value: ((prevState: number) => number) | number): void {
+    },
+    setSetting(value: ((prevState: boolean) => boolean) | boolean): void {
+    },
+    setting: false
 }
 
 export const BidContext = createContext<props>(init)
@@ -65,12 +61,8 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
     //상품 추가 모달
     const [isAddProduct, setIsAddProduct] = useState<boolean>(false)
 
-    //아이디
-    const [ebId, setEbId] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false)
-
     const [init, setInit] = useState<boolean>(false)
-    const [auth, setAuth] = useState<boolean>(false)
 
     useEffect(() => {
         initAuth().then()
@@ -85,37 +77,25 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
         console.log(fileName, youtubeUrl)
 
         //이닛을 확인할 필요 없음
-        if(!fileName || fileName === "" ||
-            !youtubeUrl || youtubeUrl === ""){
+        if (!fileName || fileName === "" ||
+            !youtubeUrl || youtubeUrl === "") {
+
+            console.log("initAuth", "no init")
             setLoading(true)
             return
         }
 
-        const isInitRes = await ElectronAPI.instance.isInit()
-        if(isInitRes.success && isInitRes.data) {
+        const isInitRes = await BidService.isInit()
+        if (isInitRes.success && isInitRes.data) {
             setBidItems(isInitRes.data)
             const index = isInitRes.data.findIndex(v => v.status === BidStatus.sale)
             setOnSaleIndex(index)
-            setAuth(true)
             setLoading(true)
             return
-        }else{
+        } else {
             setLoading(true)
             return
         }
-
-        // const initRes = await ElectronAPI.instance.init(fileName, youtubeUrl)
-        // if(initRes.success && initRes.data){
-        //     setBidItems(initRes.data)
-        //     const index = initRes.data.findIndex(v=>v.status === BidStatus.sale)
-        //     setOnSaleIndex(index)
-        //     setLoading(true)
-        // }
-    }
-
-
-    if (!loading) {
-        return <Loading />
     }
 
     return (
@@ -128,16 +108,9 @@ export const BidProvider: React.FC<{ children: ReactNode }> = ({children}) => {
             setting, setSetting,
             isAddProduct, setIsAddProduct,
 
-            auth, setAuth,
             init, setInit,
-            ebId, setEbId,
-
-
         }}>
-            {
-                auth ? children : <Auth />
-            }
-
+            {loading ? children : <Loading/>}
         </BidContext.Provider>
     )
 }

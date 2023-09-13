@@ -1,7 +1,7 @@
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import {CopyTextContext} from "../context/CopyTextProvider";
 import {useAlert} from "./utils/useAlert";
-import {ElectronAPI} from "../model/ElectronAPI";
+import BidService from "../service/BidService";
 
 export const useCopyText = () =>{
     const context = useContext(CopyTextContext)
@@ -36,7 +36,7 @@ export const useCopyText = () =>{
         const isSend = await showConfirm("메세지를 보내시겠습니까?")
         if (!isSend) return
         const text = copyTextList[index]
-        await ElectronAPI.instance.sendMessage(text)
+        await BidService.sendMessage(text)
     }
 
 

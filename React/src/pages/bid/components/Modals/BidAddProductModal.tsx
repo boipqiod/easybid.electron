@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import {BidItem} from "../../../../utils/tpye";
 import {useBid} from "../../../../hook/useBid";
 
-export const MainAddProductModal = () => {
+export const BidAddProductModal = () => {
 
     const {addItem, isAddProduct, setIsAddProduct } = useBid()
 

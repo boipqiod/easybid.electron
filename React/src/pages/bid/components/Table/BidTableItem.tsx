@@ -12,10 +12,9 @@ interface MainTableItemProps {
     status: BidStatus
 }
 
-export const MainTableItem: React.FC<MainTableItemProps> = ({index, name, price, amount, status}) => {
+export const BidTableItem= ({index, name, price, amount, status}: MainTableItemProps) => {
 
     const {startBid, endBid, restartBid, removeItem, setModifyIndex, setAddClientIndex} = useBid()
-
 
     return (
         <tr>
@@ -23,8 +22,9 @@ export const MainTableItem: React.FC<MainTableItemProps> = ({index, name, price,
             <td>{name}</td>
             <td>{Utils.formatCurrency(price)}</td>
             <td>{amount}</td>
-            <td>
+            <td style={{textAlign: "right"}}>
                 <ButtonGroup
+                    size={"sm"}
                     style={{
                         border: "1px solid #d9d9d9",
                     }}
@@ -53,10 +53,6 @@ export const MainTableItem: React.FC<MainTableItemProps> = ({index, name, price,
                         }
                     </Button>
                     <Button
-                        variant={"danger"}
-                        onClick={()=>{removeItem(index).then()}}
-                    >삭제</Button>
-                    <Button
                         variant={"light"}
                         onClick={()=>{setAddClientIndex(index)}}
                     >추가</Button>
@@ -64,6 +60,10 @@ export const MainTableItem: React.FC<MainTableItemProps> = ({index, name, price,
                         variant={"secondary"}
                         onClick={()=>{setModifyIndex(index)}}
                     >수정</Button>
+                    <Button
+                        variant={"danger"}
+                        onClick={()=>{removeItem(index).then()}}
+                    >삭제</Button>
                 </ButtonGroup>
             </td>
         </tr>

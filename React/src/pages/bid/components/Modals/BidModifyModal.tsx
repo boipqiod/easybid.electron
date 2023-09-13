@@ -4,7 +4,7 @@ import {BidItem, Client} from "../../../../utils/tpye";
 import {Button, Modal, Stack, Table} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 
-export const MainModifyModal: React.FC = () => {
+export const BidModifyModal = () => {
 
     const {modifyIndex, bidItems, setModifyIndex, modifyItem} = useBid()
     const [item, setItem] = useState<BidItem>({...bidItems[0]})

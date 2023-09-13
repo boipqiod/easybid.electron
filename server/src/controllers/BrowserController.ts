@@ -60,7 +60,7 @@ export class BrowserController {
                 window.webContents.send(interfaceType.endBid, {items, index})
             })
         } catch (e) {
-            console.log("BrowserController setItems", e)
+            console.log("BrowserController endBid", e)
         }
     }
 

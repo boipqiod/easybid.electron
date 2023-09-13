@@ -1,84 +1,50 @@
-import React, {useEffect} from 'react'
-import 'bootstrap/dist/css/bootstrap.css';
-import {MainHeader} from './components/MainHeader';
-import {MainAdder} from './components/MainAdder';
-import {MainTable} from "./components/Table/MainTable";
-import {MainModifyModal} from "./components/Modals/MainModifyModal";
-import {useBid} from "../../hook/useBid";
-import StorageUtil from "../../utils/StorageUtil";
-import {MainAddClientModal} from "./components/Modals/MainAddClientModal";
-import {MainFooter} from "./components/MainFooter";
-import {MainDisplay} from "./components/MainDisplay";
-import {Stack} from "react-bootstrap";
-import {MainAddProductModal} from "./components/Modals/MainAddProductModal";
-import {BidItem, interfaceType} from "../../utils/tpye";
-import {useCopyText} from "../../hook/useCopyText";
+import {Button, Stack} from "react-bootstrap";
+// @ts-ignore
+import logo from "../../assets/easybid.logo.png"
+import * as React from "react";
+import {usePage} from "../../hook/utils/usePage";
 
-export const Main: React.FC = () => {
-    const fileName = StorageUtil.getFileName()
-    const url = StorageUtil.getYoutubeUrl()
-    const {appendText, copyTextList, setCopyTextList} = useCopyText()
+export const Main = () => {
 
-    const {bidItems, setBidItems,bidEnded, modifyIndex} = useBid()
-    useEffect(()=>{
-        window.bid.setObserver<BidItem[]>(interfaceType.setItem, (data)=>{
-            setBidItems(data)
-        })
-        window.bid.setObserver<{ items: BidItem[], index: number }>(interfaceType.endBid, (data)=>{
-            setBidItems(data.items)
-            bidEnded(data.index)
-        })
-
-        //eslint-disable-next-line
-    },[bidItems])
-
-
-    useEffect(()=>{
-        window.bid.setObserver<string>(interfaceType.message, (data)=>{
-            appendText(data)
-        })
-
-        window.addEventListener('storage', (e:StorageEvent) => {
-            if(e.key === "copy"){
-                const list = JSON.parse(e.newValue || "[]")
-                setCopyTextList(list)
-            }
-        })
-        return () => {
-            document.removeEventListener('storage', ()=>{})
-        }
-
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[copyTextList])
-
+    const {toBid} = usePage()
 
     return (
+        <Stack
+            className={"mt-5 vw-100"}
+        >
+            <Stack
+                className={"mx-auto"}
+                style={{maxWidth: "720px"}}
+                gap={3}
+            >
+                <Stack>
+                    <img width={200} style={{cursor: "pointer"}} onClick={() => {
+                        window.location.reload()
+                    }} className='mx-auto' src={logo} alt="reload"/>
+                </Stack>
 
-        <>
-            {
-                modifyIndex !== -1 &&
-                <MainModifyModal/>
-            }
-            <MainAddProductModal />
-            <MainAddClientModal />
-            <div className="container d-flex flex-column align-items-center vw-100">
-                <div style={{width: "800px"}} className="d-flex flex-column justify-content-center text-center mb-5">
-                    <MainHeader/>
-                    {
-                        fileName && fileName !== "" && url && url !== "" &&
-                        <Stack gap={4}>
-                            <MainDisplay />
-                            {/*<MainAdder/>*/}
-                            <MainTable/>
-                            {/*<MainText />*/}
-                            <MainFooter/>
-                        </Stack>
-                    }
-                </div>
-            </div>
-        </>
+                <Stack
+                    className={"vh-100 d-flex justify-content-center align-items-center"}
+                    style={{paddingBottom: "200px", width: "70vw"}}
+                    gap={5}
+                >
+                    <Button
+                        className={"w-100 py-3"}
+                        variant={"secondary"}
+                        onClick={toBid}
 
+                    >재고 관리</Button>
+                    <Button
+                        className={"w-100 py-3"}
+                        variant={"secondary"}
+                    >회원 관리</Button>
+                    <Button
+                        className={"w-100 py-3"}
+                        variant={"secondary"}
+                        onClick={toBid}
+                    >경매 시작 관리</Button>
+                </Stack>
+            </Stack>
+        </Stack>
     )
-
 }

@@ -2,7 +2,7 @@ import React, {ChangeEventHandler, useState} from "react";
 import {useBid} from "../../../hook/useBid";
 import {BidItem, BidStatus} from "../../../utils/tpye";
 
-export const MainAdder: React.FC = () => {
+export const BidAdder = () => {
 
     const {addItem} = useBid()
 
