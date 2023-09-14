@@ -1,5 +1,5 @@
 import {BrowserWindow, ipcMain} from "electron";
-import {BidItem, interfaceType} from "../common/tpye";
+import {BidItem, interfaceType} from "../utils/tpye";
 import {ChatController} from "./ChatController";
 
 

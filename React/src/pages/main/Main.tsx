@@ -18,9 +18,8 @@ export const Main = () => {
                 gap={3}
             >
                 <Stack>
-                    <img width={200} style={{cursor: "pointer"}} onClick={() => {
-                        window.location.reload()
-                    }} className='mx-auto' src={logo} alt="reload"/>
+                    <img width={200} style={{cursor: "pointer"}}
+                         className='mx-auto' src={logo} alt="reload"/>
                 </Stack>
 
                 <Stack
@@ -29,20 +28,20 @@ export const Main = () => {
                     gap={5}
                 >
                     <Button
-                        className={"w-100 py-3"}
-                        variant={"secondary"}
-                        onClick={toBid}
-
+                        className={"w-100 py-3 fw-bold"}
+                        variant={"dark"}
+                        onClick={()=>{window.alert("준비중입니다.")}}
                     >재고 관리</Button>
                     <Button
-                        className={"w-100 py-3"}
-                        variant={"secondary"}
+                        className={"w-100 py-3 fw-bold"}
+                        variant={"dark"}
+                        onClick={()=>{window.alert("준비중입니다.")}}
                     >회원 관리</Button>
                     <Button
-                        className={"w-100 py-3"}
-                        variant={"secondary"}
+                        className={"w-100 py-3 fw-bold"}
+                        variant={"dark"}
                         onClick={toBid}
-                    >경매 시작 관리</Button>
+                    >경매 시작</Button>
                 </Stack>
             </Stack>
         </Stack>

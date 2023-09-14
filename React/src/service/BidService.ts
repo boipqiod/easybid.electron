@@ -1,5 +1,5 @@
 import {BidItem, Client, iBidItem} from "../utils/tpye";
-import {ElectronAPI} from "../model/ElectronAPI";
+import {API} from "../model/API";
 
 export default class BidService {
 
@@ -10,20 +10,20 @@ export default class BidService {
             youtubeUrl
         }
 
-        return await ElectronAPI.instance.request<BidItem[]>("/bid/init", body)
+        return await API.instance.request<BidItem[]>("/bid/init", body)
     }
     static isInit = async () => {
-        return await ElectronAPI.instance.request<BidItem[]>("/bid/isInit")
+        return await API.instance.request<BidItem[]>("/bid/isInit")
     }
 
     /**데이터 리로드**/
     static changeFileName = async () => {
-        return await ElectronAPI.instance.request<any>("/data/fileId")
+        return await API.instance.request<any>("/data/fileId")
     }
 
     /**아이템 추가,수정,삭제 */
     static getBidItems = async () => {
-        return await ElectronAPI.instance.request<BidItem[]>("/data/list")
+        return await API.instance.request<BidItem[]>("/data/list")
     }
 
     static addBidItem = async (item: BidItem) => {
@@ -31,14 +31,14 @@ export default class BidService {
             item
         }
 
-        return await ElectronAPI.instance.request<BidItem[]>("/data/add", body)
+        return await API.instance.request<BidItem[]>("/data/add", body)
     }
     static removeBidItem = async (index: number) => {
         const body = {
             index
         }
 
-        return await ElectronAPI.instance.request<BidItem[]>("/data/remove", body)
+        return await API.instance.request<BidItem[]>("/data/remove", body)
     }
 
     static modifyBidItem = async (index: number, item: iBidItem) => {
@@ -47,7 +47,7 @@ export default class BidService {
             item
         }
 
-        return await ElectronAPI.instance.request<BidItem[]>("/data/modify", body)
+        return await API.instance.request<BidItem[]>("/data/modify", body)
     }
 
     static addClient = async (index: number, client: Client) => {
@@ -56,7 +56,7 @@ export default class BidService {
             client
         }
 
-        return await ElectronAPI.instance.request<BidItem[]>("/data/addClient", body)
+        return await API.instance.request<BidItem[]>("/data/addClient", body)
     }
 
     /**경매 시작,멈춤*/
@@ -65,19 +65,19 @@ export default class BidService {
             index
         }
 
-        return await ElectronAPI.instance.request<BidItem[]>("/bid/start", body)
+        return await API.instance.request<BidItem[]>("/bid/start", body)
     }
     static endBid = async (index: number) => {
         const body = {
             index
         }
 
-        return await ElectronAPI.instance.request<BidItem[]>("/bid/end", body)
+        return await API.instance.request<BidItem[]>("/bid/end", body)
     }
     static sendMessage = async (message: string) => {
         const body = {
             message
         }
-        return await ElectronAPI.instance.request<BidItem[]>("/bid/message", body)
+        return await API.instance.request<BidItem[]>("/bid/message", body)
     }
 }

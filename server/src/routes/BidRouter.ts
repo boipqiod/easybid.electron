@@ -2,7 +2,7 @@ import {ipcMain} from "electron";
 import BidController from "../controllers/BidController";
 import {APIResponse} from "../model/response";
 import {ChatController} from "../controllers/ChatController";
-import EncryptUtil from "../common/EncryptUtil";
+import EncryptUtil from "../utils/EncryptUtil";
 
 export default class BidRouter{
     static init = () => {

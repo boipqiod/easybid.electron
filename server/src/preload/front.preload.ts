@@ -1,5 +1,5 @@
 import {contextBridge, ipcRenderer} from 'electron'
-import {BidItem} from "../common/tpye";
+import {BidItem} from "../utils/tpye";
 
 contextBridge.exposeInMainWorld('bid', {
     setItems: (bidItems: BidItem[]) =>{

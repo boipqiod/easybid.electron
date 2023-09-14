@@ -1,6 +1,6 @@
 import API from "../model/API";
-import {ApiConfig, httpMethod} from "../common/tpye";
-import {FireStoreUtil} from "../common/FireStoreUtil";
+import {ApiConfig, httpMethod} from "../utils/tpye";
+import {FireStoreUtil} from "../utils/FireStoreUtil";
 
 export default class AuthService{
     static shared: AuthService = new AuthService()

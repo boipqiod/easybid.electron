@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Modal, Stack} from "react-bootstrap";
 import {useBid} from "../../../../hook/useBid";
 import {Client} from "../../../../utils/tpye";
@@ -7,6 +7,13 @@ import Form from "react-bootstrap/Form";
 export const BidAddClientModal = () => {
     const {bidItems, addClientIndex, setAddClientIndex, addClient} = useBid()
     const [client, setClient] = useState<Client>({name: "", amount: 1})
+
+    useEffect(() => {
+        if (addClientIndex !== -1) {
+            setClient({name: "", amount: 1})
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [addClientIndex])
 
     const submit = async () => {
         await addClient(client)

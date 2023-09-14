@@ -2,19 +2,22 @@ import * as React from 'react';
 import {useBid} from "../../../hook/useBid";
 import {ChangeEventHandler, useState} from "react";
 import StorageUtil from "../../../utils/StorageUtil";
-import { IoSettingsOutline } from "react-icons/io5";
+import {IoSettingsOutline} from "react-icons/io5";
 import {useSetting} from "../../../hook/useSetting";
 // @ts-ignore
 import logo from "../../../assets/easybid.logo.png"
 import {Button, Stack} from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
 import {BidDisplaySetting} from "./Modals/BidDisplaySetting";
+import {usePage} from "../../../hook/utils/usePage";
+import {IoIosArrowBack} from "react-icons/io";
 
 
 export const BidHeader = () => {
     const {initBid} = useBid()
 
-    const {setting, openSetting } = useSetting()
+    const {toMain,} = usePage()
+    const {setting, openSetting} = useSetting()
 
     const fileName = StorageUtil.getFileName() ?? ""
     const url = StorageUtil.getYoutubeUrl() ?? ""
@@ -24,7 +27,7 @@ export const BidHeader = () => {
     const [youtubeUrl, setYoutubeUrl] = useState<string>(url)
 
     const handleChangeFileName: ChangeEventHandler<HTMLInputElement> = (event) => {
-        setBidName(event.target.value)
+        setBidName(event.target.value.toLowerCase().replaceAll(" ",""))
     }
     const handleChangeUrl: ChangeEventHandler<HTMLInputElement> = (event) => {
         setYoutubeUrl(event.target.value)
@@ -41,10 +44,26 @@ export const BidHeader = () => {
             gap={3}
             className={"mt-5"}
         >
-            <Stack>
+            <Stack
+                direction={"horizontal"}
+            >
+                <Button
+                    variant="none"
+                    className={"mx-2"}
+                    onClick={toMain}
+                >
+                    <IoIosArrowBack/> <span className={"fw-bold"}>뒤로</span>
+                </Button>
                 <img width={200} style={{cursor: "pointer"}} onClick={() => {
                     window.location.reload()
                 }} className='mx-auto' src={logo} alt="reload"/>
+                <Button
+                    variant="outline-primary"
+                    className={"mx-2"}
+                    onClick={openSetting}
+                >
+                    <IoSettingsOutline/> 설정
+                </Button>
             </Stack>
 
             <Stack
@@ -62,14 +81,6 @@ export const BidHeader = () => {
                         disabled={!isEdit}
                         value={youtubeUrl}
                     />
-                    <Button
-                        variant="outline-primary"
-                        className="mx-2"
-                        style={{width: "100px"}}
-                        onClick={openSetting}
-                    >
-                        <IoSettingsOutline /> 설정
-                    </Button>
                 </Stack>
 
                 <Stack
@@ -87,10 +98,12 @@ export const BidHeader = () => {
                     <Button
                         variant="info"
                         style={{width: "200px"}}
-                        onClick={isEdit ? edit : () => {setIsEdit(true)} }
+                        onClick={isEdit ? edit : () => {
+                            setIsEdit(true)
+                        }}
                         id="button_reload"
                         className="mx-2"
-                    >{ isEdit ? "저장" : "변경" }</Button>
+                    >{isEdit ? "저장" : "변경"}</Button>
                 </Stack>
             </Stack>
             <BidDisplaySetting

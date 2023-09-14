@@ -1,8 +1,8 @@
-import {BidItem, BidStatus, Client} from "../common/tpye";
 import BidService from "../service/BidService";
 import {ChatController} from "./ChatController";
 import {BrowserController} from "./BrowserController";
-import {Utils} from "../common/Utils";
+import {BidItem, BidStatus, Client} from "../utils/tpye";
+import {Utils} from "../utils/Utils";
 
 export default class BidController {
     id: string
@@ -232,10 +232,6 @@ export default class BidController {
 
         BrowserController.shared.setItems(this.bidItems).then()
         this.saveBidItemsToServer().then()
-    }
-
-    saleItemByNow = (name: string, amount: number) => {
-        this.saleItemByIndex(this.saleIndex, name, amount)
     }
 
     private sendMessage = (message: string, isSendChat: boolean = false) => {

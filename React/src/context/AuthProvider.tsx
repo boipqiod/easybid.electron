@@ -1,5 +1,6 @@
 import React, {createContext, useEffect, useState} from 'react';
 import {Auth} from "../pages/auth/Auth";
+import AuthService from "../service/AuthService";
 
 type props = {
     auth: boolean,
@@ -22,14 +23,20 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     //아이디
     const [ebId, setEbId] = useState<string>("")
 
-    useEffect(() => {
+    const init = async () => {
         const id = localStorage.getItem("ebId")
-        console.log(window.location.href)
-        if (id && window.location.href.includes("/bid")) {
-            console.log("로그인")
+
+        const res = await AuthService.isLogin()
+        if (res.success) {
             setAuth(true)
+            setEbId(id || "")
         }
+    }
+
+    useEffect(() => {
+        init().then().catch()
     }, [])
+
 
     return (
         <AuthContext.Provider value={{

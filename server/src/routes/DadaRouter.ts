@@ -1,7 +1,7 @@
 import {ipcMain} from "electron";
 import BidController from "../controllers/BidController";
 import {APIResponse} from "../model/response";
-import {BidItem, Client} from "../common/tpye";
+import {BidItem, Client} from "../utils/tpye";
 
 export default class DataRouter {
     static init = () => {

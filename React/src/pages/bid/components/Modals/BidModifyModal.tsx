@@ -3,15 +3,16 @@ import {useBid} from "../../../../hook/useBid";
 import {BidItem, Client} from "../../../../utils/tpye";
 import {Button, Modal, Stack, Table} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import Utils from "../../../../utils/Utils";
 
 export const BidModifyModal = () => {
 
     const {modifyIndex, bidItems, setModifyIndex, modifyItem} = useBid()
-    const [item, setItem] = useState<BidItem>({...bidItems[0]})
+    const [item, setItem] = useState<BidItem>(Utils.copyObject(bidItems[0]))
 
     useEffect(() => {
         if (modifyIndex !== -1) {
-            setItem({...bidItems[modifyIndex]})
+            setItem(Utils.copyObject(bidItems[modifyIndex]))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [modifyIndex])
@@ -28,13 +29,12 @@ export const BidModifyModal = () => {
                 _item.name = value
                 break
             case "price":
-                _item.price = parseInt(value)
+                _item.price = parseInt(value === "" ? "0" : value)
                 break
             case "amount":
                 _item.amount = parseInt(value)
                 break
         }
-
         setItem(_item)
     }
 
@@ -133,6 +133,19 @@ export const BidModifyModal = () => {
         modifyItem(item).then()
     }
 
+    const handleChangeItem = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedItemName = event.target.value;
+
+        // 선택된 아이템의 이름으로 원본 배열에서 인덱스 찾기
+        const index = bidItems.findIndex(item => item.name === selectedItemName);
+
+        // 해당 인덱스를 상태에 저장
+        if (index !== -1) {
+            setModifyIndex(index);
+            event.target.value = "";
+        }
+    }
+
     return (
         <Modal
             centered
@@ -147,6 +160,26 @@ export const BidModifyModal = () => {
                 <Stack
                     gap={4}
                 >
+                    <Form.Control
+                        list={"itemList"}
+                        placeholder={"상품 검색"}
+                        onChange={handleChangeItem}
+                    >
+                    </Form.Control>
+                    <datalist id={"itemList"}>
+                        {
+                            bidItems.map((value, index) => {
+                                return (
+                                    <option
+                                        key={index}
+                                        data-index={index}
+                                        value={value.name}
+                                    />
+                                )
+                            })
+                        }
+                    </datalist>
+
                     <Stack
                         gap={1}
                     >

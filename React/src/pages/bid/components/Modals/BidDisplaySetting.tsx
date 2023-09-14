@@ -12,7 +12,6 @@ type props = {
 
 export const BidDisplaySetting: React.FC<props> = (props) => {
 
-    const {toBack} = usePage()
     const [setting, setSetting] = useState<DisplaySetting>()
 
     useEffect(() => {
@@ -149,9 +148,6 @@ export const BidDisplaySetting: React.FC<props> = (props) => {
                             />
                         </Stack>
                     </Stack>
-                    <Button
-                        onClick={toBack}
-                    >메인으로 이동</Button>
                 </Stack>
             </Modal.Body>
             <Modal.Footer>

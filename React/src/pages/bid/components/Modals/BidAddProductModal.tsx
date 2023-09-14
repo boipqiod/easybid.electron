@@ -1,5 +1,5 @@
 import {Button, Modal, Stack} from "react-bootstrap";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Form from "react-bootstrap/Form";
 import {BidItem} from "../../../../utils/tpye";
 import {useBid} from "../../../../hook/useBid";
@@ -16,6 +16,19 @@ export const BidAddProductModal = () => {
         saleAmount: 0,
         status: 0
     })
+
+    useEffect(() => {
+        if(isAddProduct){
+            setItem({
+                amount: 0,
+                name: "",
+                price: 0,
+                clients: [],
+                saleAmount: 0,
+                status: 0
+            })
+        }
+    }, [isAddProduct])
 
     const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement

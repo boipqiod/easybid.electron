@@ -1,7 +1,7 @@
-import {BidItem, httpMethod} from "../common/tpye";
+import {BidItem, httpMethod} from "../utils/tpye";
 import API from "../model/API";
 import {request} from "../model/apiTypes";
-import {FireStoreUtil} from "../common/FireStoreUtil";
+import {FireStoreUtil} from "../utils/FireStoreUtil";
 
 export default class BidService {
 

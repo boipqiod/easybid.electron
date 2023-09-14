@@ -1,4 +1,4 @@
-import {ApiConfig, httpMethod} from "../common/tpye";
+import {ApiConfig, httpMethod} from "../utils/tpye";
 import axios, {AxiosRequestConfig} from "axios"
 
 export default class API{

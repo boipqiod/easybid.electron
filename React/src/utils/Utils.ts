@@ -9,4 +9,8 @@ export default class Utils{
 
         return formatter.format(value)
     }
+
+    static copyObject = <T>(obj: T): T => {
+        return JSON.parse(JSON.stringify(obj))
+    }
 }

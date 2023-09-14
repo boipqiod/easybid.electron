@@ -162,7 +162,12 @@ export const useBid = () =>{
         }
 
         if(!youtubeUrl.includes("live_chat")){
-            await showAlert("유튜브 채팅 주소를 확인해주세요. 유튜브 라이브 주소가 아닌 채팅 주소가 필요합니다.")
+            await showAlert("유튜브 채팅 주소를 확인해주세요.")
+            return false
+        }
+
+        if(fileName === "auth" || fileName === "product"){
+            await showAlert("사용할 수 없는 이름입니다.")
             return false
         }
 
