@@ -21,11 +21,11 @@ export const BidDisplaySetting: React.FC<props> = (props) => {
         } else {
             const settingInit: DisplaySetting = {
                 product: {
-                    size: 100,
+                    size: 60,
                     color: "#000000"
                 },
                 client: {
-                    size: 100,
+                    size: 25,
                     color: "#000000"
                 },
                 backGround: {
