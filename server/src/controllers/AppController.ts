@@ -14,7 +14,7 @@ export default class AppController {
 
     private static startEasyBid = async () => {
         Routes.init()
-        // AppController.initMenu()
+        AppController.initMenu()
         await AppController.initMain()
         await AppController.initBack()
     }
