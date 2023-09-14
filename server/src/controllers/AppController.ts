@@ -14,7 +14,7 @@ export default class AppController {
 
     private static startEasyBid = async () => {
         Routes.init()
-        // AppController.initMenu()
+        AppController.initMenu()
         await AppController.initMain()
         await AppController.initBack()
     }
@@ -35,8 +35,8 @@ export default class AppController {
         mainWindow.on('close', this.stop)
 
         //url 로드
-        await mainWindow.loadURL(`http://localhost:3002`);
-        // await mainWindow.loadURL(`http://localhost:3000`);
+        // await mainWindow.loadURL(`http://localhost:3002`);
+        await mainWindow.loadURL(`http://localhost:3000`);
 
         //브라우저 컨트롤러 초기화
         BrowserController.init(mainWindow)
