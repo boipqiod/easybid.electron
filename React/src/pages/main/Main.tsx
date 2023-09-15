@@ -4,10 +4,12 @@ import logo from "../../assets/easybid.logo.png"
 import * as React from "react";
 import {usePage} from "../../hook/utils/usePage";
 import {ProductProvider} from "../../context/ProductProvider";
+import {useAlert} from "../../hook/utils/useAlert";
 
 export const Main = () => {
 
     const {toBid, toProduct} = usePage()
+    const {showAlert} = useAlert()
 
     return (
         <Stack
@@ -37,7 +39,7 @@ export const Main = () => {
                         className={"w-100 py-3 fw-bold"}
                         variant={"dark"}
                         onClick={() => {
-                            window.alert("준비중입니다.")
+                            showAlert("준비중입니다.").then()
                         }}
                     >회원 관리</Button>
                     <Button

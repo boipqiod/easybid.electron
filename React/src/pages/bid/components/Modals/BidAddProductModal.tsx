@@ -59,8 +59,6 @@ export const BidAddProductModal = () => {
     }
 
     const submit = async () => {
-
-
         //-2면 재고 상품 등록
         if (productIndex === -1) {
             const res = await addProductData(item.name, item.amount)

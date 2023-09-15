@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@800&family=Roboto:ital,wght@0,400;0,900;1,700&display=swap');
-root{
+#root{
   font-family: 'Roboto', sans-serif;
+  font-weight: 400;
 }
 
 body {

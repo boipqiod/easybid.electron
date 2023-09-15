@@ -81,7 +81,6 @@ export const useBid = () =>{
         if(res.success && res.data){
             setBidItems(res.data)
             await showAlert("수정되었습니다.")
-            setModifyIndex(-1)
         }else{
             await showAlert(`실패`)
         }

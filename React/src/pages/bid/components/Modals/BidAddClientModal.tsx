@@ -74,7 +74,7 @@ export const BidAddClientModal = () => {
                         <Form.Label
                             className={"text-center"}
                         >
-                            이름
+                            구매 수량
                         </Form.Label>
                         <Form.Control
                             type={"number"}

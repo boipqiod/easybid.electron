@@ -78,7 +78,7 @@ export const Display = () => {
             <h1 style={{
                 fontSize: setting?.client.size,
                 color: setting?.client.color,
-                fontWeight: setting?.client.weight,
+                    fontWeight: 900,
             }}
                 className="col-3" key={index}>
                 {`${bidItems[onSaleIndex].clients[index].name}님 ${bidItems[onSaleIndex].clients[index].amount}개`}

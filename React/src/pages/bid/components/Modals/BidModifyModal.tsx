@@ -277,7 +277,7 @@ export const BidModifyModal = () => {
                     <Button
                         onClick={submit}
                         className={"mx-2"}
-                    > 저장
+                    > 적용
                     </Button>
                     <Button
                         onClick={close}
