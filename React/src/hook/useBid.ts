@@ -21,6 +21,12 @@ export const useBid = () =>{
     const {showAlert, showConfirm} = useAlert()
 
     const addItem = async (item: BidItem) =>{
+
+        if(item.productId === ""){
+            await showAlert("상품을 선택해주세요.")
+            return
+        }
+
         if(item.name === ""){
             await showAlert("이름을 입력해주세요.")
             return
@@ -56,14 +62,21 @@ export const useBid = () =>{
     }
 
     const modifyItem = async (item: BidItem) =>{
-        const bool = await showConfirm(`[${bidItems[modifyIndex].name}] 상품이 수정됩니다.`)
-        if(!bool) return
+        if(item.name === ""){
+            await showAlert("이름을 입력해주세요.")
+            return
+        }
 
         const index = item.clients.findIndex(v=>v.name==="")
         if(index !== -1) {
             await showAlert("사용자 이름을 확인해주세요")
             return
         }
+
+        const bool = await showConfirm(`[${bidItems[modifyIndex].name}] 상품이 수정됩니다.`)
+        if(!bool) return
+
+
         const res = await BidService.modifyBidItem(modifyIndex, item)
         if(res.success && res.data){
             setBidItems(res.data)

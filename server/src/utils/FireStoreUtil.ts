@@ -1,5 +1,17 @@
 import {FirebaseApp, initializeApp} from "firebase/app";
-import {collection, getDoc, Firestore, getDocs, getFirestore, doc, setDoc} from "firebase/firestore";
+import {
+    collection,
+    getDoc,
+    Firestore,
+    getDocs,
+    getFirestore,
+    doc,
+    setDoc,
+    updateDoc,
+    deleteField
+} from "firebase/firestore";
+import {BidItem} from "./tpye";
+
 const firebaseConfig = {
     apiKey: "AIzaSyAu67MO1xqx8lEbIzCm-Fztm4lujFIj_Kw",
     authDomain: "easybid-2997c.firebaseapp.com",
@@ -12,8 +24,8 @@ const firebaseConfig = {
 
 export class FireStoreUtil {
     static instance: FireStoreUtil = new FireStoreUtil();
-    private app: FirebaseApp | undefined;
-    private db: Firestore | undefined;
+    private app?: FirebaseApp
+    private db?: Firestore
 
     private constructor() {
         try {
@@ -24,66 +36,72 @@ export class FireStoreUtil {
         }
     }
 
-    async getSingleDocData(collectionName: string, docId: string) {
-        this.checkApp()
 
-        const docRef = doc(this.db!, collectionName, docId);
+    //문서 데이터 저장
+    setDoc = async (collectionName: string, docsName: string, data: object) => {
+        this.checkApp()
+        const docRef = doc(this.db!, collectionName, docsName);
+        await setDoc(docRef, data);
+    }
+
+    //문서 데이터 가져오기
+    getDocData = async (collectionName: string, docsName: string) => {
+        this.checkApp()
+        const docRef = doc(this.db!, collectionName, docsName);
         const docSnapshot = await getDoc(docRef);
+
         if (!docSnapshot.exists()) return null;
         return docSnapshot.data();
     }
 
-
-    setDoc = async (collectionName: string, docsName: string, data: string) => {
-        this.checkApp()
-
-        console.log("setDoc", collectionName, docsName)
-
+    //특정 필드 업데이트
+    updateFields = async (collectionName: string, docsName: string, data: { [key: string]: any }) => {
+        this.checkApp();
         const docRef = doc(this.db!, collectionName, docsName);
-        await setDoc(docRef, {data});
+
+        await updateDoc(docRef, data);
     }
 
+    //특정 필드 삭제
+    deleteFields = async (collectionName: string, docsName: string, key: string) => {
+        this.checkApp();
+        const docRef = doc(this.db!, collectionName, docsName);
+        const data: { [key: string]: any } = {};
+        data[key] = deleteField();
+
+        await updateDoc(docRef, data);
+    }
+
+
+    //문서 데이터 가져오기 (없으면 생성)
     ensureDocWithDefaults = async (collectionName: string, docsName: string) => {
         try {
             this.checkApp()
-            console.log("ensureDocWithDefaults", this.db, collectionName, docsName)
-
             const docRef = doc(this.db!, collectionName, docsName);
             const docSnapshot = await getDoc(docRef);
 
             // 문서가 존재하면 문서 데이터 반환
             if (docSnapshot.exists()) {
                 const data = docSnapshot.data();
-                console.log("ensureDocWithDefaults", data)
-                return data?.data as string;
+                console.log(data)
+                return data?.data as BidItem[] ?? []
             }
             // 문서가 존재하지 않으면 기본값으로 문서 생성
             else {
-                console.log("ensureDocWithDefaults", false)
-
-                await setDoc(docRef, {data: "[]"});
-                return "[]"
+                await setDoc(docRef, {data: []});
+                return []
             }
-        }catch (e) {
-            console.log("ensureDocWithDefaults", e)
-            return "[]"
+        } catch (e) {
+            return []
         }
-
-    }
-
-    test = async () => {
-        const querySnapshot = await getDocs(collection(this.db!, "test"))
-        querySnapshot.forEach((doc) => {
-            console.log(doc.id, " => ", doc.data());
-        })
     }
 
     private checkApp = () => {
-        if(!this.app) {
+        if (!this.app) {
             this.app = initializeApp(firebaseConfig);
             this.db = getFirestore(this.app)
         }
-        if(!this.db) {
+        if (!this.db) {
             this.db = getFirestore(this.app)
         }
     }

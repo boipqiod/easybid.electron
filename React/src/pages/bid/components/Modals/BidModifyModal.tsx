@@ -4,10 +4,12 @@ import {BidItem, Client} from "../../../../utils/tpye";
 import {Button, Modal, Stack, Table} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Utils from "../../../../utils/Utils";
+import {useProduct} from "../../../../hook/useProduct";
 
 export const BidModifyModal = () => {
 
     const {modifyIndex, bidItems, setModifyIndex, modifyItem} = useBid()
+    const {productList} = useProduct()
     const [item, setItem] = useState<BidItem>(Utils.copyObject(bidItems[0]))
 
     useEffect(() => {
@@ -45,8 +47,6 @@ export const BidModifyModal = () => {
         const index = parseInt(id.split("_")[2])
         const _item = {...item}
 
-        console.log(value)
-
         switch (id) {
             case `client_name_${index}`:
                 _item.clients[index].name = value
@@ -55,7 +55,7 @@ export const BidModifyModal = () => {
                 _item.clients[index].amount = parseInt(value)
                 break
             case `client_note_${index}`:
-                _item.clients[index].note = value === "" ? undefined : value
+                _item.clients[index].note = value
                 break
         }
         setItem(_item)
@@ -124,7 +124,8 @@ export const BidModifyModal = () => {
         const _item = {...item}
         _item.clients.push({
             amount: 1,
-            name: ""
+            name: "",
+            note: ""
         })
         setItem(_item)
     }
@@ -184,13 +185,30 @@ export const BidModifyModal = () => {
                         gap={1}
                     >
                         <h5>기본 정보</h5>
-                        <label htmlFor="name">상품 이름</label>
-                        <Form.Control
-                            id="name"
-                            onChange={onChangeProduct}
-                            placeholder="상품 이름"
-                            value={item.name}
-                        />
+                        <Stack
+                            direction={"horizontal"}
+                        >
+                            <Stack
+                                className={"w-100 mx-2"}
+                            >
+                                <label htmlFor="name">판매 이름</label>
+                                <Form.Control
+                                    id="name"
+                                    onChange={onChangeProduct}
+                                    placeholder="상품 이름"
+                                    value={item.name}
+                                />
+                            </Stack>
+                            <Stack>
+                                <label htmlFor="price">재고 상품</label>
+                                <Form.Control
+                                    disabled
+                                    value={productList.find(product => product.id === item.productId)?.name || ""}
+                                />
+                            </Stack>
+
+                        </Stack>
+
                         <Stack direction={"horizontal"}>
                             <Stack
                                 className={"w-100 mx-2"}

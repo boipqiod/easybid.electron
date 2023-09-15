@@ -1,7 +1,7 @@
 import {app, Menu, BrowserWindow, HandlerDetails, MenuItemConstructorOptions} from "electron";
 import path from "path";
-import {BrowserController} from "./BrowserController";
-import {ChatController} from "./ChatController";
+import {BrowserController} from "../common/BrowserController";
+import {ChatController} from "../common/ChatController";
 import Routes from "../routes/Routes";
 import ExpressController from "./ExpressContoller";
 
@@ -14,7 +14,7 @@ export default class AppController {
 
     private static startEasyBid = async () => {
         Routes.init()
-        AppController.initMenu()
+        // AppController.initMenu()
         await AppController.initMain()
         await AppController.initBack()
     }
@@ -35,8 +35,8 @@ export default class AppController {
         mainWindow.on('close', this.stop)
 
         //url 로드
-        // await mainWindow.loadURL(`http://localhost:3002`);
-        await mainWindow.loadURL(`http://localhost:3000`);
+        await mainWindow.loadURL(`http://localhost:3002`);
+        // await mainWindow.loadURL(`http://localhost:3000`);
 
         //브라우저 컨트롤러 초기화
         BrowserController.init(mainWindow)
@@ -117,7 +117,7 @@ export default class AppController {
                     clearInterval(timer)
                     resolve()
                 }
-            }, 100)
+            }, 1000)
 
         })
     }

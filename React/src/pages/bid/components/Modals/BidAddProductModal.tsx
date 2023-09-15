@@ -3,10 +3,14 @@ import React, {useEffect, useState} from "react";
 import Form from "react-bootstrap/Form";
 import {BidItem} from "../../../../utils/tpye";
 import {useBid} from "../../../../hook/useBid";
+import {useProduct} from "../../../../hook/useProduct";
+import Utils from "../../../../utils/Utils";
 
 export const BidAddProductModal = () => {
 
-    const {addItem, isAddProduct, setIsAddProduct } = useBid()
+    const {addItem, isAddProduct, setIsAddProduct} = useBid()
+    const {productList, addProductData} = useProduct()
+    const [productIndex, setProductIndex] = useState<number>(-1)
 
     const [item, setItem] = useState<BidItem>({
         amount: 0,
@@ -14,18 +18,20 @@ export const BidAddProductModal = () => {
         price: 0,
         clients: [],
         saleAmount: 0,
-        status: 0
+        status: 0,
+        productId: ""
     })
 
     useEffect(() => {
-        if(isAddProduct){
+        if (isAddProduct) {
             setItem({
                 amount: 0,
                 name: "",
                 price: 0,
                 clients: [],
                 saleAmount: 0,
-                status: 0
+                status: 0,
+                productId: ""
             })
         }
     }, [isAddProduct])
@@ -37,7 +43,7 @@ export const BidAddProductModal = () => {
 
         const _item = {...item}
 
-        switch (id){
+        switch (id) {
             case "name":
                 _item.name = value
                 break
@@ -52,7 +58,27 @@ export const BidAddProductModal = () => {
         setItem(_item)
     }
 
-    const submit = () => {
+    const submit = async () => {
+
+
+        //-2면 재고 상품 등록
+        if (productIndex === -1) {
+            const res = await addProductData(item.name, item.amount)
+            if(res.success && res.item){
+                const _item: BidItem = {
+                    amount: item.amount,
+                    name: item.name,
+                    price: item.price,
+                    clients: item.clients,
+                    saleAmount: item.saleAmount,
+                    status: item.status,
+                    productId: res.item.id
+                }
+                setItem(_item)
+                addItem(_item).then()
+            }
+            return
+        }
         //필드 체크
         addItem(item).then()
     }
@@ -65,13 +91,46 @@ export const BidAddProductModal = () => {
             price: 0,
             clients: [],
             saleAmount: 0,
-            status: 0
+            status: 0,
+            productId: ""
         })
 
         setIsAddProduct(false)
     }
 
-    return(
+    const handleProductInput = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const target = event.target as HTMLSelectElement
+        const index = Number(target.value)
+
+        setProductIndex(index)
+
+        if (index === -1) {
+            setItem({
+                amount: 0,
+                name: "",
+                price: 0,
+                clients: [],
+                saleAmount: 0,
+                status: 0,
+                productId: ""
+            })
+            return
+        }
+
+        const _item: BidItem = {
+            amount: item.amount,
+            name: productList[index].name,
+            price: item.price,
+            clients: item.clients,
+            saleAmount: item.saleAmount,
+            status: item.status,
+            productId: productList[index].id
+        }
+
+        setItem(_item)
+    }
+
+    return (
         <Modal
             centered
             show={isAddProduct}
@@ -84,11 +143,29 @@ export const BidAddProductModal = () => {
                 <Stack
                     className={"mx-2"}
                 >
-                    <label htmlFor="name">상품 이름</label>
+                    <Stack>
+                        <label htmlFor="productId">상품 선택</label>
+                        <Form.Select
+                            id="productId"
+                            onChange={handleProductInput}
+                        >
+                            <option value={-1}>새 상품 추가하기</option>
+                            {productList.map((product, index) => {
+                                return (
+                                    <option
+                                        key={index}
+                                        value={index}
+                                    >{product.name}</option>
+                                )
+                            })}
+                        </Form.Select>
+                    </Stack>
+
+                    <label htmlFor="name">판매 이름</label>
                     <Form.Control
                         id="name"
                         onChange={handleInput}
-                        placeholder="상품 이름"
+                        placeholder="판매 이름"
                         value={item.name}
                     />
                 </Stack>
@@ -118,6 +195,11 @@ export const BidAddProductModal = () => {
                             onChange={handleInput}
                             placeholder="판매 갯수"
                             min="0"
+                            max={
+                                item.productId === "" ?
+                                    undefined :
+                                    productList.find(product => product.id === item.productId)?.amount
+                            }
                             value={item.amount === 0 ? "" : item.amount}
                         />
                     </Stack>

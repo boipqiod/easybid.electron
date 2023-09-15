@@ -1,5 +1,5 @@
 import {BrowserWindow, ipcMain} from "electron";
-import {BidItem, interfaceType} from "../utils/tpye";
+import {BidItem, interfaceType, ProductItem} from "../utils/tpye";
 import {ChatController} from "./ChatController";
 
 
@@ -51,6 +51,16 @@ export class BrowserController {
             })
         } catch (e) {
             console.log("BrowserController setItems", e)
+        }
+    }
+
+    setProductList = async (items: ProductItem[]) => {
+        try {
+            this.windows.forEach(window => {
+                window.webContents.send(interfaceType.setProductList, items)
+            })
+        } catch (e) {
+            console.log("BrowserController setProductList", e)
         }
     }
 

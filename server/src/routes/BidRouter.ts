@@ -1,7 +1,7 @@
 import {ipcMain} from "electron";
 import BidController from "../controllers/BidController";
 import {APIResponse} from "../model/response";
-import {ChatController} from "../controllers/ChatController";
+import {ChatController} from "../common/ChatController";
 import EncryptUtil from "../utils/EncryptUtil";
 
 export default class BidRouter{

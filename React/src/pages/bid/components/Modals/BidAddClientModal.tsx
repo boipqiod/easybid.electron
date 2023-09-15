@@ -6,11 +6,11 @@ import Form from "react-bootstrap/Form";
 
 export const BidAddClientModal = () => {
     const {bidItems, addClientIndex, setAddClientIndex, addClient} = useBid()
-    const [client, setClient] = useState<Client>({name: "", amount: 1})
+    const [client, setClient] = useState<Client>({name: "", amount: 1, note: ""})
 
     useEffect(() => {
         if (addClientIndex !== -1) {
-            setClient({name: "", amount: 1})
+            setClient({name: "", amount: 1, note: ""})
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [addClientIndex])
@@ -29,6 +29,12 @@ export const BidAddClientModal = () => {
     const handleChangeAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
         const _client = {...client}
         _client.amount = parseInt(event.target.value)
+        setClient(_client)
+    }
+
+    const handleChangeNote = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const _client = {...client}
+        _client.note = event.target.value
         setClient(_client)
     }
 
@@ -75,6 +81,19 @@ export const BidAddClientModal = () => {
                             min={1}
                             onChange={handleChangeAmount}
                             value={client.amount === 0 ? "" : client.amount}
+                        />
+                    </Stack>
+                    <Stack
+                        className={"mx-2"}
+                    >
+                        <Form.Label
+                            className={"text-center"}
+                        >
+                            비고
+                        </Form.Label>
+                        <Form.Control
+                            onChange={handleChangeNote}
+                            value={client.note}
                         />
                     </Stack>
                 </Stack>

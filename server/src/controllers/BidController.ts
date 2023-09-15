@@ -1,8 +1,9 @@
 import BidService from "../service/BidService";
-import {ChatController} from "./ChatController";
-import {BrowserController} from "./BrowserController";
+import {ChatController} from "../common/ChatController";
+import {BrowserController} from "../common/BrowserController";
 import {BidItem, BidStatus, Client} from "../utils/tpye";
 import {Utils} from "../utils/Utils";
+import ProductController from "./ProductController";
 
 export default class BidController {
     id: string
@@ -101,7 +102,8 @@ export default class BidController {
         if (findIndex === -1) {
             item.clients.push({
                 name: client.name,
-                amount: client.amount
+                amount: client.amount,
+                note: client.note
             })
         } else {
             //기구매자에 추가
@@ -109,9 +111,12 @@ export default class BidController {
         }
 
         item.saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
-        await BrowserController.shared.setItems(this.bidItems)
+        BrowserController.shared.setItems(this.bidItems).then()
+        ProductController.shared.saleProduct(item.productId, client.amount).then().catch(e => console.log(e))
+        BrowserController.shared.setProductList(ProductController.shared.productList).then()
+
         const message = `${client.name}님 "${item.name} [${formatCurrency(item.price)}]" ${client.amount}개 구매 확인되었습니다.`
-        this.sendMessage(message)
+        this.sendMessage(message, index !== this.saleIndex)
         await this.saveBidItemsToServer()
         return this.bidItems
     }
@@ -139,9 +144,6 @@ export default class BidController {
     }
 
     endBid = async (index: number) => {
-        console.log("endBid", index)
-        console.log("bidItems", this.bidItems)
-        console.log(this.bidItems[index].name)
 
         //판매 아이템 인덱스 변경
         this.bidItems[index].status = BidStatus.end
@@ -149,6 +151,8 @@ export default class BidController {
 
         //메세지 발송
         await BrowserController.shared.endBid(index, this.bidItems)
+        ProductController.shared.saleProduct(this.bidItems[index].productId, this.bidItems[index].saleAmount).then().catch(e => console.log(e))
+        BrowserController.shared.setProductList(ProductController.shared.productList).then()
 
         let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`
 
@@ -215,7 +219,8 @@ export default class BidController {
         if (findIndex === -1) {
             item.clients.push({
                 name,
-                amount: _amount
+                amount: _amount,
+                note: ""
             })
         } else {
             //기구매자에 추가
@@ -229,7 +234,6 @@ export default class BidController {
         if (item.amount !== 0 && item.saleAmount >= item.amount) {
             this.endBid(index).then()
         }
-
         BrowserController.shared.setItems(this.bidItems).then()
         this.saveBidItemsToServer().then()
     }

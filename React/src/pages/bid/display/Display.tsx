@@ -60,11 +60,13 @@ export const Display = () => {
             const settingInit: DisplaySetting = {
                 product: {
                     size: 30,
-                    color: "#000000"
+                    color: "#000000",
+                    weight: 700
                 },
                 client: {
                     size: 20,
-                    color: "#000000"
+                    color: "#000000",
+                    weight: 700
                 },
             }
             setSetting(settingInit)
@@ -73,7 +75,11 @@ export const Display = () => {
 
     const item = (index: number) => {
         return (
-            <h1 style={{fontSize: setting?.client.size, color: setting?.client.color, fontWeight: "bold"}}
+            <h1 style={{
+                fontSize: setting?.client.size,
+                color: setting?.client.color,
+                fontWeight: setting?.client.weight,
+            }}
                 className="col-3" key={index}>
                 {`${bidItems[onSaleIndex].clients[index].name}님 ${bidItems[onSaleIndex].clients[index].amount}개`}
             </h1>
@@ -93,12 +99,12 @@ export const Display = () => {
                             <h1 style={{
                                 fontSize: setting?.product.size,
                                 color: setting?.product.color,
-                                fontWeight: "bold"
+                                fontWeight: 900,
                             }}>{bidItems[onSaleIndex].name}</h1>
                             <h1 style={{
                                 fontSize: setting?.product.size,
                                 color: setting?.product.color,
-                                fontWeight: "bold"
+                                fontWeight: 900,
                             }}>{bidItems[onSaleIndex].price !== 0 && Utils.formatCurrency(bidItems[onSaleIndex].price)}</h1>
                         </div>
                         <div className="row w-100 text-center">
@@ -108,7 +114,6 @@ export const Display = () => {
                                 })
                             }
                         </div>
-
                     </>
                 }
             </div>

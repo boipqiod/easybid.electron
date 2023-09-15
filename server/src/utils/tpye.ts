@@ -14,6 +14,8 @@ export interface BidItem {
     status: BidStatus
     //구매자 리스트
     clients: Client[]
+    //product id
+    productId: string
 }
 //구매자
 export interface Client {
@@ -22,7 +24,7 @@ export interface Client {
     //구매 수량
     amount: number
     //비고
-    note?: string
+    note: string
 }
 //api 설정
 export interface ApiConfig{
@@ -55,5 +57,14 @@ export enum interfaceType{
     startBid = "startBid",
     endBid = "endBid",
     setItem = "setItem",
-    message = "message"
+    message = "message",
+    setProductList = "setProductList"
+}
+
+/**** 상품 관련 ****/
+
+export type ProductItem = {
+    id: string
+    name: string
+    amount: number
 }

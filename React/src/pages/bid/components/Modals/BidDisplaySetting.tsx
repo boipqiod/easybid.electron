@@ -22,11 +22,13 @@ export const BidDisplaySetting: React.FC<props> = (props) => {
             const settingInit: DisplaySetting = {
                 product: {
                     size: 60,
-                    color: "#000000"
+                    color: "#000000",
+                    weight: 700
                 },
                 client: {
                     size: 25,
-                    color: "#000000"
+                    color: "#000000",
+                    weight: 700
                 },
                 backGround: {
                     color: "#008000"
@@ -103,21 +105,6 @@ export const BidDisplaySetting: React.FC<props> = (props) => {
                                 min="20"
                                 max="200"
                             />
-                            {/*<Dropdown id={"productColor"}>*/}
-                            {/*    <Dropdown.Toggle*/}
-                            {/*        variant={"secondary"}*/}
-                            {/*        className={"mx-2"}*/}
-                            {/*    >*/}
-                            {/*        글자 색*/}
-                            {/*    </Dropdown.Toggle>*/}
-                            {/*    <Dropdown.Menu>*/}
-                            {/*        <ColorPicker*/}
-                            {/*            color={setting?.product.color ?? "#000000"}*/}
-                            {/*            setColor={onChangeColorProduct}*/}
-                            {/*        />*/}
-                            {/*    </Dropdown.Menu>*/}
-                            {/*</Dropdown>*/}
-
                             <Form.Control
                                 type="color"
                                 id="productColor"
@@ -148,6 +135,55 @@ export const BidDisplaySetting: React.FC<props> = (props) => {
                             />
                         </Stack>
                     </Stack>
+                    <Stack>
+                        <p>구매자 글자 두께</p>
+                        <Form>
+                            <Form.Check
+                                type={"radio"}
+                                label={"일반"}
+                                name={"clientWeight"}
+                                id={"clientWeight1"}
+                                checked={setting?.client.weight === 0}
+                                onChange={() => {
+                                    if (!setting) return
+                                    const _setting = {...setting}
+                                    _setting.client.weight = 0
+                                    setSetting(_setting)
+                                }}
+                            />
+                            <Form.Check
+                                type={"radio"}
+                                label={"굵게"}
+                                name={"clientWeight"}
+                                id={"clientWeight2"}
+                                checked={setting?.client.weight === 700}
+                                onChange={() => {
+                                    if (!setting) return
+                                    const _setting = {...setting}
+                                    _setting.client.weight = 700
+                                    setSetting(_setting)
+                                }}
+                            />
+                            <Form.Check
+                                type={"radio"}
+                                label={"굵게"}
+                                name={"clientWeight"}
+                                id={"clientWeight2"}
+                                checked={setting?.client.weight === 900}
+                                onChange={() => {
+                                    if (!setting) return
+                                    const _setting = {...setting}
+                                    _setting.client.weight = 900
+                                    setSetting(_setting)
+                                }}
+                            />
+
+                        </Form>
+
+
+
+                    </Stack>
+
                 </Stack>
             </Modal.Body>
             <Modal.Footer>

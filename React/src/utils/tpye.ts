@@ -10,13 +10,14 @@ export interface BidItem {
     saleAmount: number
     status: BidStatus
     clients: Client[]
+    productId: string
 }
 
 //구매자
 export interface Client {
     name: string
     amount: number
-    note?: string
+    note: string
 }
 
 //api 설정
@@ -62,7 +63,7 @@ export type DisplaySetting = {
 export type DisplaySettingValues = {
     size: number
     color: string
-    font?: Font
+    weight: 0 | 700 | 900
 }
 
 /**** ipcRenderer 인터페이스 이넘 ****/
@@ -72,13 +73,16 @@ export enum interfaceType{
     startBid = "startBid",
     endBid = "endBid",
     setItem = "setItem",
-    message = "message"
+    message = "message",
+
+    setProductList = "setProductList"
 }
 
 
 /**** 상품 관련 ****/
 
 export type ProductItem = {
+    readonly id: string
     name: string
     amount: number
 }

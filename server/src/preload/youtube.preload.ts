@@ -15,7 +15,6 @@ contextBridge.exposeInMainWorld('youtube', {
 
             if(nodeList.length === 0) return {chatList: [], undefined}
 
-
             const chatIds = nodeList.map(node => (node as HTMLElement).id)
             const chatList = nodeList.filter((_, i) => chatIds[i].substring(0, 5) === 'ChwKG')
 
@@ -53,8 +52,9 @@ contextBridge.exposeInMainWorld('youtube', {
         }
 
         function getNameAndMessage(chat: HTMLElement) {
-            const name = chat.childNodes[3].childNodes[1].childNodes[3].textContent
-            const message = chat.childNodes[3].childNodes[3].textContent
+            console.log("getNameAndMessage", chat)
+            const name = chat.querySelector('yt-live-chat-author-chip #author-name')?.textContent
+            const message = chat.querySelector('#message')?.textContent
 
             if (name && message && isNumericString(message)) {
                 return {

@@ -1,7 +1,7 @@
 import React from "react";
 import {useBid} from "../../../../hook/useBid";
 import {BidTableItem} from "./BidTableItem";
-import {Button, Card, Table} from "react-bootstrap";
+import {Button, Card, Stack, Table} from "react-bootstrap";
 
 export const BidTable = () => {
     const {bidItems, setIsAddProduct} = useBid()
@@ -9,9 +9,13 @@ export const BidTable = () => {
     return (
         <Card className="w-100 m-1">
             <Card.Header>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div></div>
+
+                <Stack
+                    direction={"horizontal"}
+                    className={"w-100 justify-content-between"}
+                >
                     <Card.Title>상품</Card.Title>
+
                     <Button
                         variant="success"
                         onClick={() => {
@@ -19,7 +23,8 @@ export const BidTable = () => {
                         }}
                     >상품 추가
                     </Button>
-                </div>
+                </Stack>
+
             </Card.Header>
             <div className="card-body">
                 <Table>
@@ -43,6 +48,7 @@ export const BidTable = () => {
                                     price={value.price}
                                     amount={value.amount}
                                     status={value.status}
+                                    productId={value.productId}
                                 />
                             )
                         })

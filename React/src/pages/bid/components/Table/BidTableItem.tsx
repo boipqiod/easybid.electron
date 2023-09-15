@@ -3,6 +3,7 @@ import {useBid} from "../../../../hook/useBid";
 import Utils from "../../../../utils/Utils";
 import {BidStatus} from "../../../../utils/tpye";
 import {Button, ButtonGroup} from "react-bootstrap";
+import {useProduct} from "../../../../hook/useProduct";
 
 interface MainTableItemProps {
     index: number
@@ -10,16 +11,25 @@ interface MainTableItemProps {
     price: number
     amount: number
     status: BidStatus
+    productId: string
 }
 
-export const BidTableItem= ({index, name, price, amount, status}: MainTableItemProps) => {
+export const BidTableItem= ({index, name, price, amount, status, productId}: MainTableItemProps) => {
 
     const {startBid, endBid, restartBid, removeItem, setModifyIndex, setAddClientIndex} = useBid()
+    const {productList} = useProduct()
+
+    //아이디가 없거나, productList에 없으면 삭제된 상품
+    const isDeleted = productId === "" || productList.findIndex((value)=>{return value.id === productId}) === -1
+
+    console.log("isDeleted", isDeleted)
 
     return (
         <tr>
             <td>{index}</td>
-            <td>{name}</td>
+            <td
+                style={{ color : isDeleted ? "red" : "black" }}
+            >{name}</td>
             <td>{Utils.formatCurrency(price)}</td>
             <td>{amount}</td>
             <td style={{textAlign: "right"}}>
@@ -30,6 +40,7 @@ export const BidTableItem= ({index, name, price, amount, status}: MainTableItemP
                     }}
                 >
                     <Button
+                        disabled={isDeleted}
                         variant={
                         status === BidStatus.ready ? "success" :
                             status === BidStatus.sale ? "info" : "dark"}
@@ -53,6 +64,7 @@ export const BidTableItem= ({index, name, price, amount, status}: MainTableItemP
                         }
                     </Button>
                     <Button
+                        disabled={isDeleted}
                         variant={"light"}
                         onClick={()=>{setAddClientIndex(index)}}
                     >추가</Button>

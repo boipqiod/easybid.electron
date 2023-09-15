@@ -5,6 +5,8 @@ import {Button, Card, Stack} from "react-bootstrap";
 export const BidDisplay = () => {
     const {onSaleIndex, bidItems} = useBid()
 
+    console.log(onSaleIndex)
+
     return (
         <Stack
             gap={3}
@@ -36,9 +38,9 @@ export const BidDisplay = () => {
                     </Card.Title>
                 </Card.Header>
                 <Card.Body>
-                    <p>상품명 : {onSaleIndex ? "-" : bidItems[onSaleIndex].name}</p>
-                    <p>구매 갯수 : {onSaleIndex ? "-" : bidItems[onSaleIndex].saleAmount}</p>
-                    <p>남은 갯수 : {onSaleIndex ? "-" :  bidItems[onSaleIndex].amount === 0 ? "-" : bidItems[onSaleIndex].amount - bidItems[onSaleIndex].saleAmount}</p>
+                    <p>상품명 : {onSaleIndex === -1 ? "-" : bidItems[onSaleIndex].name}</p>
+                    <p>구매 갯수 : {onSaleIndex === -1 ? "-" : bidItems[onSaleIndex].saleAmount}</p>
+                    <p>남은 갯수 : {onSaleIndex === -1 ? "-" :  bidItems[onSaleIndex].amount === 0 ? "-" : bidItems[onSaleIndex].amount - bidItems[onSaleIndex].saleAmount}</p>
                 </Card.Body>
             </Card>
         </Stack>

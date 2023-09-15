@@ -22,7 +22,6 @@ export const Bid = () => {
     const {bidItems, setBidItems, bidEnded, modifyIndex, isAddProduct, addClientIndex} = useBid()
 
     useEffect(() => {
-
         const fileName = StorageUtil.getFileName()
         const id = StorageUtil.getEbId()
         const youtubeUrl = StorageUtil.getYoutubeUrl()

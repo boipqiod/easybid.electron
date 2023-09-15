@@ -16,7 +16,7 @@ export const useAuth = () =>{
             setEbId(id)
             setAuth(true)
         }else {
-            await showAlert("잘못된 아이디입니다.")
+            await showAlert("아이디 혹은 비밀번호를 확인해주세요.")
         }
     }
 

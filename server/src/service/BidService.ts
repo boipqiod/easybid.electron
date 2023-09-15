@@ -14,53 +14,27 @@ export default class BidService {
         this.fileName = fileName
     }
 
-    saveBidData = async (data: BidItem[]) => {
+    saveBidData = async (items: BidItem[]) => {
         try {
-            await FireStoreUtil.instance.setDoc(this.id, this.fileName, JSON.stringify(data))
+            // const data: string[] = []
+            // items.forEach(item => {
+            //     data.push(JSON.stringify(item))
+            // })
+            await FireStoreUtil.instance.setDoc(this.id, `bid_${this.fileName}`, {data: items})
         }catch (e) {
             console.log(e)
         }
     }
 
     getBidData = async (): Promise<BidItem[]> => {
-        const res = await FireStoreUtil.instance.ensureDocWithDefaults(this.id, this.fileName)
+        const res = await FireStoreUtil.instance.ensureDocWithDefaults(this.id, `bid_${this.fileName}`)
 
-        console.log("getBidData", this.id, this.fileName)
-
+        const data: BidItem[] = res
         try {
-            return JSON.parse(res) as BidItem[]
+            return data
         }catch (e) {
             console.log("getBidData", e)
             return []
         }
     }
-
-    // saveBidData = async (data: BidItem[]) => {
-    //     const body = {
-    //         data: data,
-    //         ebId: this.id,
-    //         fileName: this.fileName
-    //     }
-    //     const config = {
-    //         method: httpMethod.post,
-    //         url: "/data/save"
-    //     }
-    //
-    //     await API.shared.request<request, boolean>(config, body)
-    // }
-    //
-    // getBidData = async (): Promise<BidItem[]> => {
-    //     const body = {
-    //         ebId: this.id,
-    //         fileName: this.fileName
-    //     }
-    //     const config = {
-    //         method: httpMethod.get,
-    //         url: "/data/load"
-    //     }
-    //
-    //     const res = await API.shared.request<request, BidItem[]>(config, body)
-    //     return res.data ?? []
-    // }
-
 }

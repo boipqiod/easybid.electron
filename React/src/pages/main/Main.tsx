@@ -3,10 +3,11 @@ import {Button, Stack} from "react-bootstrap";
 import logo from "../../assets/easybid.logo.png"
 import * as React from "react";
 import {usePage} from "../../hook/utils/usePage";
+import {ProductProvider} from "../../context/ProductProvider";
 
 export const Main = () => {
 
-    const {toBid} = usePage()
+    const {toBid, toProduct} = usePage()
 
     return (
         <Stack
@@ -30,12 +31,14 @@ export const Main = () => {
                     <Button
                         className={"w-100 py-3 fw-bold"}
                         variant={"dark"}
-                        onClick={()=>{window.alert("준비중입니다.")}}
+                        onClick={toProduct}
                     >재고 관리</Button>
                     <Button
                         className={"w-100 py-3 fw-bold"}
                         variant={"dark"}
-                        onClick={()=>{window.alert("준비중입니다.")}}
+                        onClick={() => {
+                            window.alert("준비중입니다.")
+                        }}
                     >회원 관리</Button>
                     <Button
                         className={"w-100 py-3 fw-bold"}

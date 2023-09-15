@@ -7,10 +7,10 @@ export default class AuthService{
 
     login = async (id: string, passkey: string) =>{
         //문서를 가져옴
-        const data = await FireStoreUtil.instance.getSingleDocData(id, "auth");
+        const data = await FireStoreUtil.instance.getDocData(id, "_auth");
         if (!data) return false;
         const _passkey = data.passkey;
-        //passkey가 일치하면 true
+        //passkey 가 일치하면 true
         return _passkey === passkey
     }
 
