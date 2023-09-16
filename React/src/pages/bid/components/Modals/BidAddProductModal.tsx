@@ -19,20 +19,24 @@ export const BidAddProductModal = () => {
         clients: [],
         saleAmount: 0,
         status: 0,
-        productId: ""
+        productId: "",
+        saleProductCount: 1
     })
+
+    const baseItem: BidItem = {
+        amount: 0,
+        name: "",
+        price: 0,
+        clients: [],
+        saleAmount: 0,
+        status: 0,
+        productId: "",
+        saleProductCount: 1
+    }
 
     useEffect(() => {
         if (isAddProduct) {
-            setItem({
-                amount: 0,
-                name: "",
-                price: 0,
-                clients: [],
-                saleAmount: 0,
-                status: 0,
-                productId: ""
-            })
+            setItem(Utils.copyObject(baseItem))
         }
     }, [isAddProduct])
 
@@ -53,6 +57,9 @@ export const BidAddProductModal = () => {
             case "amount":
                 _item.amount = parseInt(value)
                 break
+            case "count":
+                _item.saleProductCount = parseInt(value)
+                break
         }
 
         setItem(_item)
@@ -70,7 +77,8 @@ export const BidAddProductModal = () => {
                     clients: item.clients,
                     saleAmount: item.saleAmount,
                     status: item.status,
-                    productId: res.item.id
+                    productId: res.item.id,
+                    saleProductCount: item.saleProductCount
                 }
                 setItem(_item)
                 addItem(_item).then()
@@ -83,15 +91,7 @@ export const BidAddProductModal = () => {
 
     const close = () => {
         //데이터 초기화
-        setItem({
-            amount: 0,
-            name: "",
-            price: 0,
-            clients: [],
-            saleAmount: 0,
-            status: 0,
-            productId: ""
-        })
+        setItem(Utils.copyObject(baseItem))
 
         setIsAddProduct(false)
     }
@@ -103,15 +103,7 @@ export const BidAddProductModal = () => {
         setProductIndex(index)
 
         if (index === -1) {
-            setItem({
-                amount: 0,
-                name: "",
-                price: 0,
-                clients: [],
-                saleAmount: 0,
-                status: 0,
-                productId: ""
-            })
+            setItem(Utils.copyObject(baseItem))
             return
         }
 
@@ -122,7 +114,8 @@ export const BidAddProductModal = () => {
             clients: item.clients,
             saleAmount: item.saleAmount,
             status: item.status,
-            productId: productList[index].id
+            productId: productList[index].id,
+            saleProductCount: item.saleProductCount === 0 ? 1 : item.saleProductCount
         }
 
         setItem(_item)
@@ -138,10 +131,10 @@ export const BidAddProductModal = () => {
                 <Modal.Title>상품 추가</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Stack
-                    className={"mx-2"}
-                >
-                    <Stack>
+                <Stack>
+                    <Stack
+                        className={"w-100 mx-2"}
+                    >
                         <label htmlFor="productId">상품 선택</label>
                         <Form.Select
                             id="productId"
@@ -158,14 +151,33 @@ export const BidAddProductModal = () => {
                             })}
                         </Form.Select>
                     </Stack>
-
-                    <label htmlFor="name">판매 이름</label>
-                    <Form.Control
-                        id="name"
-                        onChange={handleInput}
-                        placeholder="판매 이름"
-                        value={item.name}
-                    />
+                    <Stack
+                        direction={"horizontal"}>
+                        <Stack
+                            className={"w-75 mx-2"}
+                        >
+                            <label htmlFor="name">판매 이름</label>
+                            <Form.Control
+                                id="name"
+                                onChange={handleInput}
+                                placeholder="판매 이름"
+                                value={item.name}
+                            />
+                        </Stack>
+                        <Stack
+                            className={"w-25 mx-2"}
+                        >
+                            <label htmlFor="name">소모 갯수</label>
+                            <Form.Control
+                                type="number"
+                                min={1}
+                                id="count"
+                                onChange={handleInput}
+                                placeholder=""
+                                value={item.saleProductCount === 0 ? "" : item.saleProductCount}
+                            />
+                        </Stack>
+                    </Stack>
                 </Stack>
 
                 <Stack
@@ -186,12 +198,12 @@ export const BidAddProductModal = () => {
                     <Stack
                         className={"w-25 mx-2"}
                     >
-                        <label htmlFor="amount">판매 갯수</label>
+                        <label htmlFor="amount">판매 가능 갯수</label>
                         <Form.Control
                             type="number"
                             id="amount"
                             onChange={handleInput}
-                            placeholder="판매 갯수"
+                            placeholder="판매 가능 갯수"
                             min="0"
                             max={
                                 item.productId === "" ?

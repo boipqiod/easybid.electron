@@ -13,7 +13,8 @@ export const BidAdder = () => {
         clients: [],
         saleAmount: 0,
         status: BidStatus.ready,
-        productId: ""
+        productId: "",
+        saleProductCount: 1
     })
 
     const inputChange: ChangeEventHandler<HTMLInputElement> = (event) =>{

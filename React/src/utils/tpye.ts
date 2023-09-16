@@ -11,6 +11,7 @@ export interface BidItem {
     status: BidStatus
     clients: Client[]
     productId: string
+    saleProductCount: number
 }
 
 //구매자

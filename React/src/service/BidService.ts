@@ -50,10 +50,10 @@ export default class BidService {
         return await API.instance.request<BidItem[]>("/data/modify", body)
     }
 
-    static addClient = async (index: number, client: Client) => {
+    static addClient = async (index: number, clients: Client[]) => {
         const body = {
             index,
-            client
+            clients
         }
 
         return await API.instance.request<BidItem[]>("/data/addClient", body)

@@ -16,6 +16,8 @@ export interface BidItem {
     clients: Client[]
     //product id
     productId: string
+    //상품 1개 판매 당 재고 소모량
+    saleProductCount: number
 }
 //구매자
 export interface Client {

@@ -29,8 +29,8 @@ export default class DataRouter {
         });
 
         ipcMain.handle('/data/addClient', async (event, args) => {
-            const data = args as { index: number, client: Client };
-            const items = await BidController.shared.addClient(data.index, data.client);
+            const data = args as { index: number, clients: Client[] };
+            const items = await BidController.shared.addClient(data.index, data.clients);
             return APIResponse.getRes(true, items);
         });
 

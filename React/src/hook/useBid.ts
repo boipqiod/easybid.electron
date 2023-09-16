@@ -75,7 +75,19 @@ export const useBid = () =>{
 
         const bool = await showConfirm(`[${bidItems[modifyIndex].name}] 상품이 수정됩니다.`)
         if(!bool) return
-
+        //
+        // //기존 클라이언트에 없던 클라이언트 추출
+        // const newClients = item.clients.filter(v=>bidItems[modifyIndex].clients.findIndex(v2=>v2.name === v.name) === -1)
+        // //기존 클라이언트에 없던 클라이언트가 있으면
+        // if(newClients.length > 0){
+        //     const res = await BidService.addClient(modifyIndex, newClients)
+        //     if(res.success && res.data){
+        //         setBidItems(res.data)
+        //     }else{
+        //         await showAlert(`실패`)
+        //         return
+        //     }
+        // }
 
         const res = await BidService.modifyBidItem(modifyIndex, item)
         if(res.success && res.data){
@@ -84,9 +96,11 @@ export const useBid = () =>{
         }else{
             await showAlert(`실패`)
         }
+
+
     }
     const addClient = async (client: Client) =>{
-        const res = await BidService.addClient(addClientIndex, client)
+        const res = await BidService.addClient(addClientIndex, [client])
         if(res.success && res.data){
             setBidItems(res.data)
             await showAlert("추가되었습니다.")

@@ -67,12 +67,24 @@ export default class ProductController{
         }
     }
 
-    saleProduct = async (id: string, amount: number) => {
+    saleProduct = async (id: string, amount: number, saleCount: number) => {
         try {
             const item = this.productList.find(item => item.id === id)
             if(!item) return false
 
-            item.amount -= amount
+            item.amount -= amount * saleCount
+            return await this.modifyProductData(item)
+        }catch (e){
+            console.log(e)
+        }
+    }
+
+    unSaleProduct = async (id: string, amount: number, saleCount: number) => {
+        try {
+            const item = this.productList.find(item => item.id === id)
+            if(!item) return false
+
+            item.amount += amount * saleCount
             return await this.modifyProductData(item)
         }catch (e){
             console.log(e)

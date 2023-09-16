@@ -1,6 +1,6 @@
 {
   "name": "easybid",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "build": {
     "appId": "com.kuzim.easybid",
     "productName": "EasyBid",

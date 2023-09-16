@@ -36,6 +36,9 @@ export const BidModifyModal = () => {
             case "amount":
                 _item.amount = parseInt(value)
                 break
+            case "count":
+                _item.saleProductCount = parseInt(value)
+                break
         }
         setItem(_item)
     }
@@ -185,6 +188,17 @@ export const BidModifyModal = () => {
                         gap={1}
                     >
                         <h5>기본 정보</h5>
+
+                        <Stack
+                            className={"w-100 mx-2"}
+                        >
+                            <label htmlFor="price">재고 상품</label>
+                            <Form.Control
+                                disabled
+                                value={productList.find(product => product.id === item.productId)?.name || ""}
+                            />
+                        </Stack>
+
                         <Stack
                             direction={"horizontal"}
                         >
@@ -199,11 +213,16 @@ export const BidModifyModal = () => {
                                     value={item.name}
                                 />
                             </Stack>
-                            <Stack>
-                                <label htmlFor="price">재고 상품</label>
+                            <Stack
+                            >
+                                <label htmlFor="name">소모 갯수</label>
                                 <Form.Control
-                                    disabled
-                                    value={productList.find(product => product.id === item.productId)?.name || ""}
+                                    type="number"
+                                    min={1}
+                                    id="count"
+                                    onChange={onChangeProduct}
+                                    placeholder="소모 갯수"
+                                    value={item.saleProductCount === 0 ? "" : item.saleProductCount}
                                 />
                             </Stack>
 
