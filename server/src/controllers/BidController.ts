@@ -81,7 +81,7 @@ export default class BidController {
         this.bidItems.splice(index, 1)
 
         const item = this.bidItems[index]
-        await ProductController.shared.saleProduct(item.productId, -item.saleAmount, -item.saleProductCount)
+        await ProductController.shared.unSaleProduct(item.productId, item.saleAmount, item.saleProductCount)
 
         await this.saveBidItemsToServer()
         await BrowserController.shared.setItems(this.bidItems)
@@ -89,47 +89,6 @@ export default class BidController {
     }
 
     //아이템 수정
-    // modifyBidItem = async (index: number, data: BidItem) => {
-    //     console.log("####modifyBidItem", index)
-    //     this.bidItems[index] = data
-    //
-    //     let adjustment = 0;
-    //
-    //     // 기존 고객의 수량이 줄어든 경우
-    //     const previousAmount = this.bidItems[index].clients.reduce((total, client) => total + client.amount, 0);
-    //     const difference = previousAmount - data.saleProductCount;
-    //     if (difference > 0) {
-    //         adjustment -= difference;
-    //     }
-    //
-    //     // 기존 고객의 수량이 늘어난 경우
-    //     const saleAmount = this.bidItems[index].saleAmount;
-    //     if (saleAmount > previousAmount) {
-    //         adjustment += saleAmount - previousAmount;
-    //     }
-    //
-    //     // 기존에 없던 클라이언트가 추가된 경우
-    //     const newClients = data.clients.filter(value => this.bidItems[index].clients.findIndex(v => v.name === value.name) === -1);
-    //     const addedAmount = newClients.reduce((total, client) => total + client.amount, 0);
-    //     adjustment += addedAmount;
-    //
-    //     // 기존에 있던 클라이언트가 삭제된 경우
-    //     const removeClients = this.bidItems[index].clients.filter(value => data.clients.findIndex(v => v.name === value.name) === -1);
-    //     const removeAmount = removeClients.reduce((total, client) => total + client.amount, 0);
-    //     adjustment -= removeAmount;
-    //
-    //     // 상품 수량 조절
-    //     if (adjustment > 0) {
-    //         await ProductController.shared.saleProduct(data.productId, adjustment, data.saleProductCount);
-    //     } else if (adjustment < 0) {
-    //         await ProductController.shared.unSaleProduct(data.productId, -adjustment, data.saleProductCount);
-    //     }
-    //
-    //     await BrowserController.shared.setItems(this.bidItems)
-    //     await this.saveBidItemsToServer()
-    //     return this.bidItems
-    // }
-
     modifyBidItem = async (index: number, updatedData: BidItem) => {
         const originalData = { ...this.bidItems[index] };
 
@@ -144,15 +103,6 @@ export default class BidController {
         const currentAmount = calculateTotalAmount(updatedData.clients);
 
         const adjustment = currentAmount - previousAmount;
-
-        // // 새로 추가된 클라이언트의 수량 계산
-        // const newClientsAmount = calculateTotalAmount(filterClients(updatedData.clients, originalData.clients));
-        //
-        // // 삭제된 클라이언트의 수량 계산
-        // const removedClientsAmount = calculateTotalAmount(filterClients(originalData.clients, updatedData.clients));
-        //
-        // adjustment = newClientsAmount - removedClientsAmount;
-
         console.log("####modifyBidItem\n", `previousAmount: ${previousAmount}\n`, `currentAmount: ${currentAmount}\n`, `adjustment: ${adjustment}\n`, `updatedData: `, updatedData)
 
         if (adjustment > 0) {
