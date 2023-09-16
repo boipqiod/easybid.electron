@@ -17,7 +17,7 @@ export default class BidController {
 
     static shared = new BidController("unknown", "unknown")
 
-    private timer: NodeJS.Timer | undefined
+    private timer?: NodeJS.Timer
 
     static init = async (id: string, fileName: string, url: string) => {
         try {
@@ -77,12 +77,14 @@ export default class BidController {
     }
 
     removeBidItem = async (index: number) => {
-        console.log("####removeBidItem", index)
+
+        const item = {...this.bidItems[index]} as BidItem
+        console.log("####removeBidItem", index, item)
+        //판매된 상품이면 상품 수량 복구
+        const saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
+        await ProductController.shared.unSaleProduct(item.productId, saleAmount, item.saleProductCount)
+
         this.bidItems.splice(index, 1)
-
-        const item = this.bidItems[index]
-        await ProductController.shared.unSaleProduct(item.productId, item.saleAmount, item.saleProductCount)
-
         await this.saveBidItemsToServer()
         await BrowserController.shared.setItems(this.bidItems)
         return this.bidItems
@@ -92,34 +94,42 @@ export default class BidController {
     modifyBidItem = async (index: number, updatedData: BidItem) => {
         const originalData = { ...this.bidItems[index] };
 
+
         // 클라이언트별로 구매 수량 합계
         const calculateTotalAmount = (clients: Client[]) => clients.reduce((total, client) => total + client.amount, 0);
-
-        // 클라이언트 목록 비교 함수
-        const filterClients = (source: Client[], target: Client[]) =>
-            source.filter(client => !target.some(t => t.name === client.name));
-
-        const previousAmount = calculateTotalAmount(originalData.clients);
+        
+        //수정된 상품의 총 구매 수량
         const currentAmount = calculateTotalAmount(updatedData.clients);
 
-        const adjustment = currentAmount - previousAmount;
-        console.log("####modifyBidItem\n", `previousAmount: ${previousAmount}\n`, `currentAmount: ${currentAmount}\n`, `adjustment: ${adjustment}\n`, `updatedData: `, updatedData)
+        //판매 중이지 않은 상품이라면 재고 수량 변경 바로 적용
+        if(index !== this.saleIndex) {
+            console.log("####modifyBidItem")
+            //재고 상품
+            const product=  ProductController.shared.productList.find(item => item.id === originalData.productId)
+            if(!product) return this.bidItems;
 
-        if (adjustment > 0) {
-            await ProductController.shared.saleProduct(updatedData.productId, adjustment, updatedData.saleProductCount);
-        } else if (adjustment < 0) {
-            await ProductController.shared.unSaleProduct(updatedData.productId, Math.abs(adjustment), updatedData.saleProductCount);
+            //원래 상품의 총 구매 수량
+            const previousAmount = calculateTotalAmount(originalData.clients);
+
+            //재고의 수량 + (원래 상품의 총 구매 수량 * 원래 상품의 판매 수량) = 총 재고 수량
+            const previousProductAmount = product.amount + (originalData.saleProductCount * previousAmount);
+
+            //총 재고 수량 - (수정된 상품의 총 구매 수량 * 수정된 상품의 판매 수량) = 새로운 재고의 수량
+            product.amount = previousProductAmount - (updatedData.saleProductCount * currentAmount)
+
+            await ProductController.shared.modifyProductData(product)
+            await BrowserController.shared.setProductList(ProductController.shared.productList)
         }
 
-        this.bidItems[index] = updatedData;
+        //저장 및 브라우저에 반영
+        updatedData.saleAmount = currentAmount;
 
-        await BrowserController.shared.setProductList(ProductController.shared.productList)
+        console.log("####modifyBidItem", index, this.saleIndex, updatedData, originalData)
+        this.bidItems[index] = updatedData
         await BrowserController.shared.setItems(this.bidItems);
         await this.saveBidItemsToServer();
         return this.bidItems;
     }
-
-
     //상품에 구매자 추가
     addClient = async (index: number, clients: Client[]) => {
         const item = this.bidItems[index]
@@ -139,25 +149,33 @@ export default class BidController {
                 item.clients[findIndex].amount += client.amount
             }
 
-            item.saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
-            BrowserController.shared.setItems(this.bidItems).then()
-
             const message = `${client.name}님 "${item.name} [${formatCurrency(item.price)}]" ${client.amount}개 구매 확인되었습니다.`
             this.sendMessage(message, index !== this.saleIndex)
-            await this.saveBidItemsToServer()
         }
-        const amount = clients.reduce((total, client) => total + client.amount, 0)
-        ProductController.shared.saleProduct(item.productId, amount, item.saleProductCount).then().catch(e => console.log(e))
-        BrowserController.shared.setProductList(ProductController.shared.productList).then()
+        if(index !== this.saleIndex){
+            const amount = clients.reduce((total, client) => total + client.amount, 0)
+            ProductController.shared.saleProduct(item.productId, amount, item.saleProductCount).then().catch(e => console.log(e))
+            BrowserController.shared.setProductList(ProductController.shared.productList).then()
+        }
 
+        item.saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
+        console.log("####addClient", index, item, this.bidItems[index])
+        await BrowserController.shared.setItems(this.bidItems)
+        await this.saveBidItemsToServer()
         return this.bidItems
     }
 
     /****경매 진행****/
-
     startBid = async (index: number) => {
-        console.log("startBid", index)
-        console.log(this.bidItems[index].name)
+
+        //경매가 재시작인 경우
+        if(this.bidItems[index].status === BidStatus.end) {
+            //재고량 복구
+            const item = {...this.bidItems[index]} as BidItem
+            const saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
+            await ProductController.shared.unSaleProduct(item.productId, saleAmount, item.saleProductCount)
+            await BrowserController.shared.setProductList(ProductController.shared.productList)
+        }
 
         //판매하는 인덱스 스테이트 변경
         this.bidItems[index].status = BidStatus.sale
@@ -180,11 +198,15 @@ export default class BidController {
         //판매 아이템 인덱스 변경
         this.bidItems[index].status = BidStatus.end
         await this.saveBidItemsToServer()
+        this.saleIndex = -1
 
-        //메세지 발송
         await BrowserController.shared.endBid(index, this.bidItems)
-        ProductController.shared.saleProduct(this.bidItems[index].productId, this.bidItems[index].saleAmount, this.bidItems[index].saleProductCount).then().catch(e => console.log(e))
+        const item = {...this.bidItems[index]} as BidItem
+        const saleAmount = item.clients.reduce((total, client) => total + client.amount, 0)
+        await ProductController.shared.saleProduct(this.bidItems[index].productId, saleAmount, item.saleProductCount)
         BrowserController.shared.setProductList(ProductController.shared.productList).then()
+
+        console.log("####endBid", index, this.bidItems[index])
 
         let message = `"${this.bidItems[index].name}" 상품 판매가 종료되었습니다. 구매하신분들은 확인해주세요.`
 
