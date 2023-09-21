@@ -24,7 +24,7 @@ export const Auth = () => {
         <div className="container vw-100 vh-100 d-flex align-items-center justify-content-center">
             <div className="card">
                 <div className="card-header mb-2">
-                    <div className="card-title">로그인 (ver. 1.1.2)</div>
+                    <div className="card-title">로그인 (ver. 1.1.3)</div>
                 </div>
                 <div className="card-body d-flex flex-column px-5 py-4">
                     <label>아이디

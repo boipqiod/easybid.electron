@@ -6,33 +6,24 @@ import {useBid} from "../../../../hook/useBid";
 import {useProduct} from "../../../../hook/useProduct";
 import Utils from "../../../../utils/Utils";
 
+const baseItem: BidItem = {
+    amount: 0,
+    name: "",
+    price: 0,
+    clients: [],
+    saleAmount: 0,
+    status: 0,
+    productId: "",
+    saleProductCount: 1
+}
+
 export const BidAddProductModal = () => {
 
     const {addItem, isAddProduct, setIsAddProduct} = useBid()
     const {productList, addProductData} = useProduct()
     const [productIndex, setProductIndex] = useState<number>(-1)
 
-    const [item, setItem] = useState<BidItem>({
-        amount: 0,
-        name: "",
-        price: 0,
-        clients: [],
-        saleAmount: 0,
-        status: 0,
-        productId: "",
-        saleProductCount: 1
-    })
-
-    const baseItem: BidItem = {
-        amount: 0,
-        name: "",
-        price: 0,
-        clients: [],
-        saleAmount: 0,
-        status: 0,
-        productId: "",
-        saleProductCount: 1
-    }
+    const [item, setItem] = useState<BidItem>(Utils.copyObject(baseItem))
 
     useEffect(() => {
         if (isAddProduct) {
@@ -96,14 +87,19 @@ export const BidAddProductModal = () => {
         setIsAddProduct(false)
     }
 
-    const handleProductInput = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const target = event.target as HTMLSelectElement
-        const index = Number(target.value)
+    const handleProductInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement
+        const selectedValue = target.value;
+        const index = productList.findIndex(product => product.name === selectedValue)
 
-        setProductIndex(index)
+        if(index === -1){
+            setProductIndex(-1)
+            return
+        }
 
-        if (index === -1) {
+        if (selectedValue === "새 상품 추가하기") {
             setItem(Utils.copyObject(baseItem))
+            setProductIndex(-1)
             return
         }
 
@@ -119,6 +115,7 @@ export const BidAddProductModal = () => {
         }
 
         setItem(_item)
+        target.value = ""
     }
 
     return (
@@ -136,20 +133,28 @@ export const BidAddProductModal = () => {
                         className={"w-100 mx-2"}
                     >
                         <label htmlFor="productId">상품 선택</label>
-                        <Form.Select
+                        <Form.Control
                             id="productId"
-                            onChange={handleProductInput}
+                            onInput={handleProductInput}
+                            list={"productIds"}
+                            placeholder="상품 선택"
                         >
-                            <option value={-1}>새 상품 추가하기</option>
+                        </Form.Control>
+                        <datalist id="productIds">
+                            <option
+                                id={"-1"}
+                                value={"새 상품 추가하기"}
+                            >새 상품 추가하기</option>
                             {productList.map((product, index) => {
                                 return (
                                     <option
                                         key={index}
-                                        value={index}
+                                        id={index.toString()}
+                                        value={product.name}
                                     >{product.name}</option>
                                 )
                             })}
-                        </Form.Select>
+                        </datalist>
                     </Stack>
                     <Stack
                         direction={"horizontal"}>
