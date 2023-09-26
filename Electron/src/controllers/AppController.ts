@@ -35,8 +35,8 @@ export default class AppController {
         mainWindow.on('close', this.stop)
 
         //url 로드
-        // await mainWindow.loadURL(`http://localhost:3002`);
-        await mainWindow.loadURL(`http://localhost:3000`);
+        await mainWindow.loadURL(`http://localhost:3002`);
+        // await mainWindow.loadURL(`http://localhost:3000`);
 
         //브라우저 컨트롤러 초기화
         BrowserController.init(mainWindow)
@@ -67,6 +67,18 @@ export default class AppController {
                 label: 'View',
                 submenu: [
                     { role: 'reload' }
+                ]
+            },
+            {
+                label: 'Edit',
+                submenu: [
+                    { role: 'undo' },
+                    { role: 'redo' },
+                    { type: 'separator' },
+                    { role: 'cut' },
+                    { role: 'copy' },
+                    { role: 'paste' },
+                    { role: 'selectAll' }
                 ]
             }
         ];
