@@ -17,7 +17,7 @@ export default class BidController {
 
     static shared = new BidController("unknown", "unknown")
 
-    private timer?: NodeJS.Timer
+    private timer?: NodeJS.Timeout
 
     static init = async (id: string, fileName: string, url: string) => {
         try {

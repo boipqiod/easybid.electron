@@ -1,5 +1,5 @@
 export class TimerUtil{
-    private timer: NodeJS.Timer | undefined
+    private timer: NodeJS.Timeout | undefined
     private readonly delay: number
     private readonly callback: () => void | (() => Promise<void>)
 

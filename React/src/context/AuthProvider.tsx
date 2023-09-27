@@ -1,5 +1,5 @@
 import React, {createContext, useEffect, useState} from 'react';
-import {Auth} from "../pages/auth/Auth";
+import {Auth} from "../pages/Auth/Auth";
 import AuthService from "../service/AuthService";
 
 type props = {

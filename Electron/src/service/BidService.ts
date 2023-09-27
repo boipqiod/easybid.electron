@@ -1,6 +1,4 @@
-import {BidItem, httpMethod} from "../utils/tpye";
-import API from "../model/API";
-import {request} from "../model/apiTypes";
+import {BidItem} from "../utils/tpye";
 import {FireStoreUtil} from "../utils/FireStoreUtil";
 
 export default class BidService {
@@ -16,10 +14,6 @@ export default class BidService {
 
     saveBidData = async (items: BidItem[]) => {
         try {
-            // const data: string[] = []
-            // items.forEach(item => {
-            //     data.push(JSON.stringify(item))
-            // })
             await FireStoreUtil.instance.setDoc(this.id, `bid_${this.fileName}`, {data: items})
         }catch (e) {
             console.log(e)
@@ -27,9 +21,7 @@ export default class BidService {
     }
 
     getBidData = async (): Promise<BidItem[]> => {
-        const res = await FireStoreUtil.instance.ensureDocWithDefaults(this.id, `bid_${this.fileName}`)
-
-        const data: BidItem[] = res
+        const data: BidItem[] = await FireStoreUtil.instance.ensureDocWithDefaults(this.id, `bid_${this.fileName}`)
         try {
             return data
         }catch (e) {

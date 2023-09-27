@@ -1,8 +1,7 @@
 import React, {createContext, PropsWithChildren, useEffect, useState} from "react";
 import {interfaceType, ProductItem} from "../utils/tpye";
 import ProductService from "../service/ProductService";
-import {Loading} from "../pages/common/Loading";
-
+import {Loading} from "../components/Loading";
 type props = {
     productList: ProductItem[]
     setProductList: (value: ProductItem[]) => void

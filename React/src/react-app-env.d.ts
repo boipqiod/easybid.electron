@@ -9,6 +9,8 @@ declare namespace NodeJS {
   }
 }
 
+declare module '.png'
+
 declare global {
   interface Window {
     bid: BidObserver

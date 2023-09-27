@@ -1,8 +1,8 @@
 import React, {createContext, ReactNode, useEffect, useState} from "react";
 import StorageUtil from "../utils/StorageUtil";
-import {Loading} from "../pages/common/Loading";
 import {BidItem, BidStatus, setState} from "../utils/tpye";
 import BidService from "../service/BidService";
+import {Loading} from "../components/Loading";
 
 interface props {
     bidItems: BidItem[],

@@ -5,7 +5,6 @@ module.exports = {
     mode: 'production',
     entry: {
         index: './app.ts',
-        appController: './src/controllers/appController.ts',
         frontPreload: './src/preload/front.preload.ts',
         youtubePreload: './src/preload/youtube.preload.ts',
     },
@@ -19,7 +18,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     resolve: {
-        extensions: ['.ts'],
+        extensions: ['.ts', '.js'],
         fallback: {
             "path": false
         }

@@ -13,9 +13,8 @@ export default class AuthRouter{
             const authResponse = await AuthService.shared.login(data.id, passkey)
 
             if(authResponse){
-                const token = EncryptUtil.createJWT(data.id, data.passkey)
                 UserController.instance.login(data.id)
-                return APIResponse.getRes<{token: string}>(authResponse, {token})
+                return APIResponse.getRes<{token: string}>(authResponse)
             }else{
                 return APIResponse.getRes(authResponse)
             }

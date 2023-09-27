@@ -9,5 +9,6 @@ export const usePage = () => {
         async toMain() { navigate('/'); },
         async toBid() { navigate('/bid'); },
         async toProduct() { navigate('/product'); },
+        async toUser() { navigate('/user'); },
     };
 };

@@ -4,14 +4,14 @@ import {BidItem} from "./tpye";
 import StorageUtil from "./StorageUtil";
 
 export default class File {
-    exportExcel = async (items: BidItem[]) => {
+    static exportExcel = async (items: BidItem[]) => {
         const bool = await swal({
             text: "현재까지 정보를 엑셀로 저장합니다.",
             buttons: ["취소", "저장"],
         });
-        if(!bool) return;
+        if (!bool) return;
 
-        type ExcelData = {name: string, data: any[][]};
+        type ExcelData = { name: string, data: any[][] };
 
         const excelData: ExcelData[] = [];
 
@@ -31,7 +31,7 @@ export default class File {
         }
         const productData: any[][] = [["상품 이름", "총 판매량", "총 판매 금액"]]
 
-        for(const item of items){
+        for (const item of items) {
             const saleAmount = item.clients.reduce((total, client) => total + client.amount, 0);
 
             productData.push([item.name, saleAmount, item.price * saleAmount])
@@ -44,7 +44,7 @@ export default class File {
         const workbook = XLSX.utils.book_new();
 
         let i = 1;
-        for(const data of excelData){
+        for (const data of excelData) {
             const worksheet = XLSX.utils.aoa_to_sheet(data.data);
             XLSX.utils.book_append_sheet(workbook, worksheet, `${i++}번 손님`);
         }

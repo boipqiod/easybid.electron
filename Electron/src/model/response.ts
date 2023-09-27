@@ -2,8 +2,6 @@ export interface Response<T>{
     success: boolean
     res?: T
 }
-
-
 export class APIResponse<T>{
     success: boolean
     data?: T

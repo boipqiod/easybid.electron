@@ -1,5 +1,3 @@
-import API from "../model/API";
-import {ApiConfig, httpMethod} from "../utils/tpye";
 import {FireStoreUtil} from "../utils/FireStoreUtil";
 
 export default class AuthService{
@@ -13,24 +11,4 @@ export default class AuthService{
         //passkey 가 일치하면 true
         return _passkey === passkey
     }
-
-    // login = async (id: string) =>{
-    //
-    //     const config: ApiConfig = {
-    //         url: "/auth/login",
-    //         method: httpMethod.post
-    //     }
-    //
-    //     const body = {
-    //         directoryName: id
-    //     }
-    //
-    //     const res = await API.shared.request<{
-    //         directoryName: string
-    //     }, boolean>(config,body)
-    //
-    //     console.log("AuthService", res)
-    //
-    //     return res.data ?? false
-    // }
 }
