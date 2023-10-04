@@ -27,8 +27,8 @@ export const BidTableItem= ({index, name, price, amount, status, productId}: Mai
             <td
                 style={{ color : isDeleted ? "red" : "black" }}
             >{name}</td>
-            <td>{Utils.formatCurrency(price)}</td>
-            <td>{amount}</td>
+            <td>{price === 0 ? "-" : Utils.formatCurrency(price)}</td>
+            <td>{amount === 0 ? "-" : amount}</td>
             <td style={{textAlign: "right"}}>
                 <ButtonGroup
                     size={"sm"}

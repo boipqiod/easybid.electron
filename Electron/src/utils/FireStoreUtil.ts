@@ -1,9 +1,7 @@
 import {FirebaseApp, initializeApp} from "firebase/app";
 import {
-    collection,
     getDoc,
     Firestore,
-    getDocs,
     getFirestore,
     doc,
     setDoc,
@@ -35,7 +33,6 @@ export class FireStoreUtil {
             console.log("error", e)
         }
     }
-
 
     //문서 데이터 저장
     setDoc = async (collectionName: string, docsName: string, data: object) => {

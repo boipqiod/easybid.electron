@@ -57,7 +57,7 @@ export const useBid = () =>{
         const res = await BidService.removeBidItem(index)
         if(res.success && res.data){
             setBidItems(res.data)
-            await showAlert("삭제되었습니다.")
+            toast.success("삭제되었습니다.")
         }else{
             await showAlert(`실패`)
         }
@@ -94,7 +94,7 @@ export const useBid = () =>{
         const res = await BidService.modifyBidItem(modifyIndex, item)
         if(res.success && res.data){
             setBidItems(res.data)
-            await showAlert("수정되었습니다.")
+            toast.success("수정되었습니다.")
         }else{
             await showAlert(`실패`)
         }
@@ -102,10 +102,16 @@ export const useBid = () =>{
 
     }
     const addClient = async (client: Client) =>{
+
+        if(client.name === ""){
+            await showAlert("이름을 입력해주세요.")
+            return
+        }
+
         const res = await BidService.addClient(addClientIndex, [client])
         if(res.success && res.data){
             setBidItems(res.data)
-            await showAlert("추가되었습니다.")
+            toast.success("추가되었습니다.")
             setAddClientIndex(-1)
         }else{
             await showAlert(`실패`)
@@ -131,6 +137,7 @@ export const useBid = () =>{
         const res = await BidService.startBid(index)
 
         if(res.success && res.data){
+            toast.success("판매가 시작되었습니다.")
             setBidItems(res.data)
             setOnSaleIndex(index)
         }else{
@@ -196,6 +203,7 @@ export const useBid = () =>{
 
         const res = await BidService.init(ebId, fileName, youtubeUrl)
         if(res.success && res.data){
+            toast.success("경매 초기화 완료")
             StorageUtil.saveFileName(fileName)
             StorageUtil.saveYoutubeUrl(youtubeUrl)
             setBidItems(res.data)

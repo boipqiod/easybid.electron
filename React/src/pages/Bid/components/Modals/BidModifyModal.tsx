@@ -19,9 +19,13 @@ export const BidModifyModal = () => {
     }, [bidItems, modifyIndex])
 
     const onChangeProduct: ChangeEventHandler<HTMLInputElement> = (e) => {
+
+        const value =
+            (e.target.name === "amount" ||  e.target.name === "price") && e.target.value === "" ? 0 : e.target.value
+
         setItem({
             ...item,
-            [e.target.name]: e.target.value
+            [e.target.name]: value
         })
     }
 
@@ -54,7 +58,7 @@ export const BidModifyModal = () => {
 
     const clientTable = (index: number, client: Client) => {
         return (
-            <tr>
+            <tr key={index}>
                 <td>
                     <Form.Control
                         size={"sm"}
@@ -62,6 +66,7 @@ export const BidModifyModal = () => {
                         id={index.toString()}
                         name={`name`}
                         onChange={handelChangeClient}
+                        value={client.name}
                         placeholder="이름"
                     />
                 </td>
@@ -73,6 +78,7 @@ export const BidModifyModal = () => {
                         name={`amount`}
                         onChange={handelChangeClient}
                         placeholder="수량"
+                        value={client.amount === 0 ? "" : client.amount}
                         min={1}
                     />
                 </td>
@@ -83,6 +89,7 @@ export const BidModifyModal = () => {
                         id={index.toString()}
                         name={`note`}
                         onChange={handelChangeClient}
+                        value={client.note}
                         placeholder="비고"
                     />
                 </td>

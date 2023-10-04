@@ -3,6 +3,8 @@ import swal from 'sweetalert';
 import {BidItem} from "./tpye";
 import StorageUtil from "./StorageUtil";
 
+type ExcelData = { name: string, data: any[][] };
+
 export default class File {
     static exportExcel = async (items: BidItem[]) => {
         const bool = await swal({
@@ -10,8 +12,6 @@ export default class File {
             buttons: ["취소", "저장"],
         });
         if (!bool) return;
-
-        type ExcelData = { name: string, data: any[][] };
 
         const excelData: ExcelData[] = [];
 

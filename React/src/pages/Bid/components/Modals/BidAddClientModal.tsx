@@ -66,6 +66,7 @@ export const BidAddClientModal = () => {
                             type={"number"}
                             name={"amount"}
                             min={1}
+                            defaultValue={1}
                             onChange={handleChange}
                         />
                     </Stack>

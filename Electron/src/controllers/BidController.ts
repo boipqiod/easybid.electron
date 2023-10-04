@@ -149,7 +149,9 @@ export default class BidController {
                 item.clients[findIndex].amount += client.amount
             }
 
-            const message = `${client.name}님 "${item.name} [${formatCurrency(item.price)}]" ${client.amount}개 구매 확인되었습니다.`
+            const price = item.price === 0 ? "" : ` [${formatCurrency(item.price)}]`
+            console.log("####addClient", price)
+            const message = `${client.name}님 "${item.name}${price}" ${client.amount}개 구매 확인되었습니다.`
             this.sendMessage(message, index !== this.saleIndex)
         }
         if(index !== this.saleIndex){
@@ -253,15 +255,15 @@ export default class BidController {
         let _amount = amount
 
         let message = ""
-
+        const price = item.price === 0 ? "" : ` [${formatCurrency(item.price)}]`
         //최대 판매 개수를 넘어가면 최대치만큼만 판매
         if (item.amount !== 0 && item.amount - item.saleAmount < amount) {
             _amount = item.amount - item.saleAmount
             //판매 메시지 작성
-            if (index === this.saleIndex) message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개* 구매 확인되었습니다.`
+            if (index === this.saleIndex) message = `${name}님 "${item.name}${price}" ${_amount}개* 구매 확인되었습니다.`
         } else {
             //판매 메시지 전송
-            if (index === this.saleIndex) message = `${name}님 "${item.name} (${formatCurrency(item.price)})" ${_amount}개 구매 확인되었습니다.`
+            if (index === this.saleIndex) message = `${name}님 "${item.name}${price}" ${_amount}개 구매 확인되었습니다.`
         }
 
         //판매량 추가
